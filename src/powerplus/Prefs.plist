@@ -15,7 +15,7 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>footerText</key>
-			<string>Hold the power button (or power + volume) to open the power-off screen. Respring, Userspace and Safe Mode buttons appear above Cancel.</string>
+			<string>Hold the power button (or power + volume) to open the power-off screen. Respring and Userspace buttons appear above Cancel.</string>
 		</dict>
 		<dict>
 			<key>PostNotification</key>
@@ -35,7 +35,7 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>footerText</key>
-			<string>PowerPlus 1.0 from Cobalt.</string>
+			<string>PowerPlus 1.0.1 from Cobalt.</string>
 		</dict>
 	</array>
 	<key>title</key>

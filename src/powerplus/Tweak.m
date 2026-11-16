@@ -1,7 +1,6 @@
-// PowerPlus - adds Respring, Userspace Reboot and Safe Mode to the power-off screen.
+// PowerPlus - adds Respring and Userspace Reboot to the power-off screen.
 #import "../common/cb.h"
 #import <spawn.h>
-#import <signal.h>
 #import <sys/wait.h>
 
 #define PP_DOMAIN CFSTR("com.mymculture.powerplus")
@@ -31,13 +30,6 @@ static void PPRespring(void) {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(2.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{ exit(0); });
 }
 
-static void PPSafeMode(void) {
-    // a SpringBoard crash is what sends the tweak loader into Safe Mode
-    signal(SIGSEGV, SIG_DFL);
-    raise(SIGSEGV);
-    volatile int *p = NULL; *p = 1;
-}
-
 static void PPAlert(UIView *from, NSString *title, NSString *msg) {
     UIViewController *vc = from.window.rootViewController;
     while (vc.presentedViewController) vc = vc.presentedViewController;
@@ -57,7 +49,7 @@ static void PPUserspace(UIView *from) {
         }
         // still here a moment later means the reboot didn't happen
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            PPAlert(from, @"Userspace Reboot", @"This jailbreak didn't allow a userspace reboot from here. Respring and Safe Mode still work.");
+            PPAlert(from, @"Userspace Reboot", @"This jailbreak didn't allow a userspace reboot from here. Respring still works.");
         });
     });
 }
@@ -70,7 +62,6 @@ static void PPUserspace(UIView *from) {
     switch (b.tag) {
         case 1: PPRespring(); break;
         case 2: PPUserspace(b); break;
-        case 3: PPSafeMode(); break;
     }
 }
 @end
@@ -96,7 +87,7 @@ static void PPLayout(UIView *pdv) {
     if (!gEnabled) { bar.hidden = YES; return; }
     if (!bar) {
         bar = [[UIStackView alloc] initWithArrangedSubviews:@[
-            PPButton(@"Respring", 1), PPButton(@"Userspace", 2), PPButton(@"Safe Mode", 3)]];
+            PPButton(@"Respring", 1), PPButton(@"Userspace", 2)]];
         bar.axis = UILayoutConstraintAxisHorizontal;
         bar.distribution = UIStackViewDistributionFillEqually;
         bar.spacing = 10;
@@ -106,7 +97,7 @@ static void PPLayout(UIView *pdv) {
     if (bar.superview != pdv) [pdv addSubview:bar];
     if (pdv.subviews.lastObject != bar) [pdv bringSubviewToFront:bar];
     CGRect b = pdv.bounds;
-    CGFloat w = MIN(b.size.width - 40, 420), h = 46;
+    CGFloat w = MIN(b.size.width - 40, 320), h = 46;
     CGFloat y = b.size.height * 0.66;
     UIView *cancel = CBIvar(pdv, "_cancelButton");
     if ([cancel isKindOfClass:[UIView class]] && cancel.superview) {
