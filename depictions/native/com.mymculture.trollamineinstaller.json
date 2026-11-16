@@ -92,7 +92,7 @@
         },
         {
           "class": "DepictionMarkdownView",
-          "markdown": "- The Apps panel can install Dopamine, the same way TrollStore would.\n- Current finished build.",
+          "markdown": "- ldid now comes bundled and installs itself when an app needs it. No more trip to the Settings tab.\n- The Apps panel can install Dopamine, the same way TrollStore would.\n- Apps that can't be re-signed keep their own signature instead of failing.\n- More reliable Dopamine download: retries, and falls back to curl.\n- Clearer error messages when a download or install goes wrong.",
           "useSpacing": true
         },
         {
@@ -100,13 +100,27 @@
         },
         {
           "class": "DepictionSubheaderView",
-          "title": "Earlier",
+          "title": "5.5",
           "useBoldText": true,
           "useBottomMargin": false
         },
         {
           "class": "DepictionMarkdownView",
-          "markdown": "- 5.5 and 5.4 remain available in the source.",
+          "markdown": "- Internal changes to the Trollamine engine. Nothing new in the interface.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionSubheaderView",
+          "title": "5.4",
+          "useBoldText": true,
+          "useBottomMargin": false
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- First build published on Cobalt.",
           "useSpacing": true
         }
       ]
