@@ -1,0 +1,17 @@
+#!/var/jb/bin/sh
+# Runs when PowerPlus is installed or updated: clears the tweak loader's Safe Mode flag.
+F=/var/mobile/.eksafemode
+if [ -e "$F" ]; then
+    echo "PowerPlus: Safe Mode flag found. Reason on record:"
+    cat "$F" 2>/dev/null
+    echo ""
+    rm -f "$F" /private/var/mobile/.eksafemode
+    echo "PowerPlus: Safe Mode data cleared. Restart SpringBoard to leave Safe Mode."
+else
+    echo "PowerPlus: no Safe Mode data to clear."
+fi
+if [ -n "$CYDIA" ]; then
+    set -- $CYDIA
+    case "$1" in ''|*[!0-9]*) ;; *) echo "finish:restart" >&"$1" 2>/dev/null ;; esac
+fi
+exit 0

@@ -7,10 +7,10 @@ Architectures: iphoneos-arm64 iphoneos-arm
 Components: main
 Description: Cobalt - a hand-built source for jailbreak tweaks and TrollStore apps.
 MD5Sum:
- bbd076c5a7d37680182ce004e8b98cf9 8006 Packages
- 99cc44ce652d77fc5236cae0becc21a5 1703 Packages.gz
- 7162be58428a25f1469b08fe0685e9ed 1958 Packages.bz2
+ 551b28060528d20288d320ed39c4614d 8006 Packages
+ c3cdf753bebc0ade52c5dfa6af62aa91 1703 Packages.gz
+ 292926ed5f2eab70f31075fc2b57333a 1967 Packages.bz2
 SHA256:
- 9889f573a23772f6ee2d243e78f822d2cc25805ad6db8ca590342b3fd6905a2b 8006 Packages
- 2e53920574fd8f95e7304d013f3e26fe7689acfd07b3192b96e790a94a048d79 1703 Packages.gz
- fef7e0cbcf86c7a76aa166a8dc10f6f16dd6020fb3fc9ad17ee7fd9bd534f455 1958 Packages.bz2
+ 3b12627ddf1a0a9c0df50ae05454ea2ccb960010c9f25ff1987dbae1da9e9276 8006 Packages
+ 43d80b5fb716e00f670707119a98425d05a1d27236a07f6635d3887047a1aaf1 1703 Packages.gz
+ 75eaf1b56739ff3fe57581fc8ed5bb190f126ab3b110066de8b4f84051981221 1967 Packages.bz2
