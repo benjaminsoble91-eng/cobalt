@@ -1,0 +1,17 @@
+Package: com.mymculture.iconswap
+Version: 1.0
+Architecture: iphoneos-arm64
+Maintainer: MYM Culture
+Depends: mobilesubstrate (>= 0.9.5000), firmware (>= 14.0)
+Filename: debs/com.mymculture.iconswap_1.0_iphoneos-arm64.deb
+Size: 14074
+MD5sum: 9ad930c9235bb5b06f0c7937c3ae5500
+SHA1: 88e38d8f312ba94c3621f6e1601eec52753f62b8
+SHA256: 2f124b921ecc861e090fb35aabae2ed9aaf07066a1e1277e01bc6806544f7739
+Section: Tweaks
+Description: In jiggle mode, tap one app and then another to swap their positions.
+Author: MYM Culture
+Name: IconSwap
+Icon: assets/icon_com.mymculture.iconswap.png
+Depiction: depictions/com.mymculture.iconswap.html
+Tag: role::enduser
