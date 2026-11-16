@@ -17,17 +17,17 @@ Depiction: depictions/com.mymculture.iconswap.html
 Tag: role::enduser
 
 Package: com.mymculture.trollamineinstaller
-Version: 4.2
+Version: 4.3
 Architecture: iphoneos-arm
 Maintainer: MYM Culture
 Depends: firmware (>= 14.0)
-Filename: debs/com.mymculture.trollamineinstaller_4.2_iphoneos-arm.deb
-Size: 5123754
-MD5sum: 89c1ebafacb60d7f0ea5ccbc402a18db
-SHA1: 656dc92b9e500633e8cbf5193fbdf01119181b37
-SHA256: bee34babcf2e957972b34cb8a4b592872d661f12e0857c34565d1ee249cdb7db
+Filename: debs/com.mymculture.trollamineinstaller_4.3_iphoneos-arm.deb
+Size: 5123740
+MD5sum: b42c2a8ee4c79f6ee0d8697f899adfc6
+SHA1: 28aef1287c02d7cb7d82a8ad8edb3e532e211995
+SHA256: 345e8c4756ae9556d7aad848850c2f8b3e50888fe064d3ebcffe6ce3857e2ae4
 Section: Utilities
-Description: Downloads the latest Dopamine and builds Trollamine (Dopamine + a TrollStore-style installer) on your device. No TrollStore needed.
+Description: Downloads the latest Dopamine and builds Trollamine on your device. No TrollStore needed.
 Author: MYM Culture
 Name: Trollamine Installer
 Icon: assets/icon_com.mymculture.trollamineinstaller.png
@@ -35,17 +35,17 @@ Depiction: depictions/com.mymculture.trollamineinstaller.html
 Tag: role::enduser
 
 Package: com.mymculture.trollamineinstaller
-Version: 4.2
+Version: 4.3
 Architecture: iphoneos-arm64
 Maintainer: MYM Culture
 Depends: firmware (>= 14.0)
-Filename: debs/com.mymculture.trollamineinstaller_4.2_iphoneos-arm64.deb
-Size: 5123738
-MD5sum: 5c0214212bc210a99a0ea2f17c2c3c28
-SHA1: 5f48db1324744e315df5f6fdb2e47e12c8e7e9fe
-SHA256: a75acfe4e4f4437ce0b2f5a44f3e0393bd80af3b1f014e07ffeea813cc0be920
+Filename: debs/com.mymculture.trollamineinstaller_4.3_iphoneos-arm64.deb
+Size: 5123742
+MD5sum: 43fb9331b6ae966d42e239ceafc56cda
+SHA1: 6262a7d5abc62241845011053adef915aa60de94
+SHA256: 5f552c81c0f499bfc6679673fc72b82bce35cd74dfdcb310079f7a1610104dfb
 Section: Utilities
-Description: Downloads the latest Dopamine and builds Trollamine (Dopamine + a TrollStore-style installer) on your device. No TrollStore needed.
+Description: Downloads the latest Dopamine and builds Trollamine on your device. No TrollStore needed.
 Author: MYM Culture
 Name: Trollamine Installer
 Icon: assets/icon_com.mymculture.trollamineinstaller.png
