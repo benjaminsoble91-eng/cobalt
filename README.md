@@ -18,6 +18,7 @@ debs/                   Sileo tweaks (installable from the source)
 tipa/                   TrollStore apps (installable via Get buttons)
 assets/                 icons + art
 seturl.sh               optional: bake an absolute URL for Zebra/Cydia
+src/                    source for the tweaks (IconSwap, PowerPlus, BarText) + build.sh
 ```
 
 ## Host it on GitHub Pages (recommended)

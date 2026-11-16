@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>entry</key>
+	<dict>
+		<key>cell</key>
+		<string>PSLinkCell</string>
+		<key>label</key>
+		<string>IconSwap</string>
+	</dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>In jiggle mode, tap one app and then another to swap them. Tap the same app again to cancel.</string>
+		</dict>
+		<dict>
+			<key>PostNotification</key>
+			<string>com.mymculture.iconswap/prefs</string>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.mymculture.iconswap</string>
+			<key>key</key>
+			<string>Enabled</string>
+			<key>label</key>
+			<string>Enabled</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>label</key>
+			<string>Feedback</string>
+		</dict>
+		<dict>
+			<key>PostNotification</key>
+			<string>com.mymculture.iconswap/prefs</string>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.mymculture.iconswap</string>
+			<key>key</key>
+			<string>Haptics</string>
+			<key>label</key>
+			<string>Haptic feedback</string>
+		</dict>
+		<dict>
+			<key>PostNotification</key>
+			<string>com.mymculture.iconswap/prefs</string>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.mymculture.iconswap</string>
+			<key>key</key>
+			<string>Highlight</string>
+			<key>label</key>
+			<string>Highlight the first app</string>
+		</dict>
+		<dict>
+			<key>PostNotification</key>
+			<string>com.mymculture.iconswap/prefs</string>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.mymculture.iconswap</string>
+			<key>key</key>
+			<string>Hints</string>
+			<key>label</key>
+			<string>Show the hint message</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>IconSwap 1.1 from Cobalt. Changes apply right away.</string>
+		</dict>
+	</array>
+	<key>title</key>
+	<string>IconSwap</string>
+</dict>
+</plist>
