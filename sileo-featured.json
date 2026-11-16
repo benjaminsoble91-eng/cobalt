@@ -1,0 +1,19 @@
+{
+  "class": "FeaturedBannersView",
+  "itemSize": "{263, 148}",
+  "itemCornerRadius": 10,
+  "banners": [
+    {
+      "url": "https://benjaminsoble91-eng.github.io/cobalt/assets/banner_com.mymculture.trollamineinstaller.png",
+      "title": "Trollamine Installer",
+      "package": "com.mymculture.trollamineinstaller",
+      "hideShadow": false
+    },
+    {
+      "url": "https://benjaminsoble91-eng.github.io/cobalt/assets/banner_com.mymculture.iconswap.png",
+      "title": "IconSwap",
+      "package": "com.mymculture.iconswap",
+      "hideShadow": false
+    }
+  ]
+}

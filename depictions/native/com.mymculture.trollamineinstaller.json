@@ -1,0 +1,115 @@
+{
+  "minVersion": "0.1",
+  "class": "DepictionTabView",
+  "tintColor": "#2bbe96",
+  "headerImage": "https://benjaminsoble91-eng.github.io/cobalt/assets/banner_com.mymculture.trollamineinstaller.png",
+  "tabs": [
+    {
+      "tabname": "Details",
+      "class": "DepictionStackView",
+      "views": [
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "**Trollamine** is TrollStore and Dopamine in one app. The installer downloads the latest official Dopamine and builds Trollamine right on your device. No TrollStore needed to get started.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "What you get"
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- Dopamine's look and layout, blended with TrollStore's, in a blue-into-green theme.\n- A TrollStore-style **Apps** panel, opened from the main menu, that installs apps for you (including Dopamine itself).\n- ldid is installed automatically when an app needs it.\n- Jailbreak detection that works across jailbreaks, not only Dopamine.\n- When jailbroken, the Jailbreak button becomes **Reboot to Remove Jailbreak**, with a fast userspace reboot or a full reboot.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "How to use"
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "1. Install **Trollamine Installer** from Cobalt.\n2. Open it from the Home Screen while connected to the internet.\n3. Let it download Dopamine and build Trollamine.\n4. Open Trollamine when it finishes.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "Information"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Version",
+          "text": "6.5"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Section",
+          "text": "Utilities"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Compatibility",
+          "text": "iOS 14.0 and later"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Requires",
+          "text": "curl"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Source",
+          "text": "Cobalt"
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionTableButtonView",
+          "title": "Cobalt storefront",
+          "action": "https://benjaminsoble91-eng.github.io/cobalt/",
+          "openExternal": true
+        }
+      ]
+    },
+    {
+      "tabname": "Changelog",
+      "class": "DepictionStackView",
+      "views": [
+        {
+          "class": "DepictionSubheaderView",
+          "title": "6.5",
+          "useBoldText": true,
+          "useBottomMargin": false
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- The Apps panel can install Dopamine, the same way TrollStore would.\n- Current finished build.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionSubheaderView",
+          "title": "Earlier",
+          "useBoldText": true,
+          "useBottomMargin": false
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- 5.5 and 5.4 remain available in the source.",
+          "useSpacing": true
+        }
+      ]
+    }
+  ]
+}

@@ -11,7 +11,9 @@ Release                 APT repo metadata
 Packages(.gz/.bz2)      package index (relative paths — zero config)
 CydiaIcon.png           source icon shown in Sileo
 index.html              storefront / landing page
-depictions/             in-Sileo info pages
+depictions/             info pages (HTML for Zebra/Cydia and the web)
+depictions/native/      native Sileo depictions (JSON: Details + Changelog tabs)
+sileo-featured.json     featured banners at the top of the source in Sileo
 debs/                   Sileo tweaks (installable from the source)
 tipa/                   TrollStore apps (installable via Get buttons)
 assets/                 icons + art
@@ -51,6 +53,8 @@ Sileo handles the relative paths fine. If you also want Zebra/Cydia to show the 
 ```
 
 Then commit and push the updated `Packages*` and `Release`.
+
+Note: `SileoDepiction` and `sileo-featured.json` need absolute URLs, so run `seturl.sh` after any change to `Packages.in`, and edit the URLs in `sileo-featured.json` if the source ever moves.
 
 ## Adding a new package later
 

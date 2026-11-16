@@ -14,8 +14,8 @@ cd "$(dirname "$0")"
 
 # rebuild Packages from the pristine template, then make the two paths absolute
 cp Packages.in Packages
-# Icon:/Depiction: lines currently hold relative paths -> prefix with BASE
-sed -i.bak -E "s#^(Icon: )(assets/)#\\1${BASE//#/\\#}/\\2#; s#^(Depiction: )(depictions/)#\\1${BASE//#/\\#}/\\2#" Packages
+# Icon:/Depiction:/SileoDepiction: lines currently hold relative paths -> prefix with BASE
+sed -i.bak -E "s#^(Icon: )(assets/)#\\1${BASE//#/\\#}/\\2#; s#^((Sileo)?Depiction: )(depictions/)#\\1${BASE//#/\\#}/\\3#" Packages
 rm -f Packages.bak
 
 gzip -9kf Packages

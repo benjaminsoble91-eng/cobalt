@@ -1,0 +1,89 @@
+{
+  "minVersion": "0.1",
+  "class": "DepictionTabView",
+  "tintColor": "#3c78ff",
+  "headerImage": "https://benjaminsoble91-eng.github.io/cobalt/assets/banner_com.mymculture.iconswap.png",
+  "tabs": [
+    {
+      "tabname": "Details",
+      "class": "DepictionStackView",
+      "views": [
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "Rearranging the Home Screen by dragging is fiddly. **IconSwap** lets you swap two apps instantly: enter jiggle mode, tap one icon, then tap another, and they trade places.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "How to use"
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "1. Long-press the Home Screen to enter jiggle (edit) mode.\n2. Tap the first app you want to move.\n3. Tap the app you want it to trade places with.\n4. They swap. Repeat as needed, then press Done.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "Information"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Version",
+          "text": "1.0"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Section",
+          "text": "Tweaks"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Compatibility",
+          "text": "iOS 14.0 and later"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Requires",
+          "text": "mobilesubstrate"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Source",
+          "text": "Cobalt"
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionTableButtonView",
+          "title": "Cobalt storefront",
+          "action": "https://benjaminsoble91-eng.github.io/cobalt/",
+          "openExternal": true
+        }
+      ]
+    },
+    {
+      "tabname": "Changelog",
+      "class": "DepictionStackView",
+      "views": [
+        {
+          "class": "DepictionSubheaderView",
+          "title": "1.0",
+          "useBoldText": true,
+          "useBottomMargin": false
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- Initial release.",
+          "useSpacing": true
+        }
+      ]
+    }
+  ]
+}

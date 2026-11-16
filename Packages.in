@@ -14,6 +14,7 @@ Author: MYM Culture
 Name: IconSwap
 Icon: assets/icon_com.mymculture.iconswap.png
 Depiction: depictions/com.mymculture.iconswap.html
+SileoDepiction: depictions/native/com.mymculture.iconswap.json
 Tag: role::enduser
 
 Package: com.mymculture.trollamineinstaller
@@ -32,6 +33,7 @@ Author: MYM Culture
 Name: Trollamine Installer
 Icon: assets/icon_com.mymculture.trollamineinstaller.png
 Depiction: depictions/com.mymculture.trollamineinstaller.html
+SileoDepiction: depictions/native/com.mymculture.trollamineinstaller.json
 Tag: role::enduser
 
 Package: com.mymculture.trollamineinstaller
@@ -50,6 +52,7 @@ Author: MYM Culture
 Name: Trollamine Installer
 Icon: assets/icon_com.mymculture.trollamineinstaller.png
 Depiction: depictions/com.mymculture.trollamineinstaller.html
+SileoDepiction: depictions/native/com.mymculture.trollamineinstaller.json
 Tag: role::enduser
 
 Package: com.mymculture.trollamineinstaller
@@ -68,6 +71,7 @@ Author: MYM Culture
 Name: Trollamine Installer
 Icon: assets/icon_com.mymculture.trollamineinstaller.png
 Depiction: depictions/com.mymculture.trollamineinstaller.html
+SileoDepiction: depictions/native/com.mymculture.trollamineinstaller.json
 Tag: role::enduser
 
 Package: com.mymculture.trollamineinstaller
@@ -86,6 +90,7 @@ Author: MYM Culture
 Name: Trollamine Installer
 Icon: assets/icon_com.mymculture.trollamineinstaller.png
 Depiction: depictions/com.mymculture.trollamineinstaller.html
+SileoDepiction: depictions/native/com.mymculture.trollamineinstaller.json
 Tag: role::enduser
 
 Package: com.mymculture.trollamineinstaller
@@ -104,4 +109,5 @@ Author: MYM Culture
 Name: Trollamine Installer
 Icon: assets/icon_com.mymculture.trollamineinstaller.png
 Depiction: depictions/com.mymculture.trollamineinstaller.html
+SileoDepiction: depictions/native/com.mymculture.trollamineinstaller.json
 Tag: role::enduser
