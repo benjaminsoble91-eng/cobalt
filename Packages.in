@@ -17,15 +17,15 @@ Depiction: depictions/com.mymculture.iconswap.html
 Tag: role::enduser
 
 Package: com.mymculture.trollamineinstaller
-Version: 5.0
+Version: 5.1
 Architecture: iphoneos-arm64
 Maintainer: MYM Culture
 Depends: firmware (>= 14.0)
-Filename: debs/com.mymculture.trollamineinstaller_5.0_iphoneos-arm64.deb
-Size: 5128264
-MD5sum: 5739ce1719e2517c35ec25c8870c0d91
-SHA1: 4543d4de7bda292f657833a78735b6ff23592f2d
-SHA256: eb836585cd0c0be38771984a7e8c3d76ab50e36d68e84ac05d5f19ed250c41ed
+Filename: debs/com.mymculture.trollamineinstaller_5.1_iphoneos-arm64.deb
+Size: 5133564
+MD5sum: 7b06e8f13dbfce333f17de334f7730d2
+SHA1: 2da37ec7ad501b680937e6c488511c2a99694fae
+SHA256: 593a89489728204f0f5fd25b810939bc0c396d5efd7a5da528d858f42f2e5d4c
 Section: Utilities
 Description: Downloads the latest Dopamine and builds Trollamine on your device. No TrollStore needed.
 Author: MYM Culture
@@ -35,15 +35,15 @@ Depiction: depictions/com.mymculture.trollamineinstaller.html
 Tag: role::enduser
 
 Package: com.mymculture.trollamineinstaller
-Version: 5.0
+Version: 5.1
 Architecture: iphoneos-arm
 Maintainer: MYM Culture
 Depends: firmware (>= 14.0)
-Filename: debs/com.mymculture.trollamineinstaller_5.0_iphoneos-arm.deb
-Size: 5128156
-MD5sum: fcf125843f3786eaa05b699b4bbe04d9
-SHA1: 9f37561cff55e56532dbcb32950326907947e02f
-SHA256: 54cf5fec8583391b4894f430767d51b9514a8fb75993b2fad644ee99e09c6909
+Filename: debs/com.mymculture.trollamineinstaller_5.1_iphoneos-arm.deb
+Size: 5133414
+MD5sum: f95f6826812da97b65311b207fca42a1
+SHA1: 57aea102e59f821a632bd856f2492ab4a398be52
+SHA256: 8216a7853f017ad0713ffc773bedcda2e614df103ac896f915d89a933adfc6a5
 Section: Utilities
 Description: Downloads the latest Dopamine and builds Trollamine on your device. No TrollStore needed.
 Author: MYM Culture
