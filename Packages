@@ -69,3 +69,39 @@ Name: Trollamine Installer
 Icon: https://benjaminsoble91-eng.github.io/cobalt/assets/icon_com.mymculture.trollamineinstaller.png
 Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymculture.trollamineinstaller.html
 Tag: role::enduser
+
+Package: com.mymculture.trollamineinstaller
+Version: 5.6
+Architecture: iphoneos-arm
+Maintainer: MYM Culture
+Depends: firmware (>= 14.0), curl
+Filename: debs/com.mymculture.trollamineinstaller_5.6_iphoneos-arm.deb
+Size: 5146314
+MD5sum: 8b6e404817966fcedf66447563bd6676
+SHA1: 6ae10f112bf6497f9273236518bf0d4d41bf4829
+SHA256: ff544117beddb1456841f3469b808f5bf9453f64df3c2ca3d351f55ad1261272
+Section: Utilities
+Description: Downloads the latest Dopamine and builds Trollamine on your device. No TrollStore needed.
+Author: MYM Culture
+Name: Trollamine Installer
+Icon: https://benjaminsoble91-eng.github.io/cobalt/assets/icon_com.mymculture.trollamineinstaller.png
+Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymculture.trollamineinstaller.html
+Tag: role::enduser
+
+Package: com.mymculture.trollamineinstaller
+Version: 5.6
+Architecture: iphoneos-arm64
+Maintainer: MYM Culture
+Depends: firmware (>= 14.0), curl
+Filename: debs/com.mymculture.trollamineinstaller_5.6_iphoneos-arm64.deb
+Size: 5146320
+MD5sum: 261f1aa9e1b8efc750802912a4267296
+SHA1: 7e5fad44ed3aff48c62bc1c74ce50ec2245a8066
+SHA256: 86a962ef45393b21bd3934626bd04327824c5c054358f6c2463c6060014e78d4
+Section: Utilities
+Description: Downloads the latest Dopamine and builds Trollamine on your device. No TrollStore needed.
+Author: MYM Culture
+Name: Trollamine Installer
+Icon: https://benjaminsoble91-eng.github.io/cobalt/assets/icon_com.mymculture.trollamineinstaller.png
+Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymculture.trollamineinstaller.html
+Tag: role::enduser
