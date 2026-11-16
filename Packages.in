@@ -15,3 +15,39 @@ Name: IconSwap
 Icon: assets/icon_com.mymculture.iconswap.png
 Depiction: depictions/com.mymculture.iconswap.html
 Tag: role::enduser
+
+Package: com.mymculture.trollamineinstaller
+Version: 4.1
+Architecture: iphoneos-arm
+Maintainer: MYM Culture
+Depends: firmware (>= 14.0)
+Filename: debs/com.mymculture.trollamineinstaller_4.1_iphoneos-arm.deb
+Size: 5123590
+MD5sum: 95b45fdde61317db6ac3023817d9b1be
+SHA1: 6375a51ace411ce643aa442beac769de7ab870e5
+SHA256: a9961b71448c24cf3b289c24bc7639b0dcad1de717981d9a48d8f7abb09d9a1c
+Section: Utilities
+Description: Downloads the latest Dopamine and builds Trollamine (Dopamine + a TrollStore-style installer) on your device. No TrollStore needed.
+Author: MYM Culture
+Name: Trollamine Installer
+Icon: assets/icon_com.mymculture.trollamineinstaller.png
+Depiction: depictions/com.mymculture.trollamineinstaller.html
+Tag: role::enduser
+
+Package: com.mymculture.trollamineinstaller
+Version: 4.1
+Architecture: iphoneos-arm64
+Maintainer: MYM Culture
+Depends: firmware (>= 14.0)
+Filename: debs/com.mymculture.trollamineinstaller_4.1_iphoneos-arm64.deb
+Size: 5123678
+MD5sum: 0ad699375ef03ce8bd0a64bf83e68b3c
+SHA1: 42687d8618ef1cbe15904bdeb749f3cfd47493ae
+SHA256: 39214a1721b09a2d614d213be0a9cc4f51d20d298adbe7ec9d1ae2ef35147fb3
+Section: Utilities
+Description: Downloads the latest Dopamine and builds Trollamine (Dopamine + a TrollStore-style installer) on your device. No TrollStore needed.
+Author: MYM Culture
+Name: Trollamine Installer
+Icon: assets/icon_com.mymculture.trollamineinstaller.png
+Depiction: depictions/com.mymculture.trollamineinstaller.html
+Tag: role::enduser

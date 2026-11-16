@@ -28,7 +28,7 @@ _sz(){  if stat -c%s "$1" >/dev/null 2>&1; then stat -c%s "$1"; else stat -f%z "
 
 {
   printf 'Origin: Cobalt\nLabel: Cobalt\nSuite: stable\nVersion: 1.0\nCodename: cobalt\n'
-  printf 'Architectures: iphoneos-arm64\nComponents: main\n'
+  printf 'Architectures: iphoneos-arm64 iphoneos-arm\nComponents: main\n'
   printf 'Description: Cobalt - a hand-built source for jailbreak tweaks and TrollStore apps.\n'
   printf 'MD5Sum:\n'
   for f in Packages Packages.gz Packages.bz2; do printf ' %s %s %s\n' "$(_md5 "$f")" "$(_sz "$f")" "$f"; done

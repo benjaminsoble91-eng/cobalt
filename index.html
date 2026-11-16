@@ -82,7 +82,7 @@
   </header>
 
   <section id="tweaks">
-    <div class="sechead"><h2>Tweaks</h2><span class="count">Sileo · 1</span></div>
+    <div class="sechead"><h2>Tweaks</h2><span class="count">Sileo · 2</span></div>
     <p class="note">Add the source above, then these appear in Sileo to install &amp; update.</p>
     <article class="card">
       <img class="ic" src="assets/icon_com.mymculture.iconswap.png" alt="">
@@ -94,6 +94,18 @@
       <div class="actions">
         <a class="get" id="sileo2" href="#">Add Source</a>
         <a class="dl" href="depictions/com.mymculture.iconswap.html">Details</a>
+      </div>
+    </article>
+    <article class="card">
+      <img class="ic" src="assets/icon_com.mymculture.trollamineinstaller.png" alt="">
+      <div class="meta">
+        <h3>Trollamine Installer <span class="ver">v4.1</span></h3>
+        <p>Also in Sileo: installs as a jailbreak app, then builds Trollamine on-device.</p>
+        <div class="sub">com.mymculture.trollamineinstaller · 5.1 MB</div>
+      </div>
+      <div class="actions">
+        <a class="get" id="sileo3" href="#">Add Source</a>
+        <a class="dl" href="depictions/com.mymculture.trollamineinstaller.html">Details</a>
       </div>
     </article>
   </section>
@@ -177,6 +189,7 @@
   document.getElementById('url').value = BASE + '/';
   document.getElementById('sileo').href  = 'sileo://source/' + BASE + '/';
   document.getElementById('sileo2').href = 'sileo://source/' + BASE + '/';
+  document.getElementById('sileo3').href = 'sileo://source/' + BASE + '/';
   document.getElementById('zebra').href  = 'zbra://sources/add/' + BASE + '/';
   document.getElementById('cydia').href  = 'cydia://url/https://cydia.saurik.com/api/share#?source=' + BASE + '/';
   function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},1800);}
