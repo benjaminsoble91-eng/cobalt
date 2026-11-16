@@ -38,8 +38,6 @@ seturl.sh               optional: bake an absolute URL for Zebra/Cydia
 
 Open that URL on your device and tap **Add to Sileo**. Done.
 
-> Tip: the three `Dopamine-*.tipa` copies are ~54 MB each. If you don't want them in the repo, delete them from `tipa/` and remove their cards from `index.html` — the rest stays tiny.
-
 ## Other hosts
 
 Netlify / Vercel / any static host: drag the folder in, or point it at the repo. Same deal — the storefront self-locates.
