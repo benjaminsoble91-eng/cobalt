@@ -12,6 +12,6 @@ Section: Tweaks
 Description: In jiggle mode, tap one app and then another to swap their positions.
 Author: MYM Culture
 Name: IconSwap
-Icon: assets/icon_com.mymculture.iconswap.png
-Depiction: depictions/com.mymculture.iconswap.html
+Icon: https://benjaminsoble91-eng.github.io/cobalt/assets/icon_com.mymculture.iconswap.png
+Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymculture.iconswap.html
 Tag: role::enduser
