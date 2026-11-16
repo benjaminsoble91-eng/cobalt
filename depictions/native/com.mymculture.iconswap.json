@@ -30,12 +30,24 @@
         },
         {
           "class": "DepictionHeaderView",
+          "title": "Settings"
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- Turn IconSwap on or off without uninstalling.\n- Haptic feedback on or off.\n- Highlight on the first app you tap, on or off.\n- Hint message on or off.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
           "title": "Information"
         },
         {
           "class": "DepictionTableTextView",
           "title": "Version",
-          "text": "1.0"
+          "text": "1.1"
         },
         {
           "class": "DepictionTableTextView",
@@ -45,12 +57,12 @@
         {
           "class": "DepictionTableTextView",
           "title": "Compatibility",
-          "text": "iOS 14.0 and later"
+          "text": "iOS 14.0 and later (rootless)"
         },
         {
           "class": "DepictionTableTextView",
           "title": "Requires",
-          "text": "mobilesubstrate"
+          "text": "mobilesubstrate, preferenceloader"
         },
         {
           "class": "DepictionTableTextView",
@@ -72,6 +84,20 @@
       "tabname": "Changelog",
       "class": "DepictionStackView",
       "views": [
+        {
+          "class": "DepictionSubheaderView",
+          "title": "1.1",
+          "useBoldText": true,
+          "useBottomMargin": false
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- New page in Settings.\n- Toggles for the tweak itself, haptics, the highlight and the hint message.\n- Tap the selected app again to cancel.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
         {
           "class": "DepictionSubheaderView",
           "title": "1.0",

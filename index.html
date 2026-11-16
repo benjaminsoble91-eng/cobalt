@@ -91,24 +91,52 @@
     <div class="sechead"><h2>Featured</h2></div>
     <div class="feat">
       <a href="depictions/com.mymculture.trollamineinstaller.html"><img src="assets/banner_com.mymculture.trollamineinstaller.png" alt="Trollamine Installer"></a>
+      <a href="depictions/com.mymculture.bartext.html"><img src="assets/banner_com.mymculture.bartext.png" alt="BarText"></a>
+      <a href="depictions/com.mymculture.powerplus.html"><img src="assets/banner_com.mymculture.powerplus.png" alt="PowerPlus"></a>
       <a href="depictions/com.mymculture.iconswap.html"><img src="assets/banner_com.mymculture.iconswap.png" alt="IconSwap"></a>
     </div>
   </section>
 
   <section id="tweaks">
-    <div class="sechead"><h2>Tweaks</h2><span class="count">Sileo · 2</span></div>
+    <div class="sechead"><h2>Tweaks</h2><span class="count">Sileo · 4</span></div>
     <p class="note">Add the source once, then tap <b>Open in Sileo</b> to jump straight to a package.</p>
     <article class="card">
       <img class="ic" src="assets/icon_com.mymculture.iconswap.png" alt="">
       <div class="meta">
-        <h3>IconSwap <span class="ver">v1.0</span></h3>
-        <p>In jiggle mode, tap one app then another to swap their positions.</p>
-        <div class="sub">com.mymculture.iconswap · 14 KB</div>
+        <h3>IconSwap <span class="ver">v1.1</span></h3>
+        <p>In jiggle mode, tap one app and then another to swap their positions.</p>
+        <div class="sub">com.mymculture.iconswap · 15 KB</div>
       </div>
       <div class="actions">
         <a class="get" href="sileo://package/com.mymculture.iconswap">Open in Sileo</a>
-        <a class="dl" id="sileo2" href="#">Add Source</a>
+        <a class="dl" href="#" data-addsrc>Add Source</a>
         <a class="dl" href="depictions/com.mymculture.iconswap.html">Details</a>
+      </div>
+    </article>
+    <article class="card">
+      <img class="ic" src="assets/icon_com.mymculture.powerplus.png" alt="">
+      <div class="meta">
+        <h3>PowerPlus <span class="ver">v1.0</span></h3>
+        <p>Adds Respring, Userspace Reboot and Safe Mode to the power-off screen.</p>
+        <div class="sub">com.mymculture.powerplus · 12 KB</div>
+      </div>
+      <div class="actions">
+        <a class="get" href="sileo://package/com.mymculture.powerplus">Open in Sileo</a>
+        <a class="dl" href="#" data-addsrc>Add Source</a>
+        <a class="dl" href="depictions/com.mymculture.powerplus.html">Details</a>
+      </div>
+    </article>
+    <article class="card">
+      <img class="ic" src="assets/icon_com.mymculture.bartext.png" alt="">
+      <div class="meta">
+        <h3>BarText <span class="ver">v1.0</span></h3>
+        <p>Replace the carrier name, signal bars, Wi-Fi bars and network badge in the status bar with your own text.</p>
+        <div class="sub">com.mymculture.bartext · 14 KB</div>
+      </div>
+      <div class="actions">
+        <a class="get" href="sileo://package/com.mymculture.bartext">Open in Sileo</a>
+        <a class="dl" href="#" data-addsrc>Add Source</a>
+        <a class="dl" href="depictions/com.mymculture.bartext.html">Details</a>
       </div>
     </article>
     <article class="card">
@@ -168,7 +196,7 @@
   var host = BASE.replace(/^https?:\/\//i,'');
   document.getElementById('url').value = BASE + '/';
   document.getElementById('sileo').href  = 'sileo://source/' + BASE + '/';
-  document.getElementById('sileo2').href = 'sileo://source/' + BASE + '/';
+  document.querySelectorAll('[data-addsrc]').forEach(function(a){a.href='sileo://source/' + BASE + '/';});
   document.getElementById('sileo3').href = 'sileo://source/' + BASE + '/';
   document.getElementById('zebra').href  = 'zbra://sources/add/' + BASE + '/';
   document.getElementById('cydia').href  = 'cydia://url/https://cydia.saurik.com/api/share#?source=' + BASE + '/';

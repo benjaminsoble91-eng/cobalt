@@ -10,6 +10,18 @@
       "hideShadow": false
     },
     {
+      "url": "https://benjaminsoble91-eng.github.io/cobalt/assets/banner_com.mymculture.bartext.png",
+      "title": "BarText",
+      "package": "com.mymculture.bartext",
+      "hideShadow": false
+    },
+    {
+      "url": "https://benjaminsoble91-eng.github.io/cobalt/assets/banner_com.mymculture.powerplus.png",
+      "title": "PowerPlus",
+      "package": "com.mymculture.powerplus",
+      "hideShadow": false
+    },
+    {
       "url": "https://benjaminsoble91-eng.github.io/cobalt/assets/banner_com.mymculture.iconswap.png",
       "title": "IconSwap",
       "package": "com.mymculture.iconswap",

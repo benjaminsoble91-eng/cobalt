@@ -17,6 +17,63 @@ Depiction: depictions/com.mymculture.iconswap.html
 SileoDepiction: depictions/native/com.mymculture.iconswap.json
 Tag: role::enduser
 
+Package: com.mymculture.iconswap
+Version: 1.1
+Architecture: iphoneos-arm64
+Maintainer: MYM Culture
+Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
+Filename: debs/com.mymculture.iconswap_1.1_iphoneos-arm64.deb
+Size: 15432
+MD5sum: 8fddb7b87f6c23fd3e10398b13bdcb39
+SHA1: 18645fae3c0c3b4b9875ec1f01a89c1e25aa5ebd
+SHA256: 13f2b3bd8ad6085859f2704d7210a748326ba5ce57950f5822d4af5506c35ee7
+Section: Tweaks
+Description: In jiggle mode, tap one app and then another to swap their positions.
+Author: MYM Culture
+Name: IconSwap
+Icon: assets/icon_com.mymculture.iconswap.png
+Depiction: depictions/com.mymculture.iconswap.html
+SileoDepiction: depictions/native/com.mymculture.iconswap.json
+Tag: role::enduser
+
+Package: com.mymculture.powerplus
+Version: 1.0
+Architecture: iphoneos-arm64
+Maintainer: MYM Culture
+Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
+Filename: debs/com.mymculture.powerplus_1.0_iphoneos-arm64.deb
+Size: 11884
+MD5sum: f82fc42116aeb3c15ac85b632e775ac7
+SHA1: 4217f2708405cbf0f1b77b4ee7f99e1cb45ae84a
+SHA256: 284439dacff93c223366412a16f523557ec8410d23676ec26e26a2eb03d3da8d
+Section: Tweaks
+Description: Adds Respring, Userspace Reboot and Safe Mode to the power-off screen.
+Author: MYM Culture
+Name: PowerPlus
+Icon: assets/icon_com.mymculture.powerplus.png
+Depiction: depictions/com.mymculture.powerplus.html
+SileoDepiction: depictions/native/com.mymculture.powerplus.json
+Tag: role::enduser
+
+Package: com.mymculture.bartext
+Version: 1.0
+Architecture: iphoneos-arm64
+Maintainer: MYM Culture
+Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
+Filename: debs/com.mymculture.bartext_1.0_iphoneos-arm64.deb
+Size: 14210
+MD5sum: 4879fc33c06dd370330f16cd6891d5dc
+SHA1: 80ec6f0c3e9f0eae472879fd9b26ec8875d0fb99
+SHA256: b143e0853dc04e577aaeed77e9a48ede10a0b4884ead0a09ff43fe90ffbc737e
+Section: Tweaks
+Description: Replace the carrier name, signal bars, Wi-Fi bars and network badge in the status bar with your own text.
+Author: MYM Culture
+Name: BarText
+Icon: assets/icon_com.mymculture.bartext.png
+Depiction: depictions/com.mymculture.bartext.html
+SileoDepiction: depictions/native/com.mymculture.bartext.json
+Tag: role::enduser
+
 Package: com.mymculture.trollamineinstaller
 Version: 5.4
 Architecture: iphoneos-arm64

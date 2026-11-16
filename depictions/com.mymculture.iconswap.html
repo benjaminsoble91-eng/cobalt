@@ -18,6 +18,8 @@
   p{margin:0 0 10px;color:#d4deff}
   ol{margin:6px 0 0;padding-left:20px;color:#d4deff}
   li{margin:4px 0}
+  ul{margin:6px 0 0;padding-left:20px;color:#d4deff}
+  b{color:#fff}
   .kv{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding:9px 0;font-size:14px}
   .kv:first-of-type{border-top:0}
   .kv span:last-child{color:var(--mut);font-family:ui-monospace,Menlo,monospace}
@@ -34,7 +36,7 @@
 
   <div class="sec">
     <h2>About</h2>
-    <p>Rearranging the Home Screen by dragging is fiddly. IconSwap lets you swap two apps instantly: enter jiggle mode, tap one icon, then tap another, and they trade places.</p>
+    <p>Rearranging the Home Screen by dragging is fiddly. <b>IconSwap</b> lets you swap two apps instantly: enter jiggle mode, tap one icon, then tap another, and they trade places.</p>
   </div>
 
   <div class="sec">
@@ -48,12 +50,22 @@
   </div>
 
   <div class="sec">
+    <h2>Settings</h2>
+    <ul>
+      <li>Turn IconSwap on or off without uninstalling.</li>
+      <li>Haptic feedback on or off.</li>
+      <li>Highlight on the first app you tap, on or off.</li>
+      <li>Hint message on or off.</li>
+    </ul>
+  </div>
+
+  <div class="sec">
     <h2>Details</h2>
-    <div class="kv"><span>Version</span><span>1.0</span></div>
+    <div class="kv"><span>Version</span><span>1.1</span></div>
     <div class="kv"><span>Author</span><span>MYM Culture</span></div>
     <div class="kv"><span>Section</span><span>Tweaks</span></div>
-    <div class="kv"><span>Compatibility</span><span>iOS 14.0 +</span></div>
-    <div class="kv"><span>Requires</span><span>mobilesubstrate</span></div>
+    <div class="kv"><span>Compatibility</span><span>iOS 14.0 + (rootless)</span></div>
+    <div class="kv"><span>Requires</span><span>preferenceloader</span></div>
   </div>
 </body>
 </html>

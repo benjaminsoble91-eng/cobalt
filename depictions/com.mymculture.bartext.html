@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>BarText</title>
+<style>
+  :root{--bg:#070c20;--panel:#0e1a44;--line:#1b2d66;--cobalt2:#6ea2ff;--ink:#eaf1ff;--mut:#9fb3e6}
+  *{box-sizing:border-box}
+  body{margin:0;font:16px/1.6 -apple-system,BlinkMacSystemFont,"SF Pro Text",Segoe UI,Roboto,sans-serif;
+    color:var(--ink);background:linear-gradient(180deg,#0a1230,#070c20);padding:18px}
+  .head{display:flex;gap:14px;align-items:center;margin-bottom:18px}
+  .head img{width:64px;height:64px;border-radius:15px;box-shadow:0 6px 18px rgba(0,0,0,.4)}
+  .head h1{margin:0;font-size:22px}
+  .head .sub{color:var(--mut);font-size:13px;font-family:ui-monospace,Menlo,monospace}
+  .sec{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin-bottom:14px}
+  .sec h2{margin:0 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--cobalt2)}
+  p{margin:0 0 10px;color:#d4deff}
+  ol{margin:6px 0 0;padding-left:20px;color:#d4deff}
+  li{margin:4px 0}
+  ul{margin:6px 0 0;padding-left:20px;color:#d4deff}
+  b{color:#fff}
+  .kv{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding:9px 0;font-size:14px}
+  .kv:first-of-type{border-top:0}
+  .kv span:last-child{color:var(--mut);font-family:ui-monospace,Menlo,monospace}
+</style>
+</head>
+<body>
+  <div class="head">
+    <img src="../assets/icon_com.mymculture.bartext.png" alt="">
+    <div>
+      <h1>BarText</h1>
+      <div class="sub">com.mymculture.bartext</div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2>About</h2>
+    <p><b>BarText</b> lets you rewrite the left side of the status bar. Replace the carrier name, the cellular bars, the Wi-Fi bars and the network badge (5G, LTE) with any text you like, or hide them.</p>
+  </div>
+
+  <div class="sec">
+    <h2>How to use</h2>
+    <ol>
+      <li>Open Settings and tap <b>BarText</b>.</li>
+      <li>Turn on the piece you want to replace.</li>
+      <li>Type your text and press return. Leave it empty to hide that piece.</li>
+    </ol>
+  </div>
+
+  <div class="sec">
+    <h2>What you can replace</h2>
+    <ul>
+      <li>Carrier name.</li>
+      <li>Cellular signal bars.</li>
+      <li>Network badge (5G, LTE, 4G, 3G).</li>
+      <li>Wi-Fi bars.</li>
+    </ul>
+  </div>
+
+  <div class="sec">
+    <h2>Details</h2>
+    <div class="kv"><span>Version</span><span>1.0</span></div>
+    <div class="kv"><span>Author</span><span>MYM Culture</span></div>
+    <div class="kv"><span>Section</span><span>Tweaks</span></div>
+    <div class="kv"><span>Compatibility</span><span>iOS 14.0 + (rootless)</span></div>
+    <div class="kv"><span>Requires</span><span>preferenceloader</span></div>
+  </div>
+</body>
+</html>
