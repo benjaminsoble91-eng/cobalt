@@ -10,7 +10,7 @@
       "views": [
         {
           "class": "DepictionMarkdownView",
-          "markdown": "**PowerPlus** adds two sliders under slide to power off, in the same style: a blue **slide to respring** and a green **slide to reboot userspace**.",
+          "markdown": "**PowerPlus** adds two sliders under slide to power off, in the same style: **slide to respring** with a blue icon and **slide to reboot userspace** with a green icon.",
           "useSpacing": true
         },
         {
@@ -22,7 +22,7 @@
         },
         {
           "class": "DepictionMarkdownView",
-          "markdown": "1. Hold the power button (or power and a volume button) until the power-off screen appears.\n2. Slide the blue or green slider all the way across.",
+          "markdown": "1. Hold the power button (or power and a volume button) until the power-off screen appears.\n2. Slide either one all the way across.",
           "useSpacing": true
         },
         {
@@ -34,7 +34,7 @@
         },
         {
           "class": "DepictionMarkdownView",
-          "markdown": "- **Slide to respring** (blue) restarts the Home Screen.\n- **Slide to reboot userspace** (green) does a fast userspace reboot. If your jailbreak doesn't allow it, PowerPlus tells you instead of failing silently.",
+          "markdown": "- **Slide to respring** (blue icon) restarts the Home Screen.\n- **Slide to reboot userspace** (green icon) does a fast userspace reboot. If your jailbreak doesn't allow it, PowerPlus tells you instead of failing silently.",
           "useSpacing": true
         },
         {
@@ -47,7 +47,7 @@
         {
           "class": "DepictionTableTextView",
           "title": "Version",
-          "text": "1.2"
+          "text": "1.2.1"
         },
         {
           "class": "DepictionTableTextView",
@@ -84,6 +84,20 @@
       "tabname": "Changelog",
       "class": "DepictionStackView",
       "views": [
+        {
+          "class": "DepictionSubheaderView",
+          "title": "1.2.1",
+          "useBoldText": true,
+          "useBottomMargin": false
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- Removed the colour wash, so the sliders are the same frosted glass as slide to power off.\n- The userspace label now shrinks to fit.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
         {
           "class": "DepictionSubheaderView",
           "title": "1.2",

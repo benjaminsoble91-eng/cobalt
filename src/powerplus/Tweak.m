@@ -270,6 +270,21 @@ static UIView *PPSystemSlider(UIView *stock, UIView *pdv, NSString *text, UIColo
                                  @"knobWidth", @"knobInsets", @"knobImageOffset", @"knobColor" ]) {
             @try { id v = [stock valueForKey:key]; if (v) [sl setValue:v forKey:key]; } @catch (__unused NSException *e) {}
         }
+        // shrink the font until the label fits beside the knob, the way "slide to power off" does
+        @try {
+            UIFont *font = [sl valueForKey:@"trackFont"];
+            if (![font isKindOfClass:[UIFont class]]) font = [stock valueForKey:@"trackFont"];
+            if ([font isKindOfClass:[UIFont class]]) {
+                CGSize ts = stock.bounds.size;
+                @try { CGSize t = [[stock valueForKey:@"trackSize"] CGSizeValue]; if (t.width > 60 && t.height > 30) ts = t; } @catch (__unused NSException *e) {}
+                CGFloat knob = ts.height;
+                @try { CGFloat k = [[stock valueForKey:@"knobWidth"] doubleValue]; if (k > 20 && k < ts.width / 2) knob = k; } @catch (__unused NSException *e) {}
+                CGFloat avail = ts.width - knob - 44;
+                CGFloat size = font.pointSize;
+                while (size > 11 && [text sizeWithAttributes:@{ NSFontAttributeName: [font fontWithSize:size] }].width > avail) size -= 0.5;
+                if (size < font.pointSize) [sl setValue:[font fontWithSize:size] forKey:@"trackFont"];
+            }
+        } @catch (__unused NSException *e) {}
         [sl setValue:text forKey:@"trackText"];
         CGFloat ps = 30;
         @try { UIImage *si = [stock valueForKey:@"knobImage"]; if ([si isKindOfClass:[UIImage class]] && si.size.height > 8) ps = si.size.height * 0.92; } @catch (__unused NSException *e) {}
@@ -297,14 +312,7 @@ static void PPLayout(UIView *pdv) {
         for (NSArray *sp in specs) {
             NSInteger tag = [sp[3] integerValue];
             UIView *sl = stock ? PPSystemSlider(stock, pdv, sp[0], sp[1], sp[2], tag) : nil;
-            if (sl) {
-                // colour wash under the frosted track
-                UIView *wash = [UIView new];
-                wash.tag = tag + 10;
-                wash.userInteractionEnabled = NO;
-                wash.backgroundColor = [(UIColor *)sp[1] colorWithAlphaComponent:0.55];
-                [box addSubview:wash];
-            } else {
+            if (!sl) {
                 PPSlider *mine = [[PPSlider alloc] initWithTitle:sp[0] color:sp[1] symbol:sp[2]];
                 mine.tag = tag;
                 mine.fired = ^(PPSlider *s) {

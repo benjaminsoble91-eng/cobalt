@@ -15,7 +15,7 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>footerText</key>
-			<string>Hold the power button (or power + volume) to open the power-off screen. A blue slide to respring and a green slide to reboot userspace appear under slide to power off.</string>
+			<string>Hold the power button (or power + volume) to open the power-off screen. Slide to respring (blue icon) and slide to reboot userspace (green icon) appear under slide to power off.</string>
 		</dict>
 		<dict>
 			<key>PostNotification</key>
@@ -35,7 +35,7 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>footerText</key>
-			<string>PowerPlus 1.2 from Cobalt.</string>
+			<string>PowerPlus 1.2.1 from Cobalt.</string>
 		</dict>
 	</array>
 	<key>title</key>
