@@ -19,6 +19,7 @@ tipa/                   TrollStore apps (installable via Get buttons)
 assets/                 icons + art
 seturl.sh               optional: bake an absolute URL for Zebra/Cydia
 src/                    source for the tweaks (IconSwap, PowerPlus, BarText) + build.sh
+src/trollamine/         source for Trollamine Installer (installer app + add-on library) + build.sh
 ```
 
 ## Host it on GitHub Pages (recommended)
