@@ -197,41 +197,141 @@ static void PPUserspace(UIView *from) {
 }
 @end
 
+// ---- the real thing: iOS's own slider (_UIActionSlider), configured from the stock one ----
+static void PPFire(UIView *slider) {
+    if (slider.tag == 1) { PPRespring(); return; }
+    if (slider.tag == 2) {
+        PPUserspace(slider);
+        // still here in a few seconds means the reboot didn't happen; put the knob back
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            @try { [slider setValue:@0.0 forKey:@"knobPosition"]; } @catch (__unused NSException *e) {}
+        });
+    }
+}
+
+@interface PPSliderDelegate : NSObject
+@end
+@implementation PPSliderDelegate
++ (instancetype)shared { static PPSliderDelegate *d; static dispatch_once_t o; dispatch_once(&o, ^{ d = [PPSliderDelegate new]; }); return d; }
+- (void)actionSliderDidCompleteSlide:(UIView *)slider { PPFire(slider); }
+- (void)actionSliderDidBeginSlide:(UIView *)slider {}
+- (void)actionSliderDidCancelSlide:(UIView *)slider {}
+- (void)actionSlider:(UIView *)slider didUpdateSlideWithValue:(double)value {}
+// Swallow any other delegate call the slider makes, so an unexpected one can't crash SpringBoard.
+- (BOOL)respondsToSelector:(SEL)sel {
+    if ([super respondsToSelector:sel]) return YES;
+    return [NSStringFromSelector(sel) hasPrefix:@"actionSlider"];
+}
+- (NSMethodSignature *)methodSignatureForSelector:(SEL)sel {
+    NSMethodSignature *sig = [super methodSignatureForSelector:sel];
+    if (sig) return sig;
+    NSString *name = NSStringFromSelector(sel);
+    if (![name hasPrefix:@"actionSlider"]) return nil;
+    NSMutableString *types = [NSMutableString stringWithString:@"v@:"];
+    for (NSUInteger i = 0; i < name.length; i++) if ([name characterAtIndex:i] == ':') [types appendString:@"@"];
+    return [NSMethodSignature signatureWithObjCTypes:types.UTF8String];
+}
+- (void)forwardInvocation:(NSInvocation *)inv {
+    NSString *name = NSStringFromSelector(inv.selector);
+    if ([name containsString:@"Complete"] && inv.methodSignature.numberOfArguments > 2) {
+        __unsafe_unretained id slider = nil;
+        [inv getArgument:&slider atIndex:2];
+        if ([slider isKindOfClass:[UIView class]]) PPFire(slider);
+    }
+}
+@end
+
+static UIImage *PPGlyph(NSString *symbol, UIColor *color, CGFloat pointSize) {
+    if (@available(iOS 13.0, *)) {
+        UIImageSymbolConfiguration *cfg = [UIImageSymbolConfiguration configurationWithPointSize:pointSize weight:UIImageSymbolWeightRegular];
+        UIImage *img = [UIImage systemImageNamed:symbol withConfiguration:cfg];
+        return [img imageWithTintColor:color renderingMode:UIImageRenderingModeAlwaysOriginal];
+    }
+    return nil;
+}
+
+// Build a second copy of the stock slider. Returns nil if anything about it isn't as expected.
+static UIView *PPSystemSlider(UIView *stock, UIView *pdv, NSString *text, UIColor *color, NSString *symbol, NSInteger tag) {
+    Class cls = objc_getClass("_UIActionSlider");
+    if (!cls || ![stock isKindOfClass:cls]) return nil;
+    @try {
+        id vibrant = nil;
+        @try { vibrant = [stock valueForKey:@"vibrantSettings"]; } @catch (__unused NSException *e) {}
+        if (!vibrant) vibrant = CBIvar(pdv, "_vibrantSettings");
+        SEL initSel = sel_registerName("initWithFrame:vibrantSettings:");
+        UIView *sl = nil;
+        if ([cls instancesRespondToSelector:initSel])
+            sl = ((id (*)(id, SEL, CGRect, id))objc_msgSend)([cls alloc], initSel, stock.bounds, vibrant);
+        else
+            sl = [[cls alloc] initWithFrame:stock.bounds];
+        if (![sl isKindOfClass:[UIView class]]) return nil;
+        // same look as the one above it
+        for (NSString *key in @[ @"style", @"textStyle", @"trackFont", @"trackSize", @"trackWidthProportion",
+                                 @"knobWidth", @"knobInsets", @"knobImageOffset", @"knobColor" ]) {
+            @try { id v = [stock valueForKey:key]; if (v) [sl setValue:v forKey:key]; } @catch (__unused NSException *e) {}
+        }
+        [sl setValue:text forKey:@"trackText"];
+        CGFloat ps = 30;
+        @try { UIImage *si = [stock valueForKey:@"knobImage"]; if ([si isKindOfClass:[UIImage class]] && si.size.height > 8) ps = si.size.height * 0.92; } @catch (__unused NSException *e) {}
+        UIImage *glyph = PPGlyph(symbol, color, ps);
+        if (glyph) [sl setValue:glyph forKey:@"knobImage"];
+        [sl setValue:[PPSliderDelegate shared] forKey:@"delegate"];
+        sl.tag = tag;
+        return sl;
+    } @catch (__unused NSException *e) { return nil; }
+}
+
+static UIColor *PPBlue(void)  { return [UIColor colorWithRed:0.10 green:0.45 blue:1.0 alpha:1]; }
+static UIColor *PPGreen(void) { return [UIColor colorWithRed:0.13 green:0.72 blue:0.42 alpha:1]; }
+
 static void PPLayout(UIView *pdv) {
     UIView *box = objc_getAssociatedObject(pdv, &kBarKey);
     if (!gEnabled) { box.hidden = YES; return; }
+    UIView *stock = CBIvar(pdv, "_actionSlider");
+    if (![stock isKindOfClass:[UIView class]] || !stock.superview) stock = nil;
     if (!box) {
+        if (stock && (stock.bounds.size.width < 100 || stock.bounds.size.height < 30)) return;   // not laid out yet; try next pass
         box = [UIView new];
-        PPSlider *respring = [[PPSlider alloc] initWithTitle:@"slide to respring"
-                                                       color:[UIColor colorWithRed:0.10 green:0.45 blue:1.0 alpha:1]
-                                                      symbol:@"arrow.clockwise"];
-        respring.tag = 1;
-        respring.fired = ^(PPSlider *s) { PPRespring(); };
-        PPSlider *userspace = [[PPSlider alloc] initWithTitle:@"slide to reboot userspace"
-                                                        color:[UIColor colorWithRed:0.13 green:0.72 blue:0.42 alpha:1]
-                                                       symbol:@"arrow.triangle.2.circlepath"];
-        userspace.tag = 2;
-        userspace.fired = ^(PPSlider *s) {
-            PPUserspace(s);
-            // if we're still here in a few seconds the reboot didn't happen; let them try again
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{ [s reset]; });
-        };
-        [box addSubview:respring];
-        [box addSubview:userspace];
+        NSArray *specs = @[ @[ @"slide to respring", PPBlue(), @"arrow.clockwise", @1 ],
+                            @[ @"slide to reboot userspace", PPGreen(), @"arrow.triangle.2.circlepath", @2 ] ];
+        for (NSArray *sp in specs) {
+            NSInteger tag = [sp[3] integerValue];
+            UIView *sl = stock ? PPSystemSlider(stock, pdv, sp[0], sp[1], sp[2], tag) : nil;
+            if (sl) {
+                // colour wash under the frosted track
+                UIView *wash = [UIView new];
+                wash.tag = tag + 10;
+                wash.userInteractionEnabled = NO;
+                wash.backgroundColor = [(UIColor *)sp[1] colorWithAlphaComponent:0.55];
+                [box addSubview:wash];
+            } else {
+                PPSlider *mine = [[PPSlider alloc] initWithTitle:sp[0] color:sp[1] symbol:sp[2]];
+                mine.tag = tag;
+                mine.fired = ^(PPSlider *s) {
+                    if (s.tag == 1) PPRespring();
+                    else {
+                        PPUserspace(s);
+                        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{ [s reset]; });
+                    }
+                };
+                sl = mine;
+            }
+            [box addSubview:sl];
+        }
         objc_setAssociatedObject(pdv, &kBarKey, box, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
     box.hidden = NO;
     if (box.superview != pdv) [pdv addSubview:box];
     if (pdv.subviews.lastObject != box) [pdv bringSubviewToFront:box];
+    if (stock) box.alpha = stock.alpha;
 
     CGRect b = pdv.bounds;
-    // match the stock slider's size and sit right under it when we can find it
+    // same size as the stock slider, directly under it
     CGFloat w = MIN(b.size.width - 60, 330), h = 72, gap = 18;
     CGFloat x = (b.size.width - w) * 0.5, y = b.size.height * 0.30;
-    UIView *stock = CBIvar(pdv, "_actionSlider");
-    if ([stock isKindOfClass:[UIView class]] && stock.superview) {
+    if (stock) {
         CGRect sf = [stock convertRect:stock.bounds toView:pdv];
-        if (sf.size.width > 120 && sf.size.height > 40 && sf.size.height < 120 && CGRectGetMaxY(sf) < b.size.height * 0.6) {
+        if (sf.size.width > 120 && sf.size.height > 40 && sf.size.height < 140 && CGRectGetMaxY(sf) < b.size.height * 0.6) {
             w = sf.size.width; h = sf.size.height; x = sf.origin.x;
             y = CGRectGetMaxY(sf) + gap;
         }
@@ -244,10 +344,19 @@ static void PPLayout(UIView *pdv) {
     }
     CGRect f = CGRectMake(x, y, w, total);
     if (!CGRectEqualToRect(box.frame, f)) box.frame = f;
-    CGRect f1 = CGRectMake(0, 0, w, h), f2 = CGRectMake(0, h + gap, w, h);
-    UIView *s1 = [box viewWithTag:1], *s2 = [box viewWithTag:2];
-    if (!CGRectEqualToRect(s1.frame, f1)) s1.frame = f1;
-    if (!CGRectEqualToRect(s2.frame, f2)) s2.frame = f2;
+    for (NSInteger tag = 1; tag <= 2; tag++) {
+        UIView *sl = [box viewWithTag:tag], *wash = [box viewWithTag:tag + 10];
+        CGRect sf = CGRectMake(0, (tag - 1) * (h + gap), w, h);
+        if (!CGRectEqualToRect(sl.frame, sf)) sl.frame = sf;
+        if (wash) {
+            CGSize ts = CGSizeZero;
+            @try { ts = [[sl valueForKey:@"trackSize"] CGSizeValue]; } @catch (__unused NSException *e) {}
+            if (ts.width < 60 || ts.height < 30 || ts.width > w || ts.height > h) ts = CGSizeMake(w, h);
+            CGRect wf = CGRectMake(sf.origin.x + (w - ts.width) / 2, sf.origin.y + (h - ts.height) / 2, ts.width, ts.height);
+            if (!CGRectEqualToRect(wash.frame, wf)) wash.frame = wf;
+            wash.layer.cornerRadius = ts.height / 2;
+        }
+    }
 }
 
 static void PPPrefsChanged(CFNotificationCenterRef c, void *o, CFStringRef n, const void *obj, CFDictionaryRef i) {

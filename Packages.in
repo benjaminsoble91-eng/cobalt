@@ -37,15 +37,15 @@ SileoDepiction: depictions/native/com.mymculture.iconswap.json
 Tag: role::enduser
 
 Package: com.mymculture.powerplus
-Version: 1.1
+Version: 1.2
 Architecture: iphoneos-arm64
 Maintainer: MYM Culture
 Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
-Filename: debs/com.mymculture.powerplus_1.1_iphoneos-arm64.deb
-Size: 17140
-MD5sum: 2ccf220664dd3cd66dabdb1bbb108aaa
-SHA1: 43be605de7249349e6b0dab5ccd944643cbe4688
-SHA256: d76760cf90f8f1d0a9dc64f20e1daf2a66504e587c521153a4774021dc7aad04
+Filename: debs/com.mymculture.powerplus_1.2_iphoneos-arm64.deb
+Size: 21314
+MD5sum: 5ddafe1de800b879985e0c5d86a51001
+SHA1: fdfe565c84dc95d775fd831375767624505fadb0
+SHA256: 9f01571515f9579eb8dd26fa14e4c16208283b33cf6218ecaf44691ef164e014
 Section: Tweaks
 Description: Adds slide to respring and slide to reboot userspace to the power-off screen.
 Author: MYM Culture
