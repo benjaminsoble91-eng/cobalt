@@ -10,7 +10,7 @@
       "views": [
         {
           "class": "DepictionMarkdownView",
-          "markdown": "**PowerPlus** adds two buttons to the slide-to-power-off screen, so the things you actually do on a jailbroken device are one hold of the power button away.",
+          "markdown": "**PowerPlus** adds two sliders under slide to power off, in the same style: a blue **slide to respring** and a green **slide to reboot userspace**.",
           "useSpacing": true
         },
         {
@@ -22,7 +22,7 @@
         },
         {
           "class": "DepictionMarkdownView",
-          "markdown": "1. Hold the power button (or power and a volume button) until the power-off screen appears.\n2. Tap **Respring** or **Userspace** above Cancel.",
+          "markdown": "1. Hold the power button (or power and a volume button) until the power-off screen appears.\n2. Slide the blue or green slider all the way across.",
           "useSpacing": true
         },
         {
@@ -30,11 +30,11 @@
         },
         {
           "class": "DepictionHeaderView",
-          "title": "Buttons"
+          "title": "Sliders"
         },
         {
           "class": "DepictionMarkdownView",
-          "markdown": "- **Respring** restarts the Home Screen.\n- **Userspace** does a fast userspace reboot. If your jailbreak doesn't allow it, PowerPlus tells you instead of failing silently.",
+          "markdown": "- **Slide to respring** (blue) restarts the Home Screen.\n- **Slide to reboot userspace** (green) does a fast userspace reboot. If your jailbreak doesn't allow it, PowerPlus tells you instead of failing silently.",
           "useSpacing": true
         },
         {
@@ -47,7 +47,7 @@
         {
           "class": "DepictionTableTextView",
           "title": "Version",
-          "text": "1.0.2"
+          "text": "1.1"
         },
         {
           "class": "DepictionTableTextView",
@@ -84,6 +84,20 @@
       "tabname": "Changelog",
       "class": "DepictionStackView",
       "views": [
+        {
+          "class": "DepictionSubheaderView",
+          "title": "1.1",
+          "useBoldText": true,
+          "useBottomMargin": false
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- The buttons are now sliders that match slide to power off: blue for respring, green for userspace reboot.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
         {
           "class": "DepictionSubheaderView",
           "title": "1.0.2",
