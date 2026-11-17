@@ -47,7 +47,7 @@
         {
           "class": "DepictionTableTextView",
           "title": "Version",
-          "text": "1.0"
+          "text": "1.0.1"
         },
         {
           "class": "DepictionTableTextView",
@@ -86,13 +86,27 @@
       "views": [
         {
           "class": "DepictionSubheaderView",
+          "title": "1.0.1",
+          "useBoldText": true,
+          "useBottomMargin": false
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- Fix attempt for a Home Screen crash in 1.0.\n- Does nothing at all until you switch a piece on.\n- Crash guard: if the Home Screen goes down while BarText is starting, BarText switches itself off instead of leaving you in Safe Mode.\n- New Status row in Settings.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionSubheaderView",
           "title": "1.0",
           "useBoldText": true,
           "useBottomMargin": false
         },
         {
           "class": "DepictionMarkdownView",
-          "markdown": "- Initial release.",
+          "markdown": "- Initial release. Crashed the Home Screen; replaced by 1.0.1.",
           "useSpacing": true
         }
       ]

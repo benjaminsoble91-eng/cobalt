@@ -15,6 +15,37 @@ static NSDictionary *gPrefs;           // role -> replacement text (present only
 static char kRoleKey, kOrigTextKey, kLabelKey;
 static NSHashTable *gViews;            // weak set of views we've tagged
 static Class gStringCls, gSignalCls;
+static BOOL gIsSB, gHooked, gTripped, gGuardOver, gSkipPublish;
+
+// ---- crash guard ----------------------------------------------------------
+// While SpringBoard is starting up with BarText active, a small breadcrumb file says so.
+// If SpringBoard dies before the guard window ends, the next launch finds the breadcrumb
+// and BarText stays switched off until a setting is changed, so one crash can't become a loop.
+#define BT_CRUMB "/var/mobile/Library/Caches/com.mymculture.bartext.crumb"
+#define BT_GUARD_SECONDS 30
+static void BTCrumbWrite(const char *text) {
+    FILE *f = fopen(BT_CRUMB, "w");
+    if (f) { fputs(text, f); fclose(f); }
+}
+static NSString *BTCrumbRead(void) {
+    NSString *s = [NSString stringWithContentsOfFile:@BT_CRUMB encoding:NSUTF8StringEncoding error:nil];
+    return s.length ? s : nil;
+}
+static void BTStep(int step, BOOL enter) {
+    static const char *names[] = { "visit", "settext", "signal", "size", "refresh", "hooks", "publish" };
+    static int counts[7];
+    if (!gIsSB || gGuardOver || gTripped || step < 0 || step > 6) return;
+    if (enter) { if (counts[step] >= 5) return; counts[step]++; }
+    char buf[48];
+    if (enter) snprintf(buf, sizeof buf, "in %s", names[step]); else snprintf(buf, sizeof buf, "between steps");
+    BTCrumbWrite(buf);
+}
+enum { kStepVisit, kStepSetText, kStepSignal, kStepSize, kStepRefresh, kStepHooks, kStepPublish };
+static void BTSetStatus(NSString *status) {
+    if (!gIsSB) return;
+    CFPreferencesSetAppValue(CFSTR("Status"), (__bridge CFStringRef)status, BT_DOMAIN);
+    CFPreferencesAppSynchronize(BT_DOMAIN);
+}
 
 // ---- settings transport -------------------------------------------------
 static int BTToken(int slot) {
@@ -177,19 +208,28 @@ static NSString *BTRoleFor(id item, id displayItem) {
 static void BTVisit(id item, id displayItem, BOOL after) {
     NSString *role = BTRoleFor(item, displayItem);
     if (!role) return;
-    UIView *view = CBIvar(displayItem, "_view");       // don't force the view into existence
+    if (!BTOverride(role) && gViews.count == 0) return;  // nothing switched on for this piece
+    UIView *view = CBIvar(displayItem, "_view");         // never force a view into existence
     if (![view isKindOfClass:[UIView class]]) {
-        if (!after) return;
+        // only ask for the view of an item the status bar is already showing
+        if (!after || !CBSendBOOL(displayItem, "isEnabled")) return;
         view = CBSendID(displayItem, "view");
         if (![view isKindOfClass:[UIView class]]) return;
     }
     if (role == kCellBars || role == kWifiBars) {
         if (gSignalCls && [view isKindOfClass:gSignalCls]) {
+            BOOL had = objc_getAssociatedObject(view, &kLabelKey) != nil;
+            if (!BTOverride(role) && !had) return;
             BTTag(view, role);
-            if (after) { [view invalidateIntrinsicContentSize]; BTApplySignal(view); }
+            if (after) {
+                BOOL fresh = !had || ![((UILabel *)objc_getAssociatedObject(view, &kLabelKey)).text isEqualToString:BTOverride(role) ?: @""];
+                BTApplySignal(view);
+                if (fresh) [view invalidateIntrinsicContentSize];
+            }
         }
         return;
     }
+    if (!BTOverride(role)) return;
     BTTagStrings(view, role, 0);
     if (!after) return;
     NSString *want = BTOverride(role);
@@ -198,17 +238,6 @@ static void BTVisit(id item, id displayItem, BOOL after) {
         if ([v isKindOfClass:gStringCls] && [objc_getAssociatedObject(v, &kRoleKey) isEqual:role] &&
             [v isDescendantOfView:view] && ![((UILabel *)v).text ?: @"" isEqualToString:want])
             BTRefreshView(v);
-}
-
-static void BTReload(void) {
-    NSDictionary *d = CBIsSpringBoard() ? BTReadSettings() : BTReadPublished();
-    if (CBIsSpringBoard()) BTPublish(d);
-    gPrefs = [d copy] ?: @{};
-    for (UIView *v in gViews.allObjects) BTRefreshView(v);
-}
-
-static void BTNote(CFNotificationCenterRef c, void *o, CFStringRef n, const void *obj, CFDictionaryRef i) {
-    dispatch_async(dispatch_get_main_queue(), ^{ BTReload(); });
 }
 
 static void BTHookApply(Class cls) {
@@ -221,11 +250,109 @@ static void BTHookApply(Class cls) {
     if (!own) return;
     __block IMP orig = NULL;
     orig = CBHook(cls, sel, ^id(id self, id update, id displayItem) {
-        @try { BTVisit(self, displayItem, NO); } @catch (__unused NSException *e) {}
         id r = ((id (*)(id, SEL, id, id))orig)(self, sel, update, displayItem);
-        @try { BTVisit(self, displayItem, YES); } @catch (__unused NSException *e) {}
+        if (gPrefs.count || gViews.count) {
+            BTStep(kStepVisit, YES);
+            @try { BTVisit(self, displayItem, YES); } @catch (__unused NSException *e) {}
+            BTStep(kStepVisit, NO);
+        }
         return r;
     });
+}
+
+static void BTInstallHooks(void) {
+    if (gHooked) return;
+    gHooked = YES;
+    BTStep(kStepHooks, YES);
+
+    // text pieces
+    SEL setText = @selector(setText:);
+    __block IMP origSet = NULL;
+    origSet = CBHook(gStringCls, setText, ^(UILabel *self, NSString *text) {
+        NSString *role = objc_getAssociatedObject(self, &kRoleKey);
+        if (role) {
+            BTStep(kStepSetText, YES);
+            if (text == nil || [text isKindOfClass:[NSString class]])
+                objc_setAssociatedObject(self, &kOrigTextKey, text, OBJC_ASSOCIATION_COPY_NONATOMIC);
+            NSString *o = BTOverride(role);
+            if (o) text = o;
+            BTStep(kStepSetText, NO);
+        }
+        ((void (*)(id, SEL, id))origSet)(self, setText, text);
+    });
+
+    // bars
+    for (NSString *name in @[ @"_UIStatusBarCellularSignalView", @"_UIStatusBarWifiSignalView" ]) {
+        Class c = objc_getClass(name.UTF8String);
+        if (!c) continue;
+        SEL lay = @selector(layoutSubviews);
+        __block IMP origLay = NULL;
+        origLay = CBHook(c, lay, ^(UIView *self) {
+            ((void (*)(id, SEL))origLay)(self, lay);
+            if (objc_getAssociatedObject(self, &kRoleKey)) {
+                BTStep(kStepSignal, YES);
+                @try { BTApplySignal(self); } @catch (__unused NSException *e) {}
+                BTStep(kStepSignal, NO);
+            }
+        });
+        SEL ics = @selector(intrinsicContentSize);
+        __block IMP origSize = NULL;
+        origSize = CBHook(c, ics, ^CGSize(UIView *self) {
+            CGSize s = ((CGSize (*)(id, SEL))origSize)(self, ics);
+            if (objc_getAssociatedObject(self, &kRoleKey)) {
+                BTStep(kStepSize, YES);
+                @try { s = BTSignalSize(self, s); } @catch (__unused NSException *e) {}
+                BTStep(kStepSize, NO);
+            }
+            return s;
+        });
+    }
+
+    // find out which view is which as the status bar updates them
+    for (NSString *name in @[ @"_UIStatusBarItem", @"_UIStatusBarCellularItem", @"_UIStatusBarCellularCondensedItem",
+                              @"_UIStatusBarCellularExpandedItem", @"_UIStatusBarWifiItem" ])
+        BTHookApply(objc_getClass(name.UTF8String));
+    BTStep(kStepHooks, NO);
+}
+
+// userChanged: a setting was just changed in Settings (that is what re-arms BarText after a crash).
+static void BTReload(BOOL userChanged) {
+    NSDictionary *d;
+    if (gIsSB) {
+        if (gTripped && userChanged) {
+            gTripped = NO; gSkipPublish = NO;
+            unlink(BT_CRUMB);
+        }
+        d = gTripped ? @{} : BTReadSettings();
+        if (!gSkipPublish) {
+            BTStep(kStepPublish, YES);
+            BTPublish(d);
+            BTStep(kStepPublish, NO);
+        }
+        if (!gTripped) BTSetStatus(d.count ? @"Running" : @"Idle (nothing switched on)");
+    } else {
+        d = BTReadPublished();
+    }
+    gPrefs = [d copy] ?: @{};
+    if (gPrefs.count && !gHooked) {
+        if (gIsSB && !gGuardOver) {
+            BTCrumbWrite("between steps");
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(BT_GUARD_SECONDS * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                gGuardOver = YES;
+                BTCrumbWrite("ok");
+            });
+        }
+        BTInstallHooks();
+    }
+    if (!gHooked) return;
+    BTStep(kStepRefresh, YES);
+    for (UIView *v in gViews.allObjects) BTRefreshView(v);
+    BTStep(kStepRefresh, NO);
+}
+
+static void BTNote(CFNotificationCenterRef c, void *o, CFStringRef n, const void *obj, CFDictionaryRef i) {
+    BOOL user = n && CFEqual(n, CFSTR(BT_PREFS));
+    dispatch_async(dispatch_get_main_queue(), ^{ BTReload(user); });
 }
 
 __attribute__((constructor)) static void BTInit(void) {
@@ -236,49 +363,25 @@ __attribute__((constructor)) static void BTInit(void) {
         gSignalCls = objc_getClass("_UIStatusBarSignalView");
         if (!gStringCls || !objc_getClass("_UIStatusBarItem")) return;
         gViews = [NSHashTable weakObjectsHashTable];
+        gIsSB = CBIsSpringBoard();
 
-        // text pieces
-        SEL setText = @selector(setText:);
-        __block IMP origSet = NULL;
-        origSet = CBHook(gStringCls, setText, ^(UILabel *self, NSString *text) {
-            NSString *role = objc_getAssociatedObject(self, &kRoleKey);
-            if (role) {
-                objc_setAssociatedObject(self, &kOrigTextKey, text, OBJC_ASSOCIATION_COPY_NONATOMIC);
-                NSString *o = BTOverride(role);
-                if (o) text = o;
+        if (gIsSB) {
+            NSString *crumb = BTCrumbRead();
+            if (crumb && ![crumb isEqualToString:@"ok"]) {
+                gTripped = YES;       // SpringBoard went down last time while BarText was starting up
+                gSkipPublish = [crumb containsString:@"loading"] || [crumb containsString:@"publish"];
+                BTSetStatus([NSString stringWithFormat:@"Off after crash (%@)", crumb]);
+            } else {
+                BTCrumbWrite("loading");
             }
-            ((void (*)(id, SEL, id))origSet)(self, setText, text);
-        });
-
-        // bars
-        for (NSString *name in @[ @"_UIStatusBarCellularSignalView", @"_UIStatusBarWifiSignalView" ]) {
-            Class c = objc_getClass(name.UTF8String);
-            if (!c) continue;
-            SEL lay = @selector(layoutSubviews);
-            __block IMP origLay = NULL;
-            origLay = CBHook(c, lay, ^(UIView *self) {
-                ((void (*)(id, SEL))origLay)(self, lay);
-                @try { if (objc_getAssociatedObject(self, &kRoleKey)) BTApplySignal(self); } @catch (__unused NSException *e) {}
-            });
-            SEL ics = @selector(intrinsicContentSize);
-            __block IMP origSize = NULL;
-            origSize = CBHook(c, ics, ^CGSize(UIView *self) {
-                CGSize s = ((CGSize (*)(id, SEL))origSize)(self, ics);
-                @try { if (objc_getAssociatedObject(self, &kRoleKey)) s = BTSignalSize(self, s); } @catch (__unused NSException *e) {}
-                return s;
-            });
         }
 
-        // find out which view is which as the status bar updates them
-        for (NSString *name in @[ @"_UIStatusBarItem", @"_UIStatusBarCellularItem", @"_UIStatusBarCellularCondensedItem",
-                                  @"_UIStatusBarCellularExpandedItem", @"_UIStatusBarWifiItem" ])
-            BTHookApply(objc_getClass(name.UTF8String));
-
         CFNotificationCenterRef dc = CFNotificationCenterGetDarwinNotifyCenter();
-        if (CBIsSpringBoard())
+        if (gIsSB)
             CFNotificationCenterAddObserver(dc, NULL, BTNote, CFSTR(BT_PREFS), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
         else
             CFNotificationCenterAddObserver(dc, NULL, BTNote, CFSTR(BT_CHANGED), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
-        BTReload();
+        BTReload(NO);
+        if (gIsSB && !gTripped && !gHooked) BTCrumbWrite("ok");   // loaded fine with nothing switched on
     }
 }

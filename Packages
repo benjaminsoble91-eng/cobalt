@@ -56,15 +56,15 @@ SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/c
 Tag: role::enduser
 
 Package: com.mymculture.bartext
-Version: 1.0
+Version: 1.0.1
 Architecture: iphoneos-arm64
 Maintainer: MYM Culture
 Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
-Filename: debs/com.mymculture.bartext_1.0_iphoneos-arm64.deb
-Size: 14210
-MD5sum: 4879fc33c06dd370330f16cd6891d5dc
-SHA1: 80ec6f0c3e9f0eae472879fd9b26ec8875d0fb99
-SHA256: b143e0853dc04e577aaeed77e9a48ede10a0b4884ead0a09ff43fe90ffbc737e
+Filename: debs/com.mymculture.bartext_1.0.1_iphoneos-arm64.deb
+Size: 16314
+MD5sum: 478bb0cda2c75a18c5780eae11d2d893
+SHA1: 3c20f983e1af319315dd3f9ef4326fc54e68f87f
+SHA256: c9179000c267c8c0d7b97819140d70eb5c8c88840019ba8aa89eafb820fe3c39
 Section: Tweaks
 Description: Replace the carrier name, signal bars, Wi-Fi bars and network badge in the status bar with your own text.
 Author: MYM Culture

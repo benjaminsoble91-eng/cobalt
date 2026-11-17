@@ -41,5 +41,5 @@ CTL
 D="mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)"
 build iconswap  IconSwap  com.mymculture.iconswap  1.1 Tweaks "$D" "In jiggle mode, tap one app and then another to swap their positions."
 build powerplus PowerPlus com.mymculture.powerplus 1.0.2 Tweaks "$D" "Adds Respring and Userspace Reboot to the power-off screen."
-build bartext   BarText   com.mymculture.bartext   1.0 Tweaks "$D" "Replace the carrier name, signal bars, Wi-Fi bars and network badge in the status bar with your own text."
+build bartext   BarText   com.mymculture.bartext   1.0.1 Tweaks "$D" "Replace the carrier name, signal bars, Wi-Fi bars and network badge in the status bar with your own text."
 ls -la $OUT
