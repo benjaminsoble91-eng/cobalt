@@ -1,4 +1,4 @@
-// DoubleDose 1.0 - lets a duplicated Dopamine run its jailbreak while the phone is already jailbroken.
+// DoubleDose 1.0.1 - lets a duplicated Dopamine run its jailbreak while the phone is already jailbroken.
 //
 // How Dopamine locks the button (Application/Dopamine/UI/DOMainViewController.m):
 //   jailbreakBtn.enabled = !(isJailbroken || isJailbrokenWithOtherJailbreak) && isSupported
@@ -20,7 +20,7 @@ static BOOL DDEnabled(void) {
         if ([v respondsToSelector:@selector(boolValue)]) return [v boolValue];
     }
     CFPreferencesAppSynchronize(DD_DOMAIN);
-    return CBPrefBool(DD_DOMAIN, CFSTR("Enabled"), YES);
+    return CBPrefBool(DD_DOMAIN, CFSTR("Enabled"), NO);   // 1.0.1: off until switched on
 }
 
 static BOOL DDInstall(void) {

@@ -1,107 +1,118 @@
-// PanicButton 1.0 — adds a "Trigger Kernel Panic" button to Settings.
-// Presents a confirmation alert, then spawns the suid helper which
-// acquires kernel R/W via libjailbreak and writes to an unmapped address.
+// PanicButton 1.0.1 — a "Trigger Kernel Panic" button in Settings.
+//
+// Settings (Preferences app): the button calls -triggerPanic: on the list controller, which
+// this tweak adds, and it just posts a Darwin notification to SpringBoard.
+//
+// SpringBoard: shows a system alert (drawn over whatever app is open) and only spawns the
+// suid helper if "Panic Now" is tapped. Because SpringBoard asks for itself, another app
+// posting the same notification can't panic the phone without the user agreeing.
 #import "../common/cb.h"
+#import <dlfcn.h>
 #import <spawn.h>
 #import <sys/wait.h>
 
 #define PB_DOMAIN  CFSTR("com.mymculture.panicbutton")
 #define PB_HELPER  "/var/jb/usr/libexec/panicbutton-helper"
+#define PB_TRIGGER "com.mymculture.panicbutton/trigger"
 
 extern char **environ;
 static BOOL gEnabled = YES;
+static volatile BOOL gBusy;
 
 static void PBLoadPrefs(void) {
     CFPreferencesAppSynchronize(PB_DOMAIN);
     gEnabled = CBPrefBool(PB_DOMAIN, CFSTR("Enabled"), YES);
 }
 
-static void PBAlert(UIView *from, NSString *title, NSString *msg) {
-    UIViewController *vc = from.window.rootViewController;
-    while (vc.presentedViewController) vc = vc.presentedViewController;
-    if (!vc) return;
-    UIAlertController *a = [UIAlertController alertControllerWithTitle:title message:msg preferredStyle:UIAlertControllerStyleAlert];
-    [a addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleCancel handler:nil]];
-    [vc presentViewController:a animated:YES completion:nil];
+// CFUserNotification is in CoreFoundation on iOS but hidden from the SDK headers.
+typedef SInt32 (*PBAlertFn)(CFTimeInterval, CFOptionFlags, CFURLRef, CFURLRef, CFURLRef,
+                            CFStringRef, CFStringRef, CFStringRef, CFStringRef, CFStringRef, CFOptionFlags *);
+static PBAlertFn PBAlertFunc(void) {
+    static PBAlertFn fn; static dispatch_once_t once;
+    dispatch_once(&once, ^{ fn = (PBAlertFn)dlsym(RTLD_DEFAULT, "CFUserNotificationDisplayAlert"); });
+    return fn;
+}
+// Blocks until a button is tapped, so it must never run on SpringBoard's main thread.
+// Returns 0 for the first button, 1 for the second, -1 if the alert couldn't be shown.
+static int PBAsk(NSString *title, NSString *msg, NSString *first, NSString *second) {
+    PBAlertFn fn = PBAlertFunc();
+    if (!fn) return -1;
+    CFOptionFlags resp = 0;
+    SInt32 err = fn(0, 0 /* plain alert */, NULL, NULL, NULL,
+                    (__bridge CFStringRef)title, (__bridge CFStringRef)msg,
+                    (__bridge CFStringRef)first, (__bridge CFStringRef)second, NULL, &resp);
+    if (err != 0) return -1;
+    return (int)(resp & 0x3);   // 0 = default (first), 1 = alternate (second)
 }
 
-static void PBFirePanic(UIView *from) {
-    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+static NSString *PBReason(int status) {
+    int code = WIFEXITED(status) ? WEXITSTATUS(status) : -1;
+    switch (code) {
+        case 2:  return @"The helper was called the wrong way. Reinstall PanicButton.";
+        case 3:  return @"The helper isn't running as root (setuid didn't take). Reinstall PanicButton.";
+        case 10: return @"The kernel refused the panic request (permission denied).";
+        case 11: return @"The kernel refused the panic request.";
+        case -1: return @"The helper couldn't be started. Is PanicButton fully installed?";
+        default: return [NSString stringWithFormat:@"The helper stopped with status %d.", code];
+    }
+}
+
+// Runs on a background queue.
+static void PBRun(void) {
+    if (!gEnabled || gBusy) return;
+    gBusy = YES;
+    int choice = PBAsk(@"Kernel Panic",
+                       @"This will immediately crash the kernel and reboot the phone. Anything unsaved is lost and you will need to re-jailbreak.\n\nA panic log will be saved in Settings → Privacy → Analytics.",
+                       @"Cancel", @"Panic Now");
+    if (choice == 1) {
         int status = -1;
-        if (access(PB_HELPER, X_OK) == 0) {
-            pid_t pid = 0;
-            char *argv[] = { (char *)PB_HELPER, (char *)"panic", NULL };
-            if (posix_spawn(&pid, PB_HELPER, NULL, NULL, argv, environ) == 0)
-                waitpid(pid, &status, 0);
-        }
-        // If we reach here, the panic didn't happen
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            int code = WIFEXITED(status) ? WEXITSTATUS(status) : -1;
-            NSString *msg;
-            switch (code) {
-                case 3:  msg = @"Helper is not running as root. Reinstall PanicButton."; break;
-                case 4:  msg = @"Could not load libjailbreak. Are you jailbroken?"; break;
-                case 7:  msg = @"Could not acquire kernel R/W. The jailbreak may not support it from this process."; break;
-                case 8:  msg = @"kwritebuf not available after init."; break;
-                case 9:  msg = @"kwrite returned without panicking. Unexpected."; break;
-                default: msg = [NSString stringWithFormat:@"Helper failed with status %d.", code]; break;
-            }
-            PBAlert(from, @"Panic Failed", msg);
-        });
-    });
+        pid_t pid = 0;
+        char *argv[] = { (char *)PB_HELPER, (char *)"panic", NULL };
+        if (access(PB_HELPER, X_OK) == 0 && posix_spawn(&pid, PB_HELPER, NULL, NULL, argv, environ) == 0)
+            waitpid(pid, &status, 0);
+        // Still here: the panic didn't happen.
+        sleep(1);
+        PBAsk(@"Panic Failed", PBReason(status), @"OK", nil);
+    }
+    gBusy = NO;
 }
 
-static void PBConfirmAndFire(UIView *from) {
-    UIViewController *vc = from.window.rootViewController;
-    while (vc.presentedViewController) vc = vc.presentedViewController;
-    if (!vc) return;
-    UIAlertController *a = [UIAlertController alertControllerWithTitle:@"Kernel Panic"
-        message:@"This will immediately crash the kernel and reboot the phone. You will need to re-jailbreak afterwards.\n\nContinue?"
-        preferredStyle:UIAlertControllerStyleAlert];
-    [a addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
-    [a addAction:[UIAlertAction actionWithTitle:@"Panic Now" style:UIAlertActionStyleDestructive handler:^(UIAlertAction *act) {
-        PBFirePanic(from);
-    }]];
-    [vc presentViewController:a animated:YES completion:nil];
+static void PBTrigger(CFNotificationCenterRef c, void *o, CFStringRef n, const void *obj, CFDictionaryRef i) {
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{ PBRun(); });
 }
-
-// Hook into SpringBoard to listen for the trigger notification
 static void PBPrefsChanged(CFNotificationCenterRef c, void *o, CFStringRef n, const void *obj, CFDictionaryRef i) {
     dispatch_async(dispatch_get_main_queue(), ^{ PBLoadPrefs(); });
 }
 
-static void PBTriggerNotif(CFNotificationCenterRef c, void *o, CFStringRef n, const void *obj, CFDictionaryRef i) {
-    if (!gEnabled) return;
-    dispatch_async(dispatch_get_main_queue(), ^{
-        UIWindow *win = nil;
-        for (UIScene *scene in [UIApplication sharedApplication].connectedScenes) {
-            if ([scene isKindOfClass:objc_getClass("UIWindowScene")]) {
-                NSArray *windows = [scene valueForKey:@"windows"];
-                for (UIWindow *w in windows) {
-                    if (w.isKeyWindow) { win = w; break; }
-                }
-                if (win) break;
-            }
-        }
-        if (!win) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Wdeprecated-declarations"
-            for (UIWindow *w in [UIApplication sharedApplication].windows) {
-                if (w.isKeyWindow) { win = w; break; }
-            }
-#pragma clang diagnostic pop
-        }
-        if (win) PBConfirmAndFire(win);
-    });
+// ---- Settings side --------------------------------------------------------
+static void PBAddButtonAction(void) {
+    Class cls = objc_getClass("PSListController");
+    if (!cls) return;
+    void (^post)(id, id) = ^(id self, id specifier) { notify_post(PB_TRIGGER); };
+    // the plist names the action "triggerPanic"; accept both spellings, never replace an existing method
+    for (NSString *name in @[ @"triggerPanic", @"triggerPanic:" ]) {
+        SEL s = NSSelectorFromString(name);
+        if (!class_getInstanceMethod(cls, s))
+            class_addMethod(cls, s, imp_implementationWithBlock(post), "v@:@");
+    }
 }
 
 __attribute__((constructor)) static void PBInit(void) {
     @autoreleasepool {
+        NSString *bid = [[NSBundle mainBundle] bundleIdentifier];
+        if ([bid isEqualToString:@"com.apple.Preferences"]) {
+            PBAddButtonAction();
+            if (!objc_getClass("PSListController"))
+                [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidFinishLaunchingNotification
+                    object:nil queue:nil usingBlock:^(NSNotification *n) { PBAddButtonAction(); }];
+            return;
+        }
         if (!CBIsSpringBoard()) return;
         PBLoadPrefs();
-        CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, PBPrefsChanged,
-            CFSTR("com.mymculture.panicbutton/prefs"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
-        CFNotificationCenterAddObserver(CFNotificationCenterGetDarwinNotifyCenter(), NULL, PBTriggerNotif,
-            CFSTR("com.mymculture.panicbutton/trigger"), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
+        CFNotificationCenterRef dc = CFNotificationCenterGetDarwinNotifyCenter();
+        CFNotificationCenterAddObserver(dc, NULL, PBPrefsChanged, CFSTR("com.mymculture.panicbutton/prefs"), NULL,
+                                        CFNotificationSuspensionBehaviorDeliverImmediately);
+        CFNotificationCenterAddObserver(dc, NULL, PBTrigger, CFSTR(PB_TRIGGER), NULL,
+                                        CFNotificationSuspensionBehaviorDeliverImmediately);
     }
 }
