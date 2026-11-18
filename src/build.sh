@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Builds the three Cobalt tweaks as rootless (iphoneos-arm64) .debs.
+# Builds the Cobalt tweaks as rootless (iphoneos-arm64) .debs.
 set -euo pipefail
 cd "$(dirname "$0")"
 SDK=/home/claude/build/sdks/iPhoneOS15.6.sdk
@@ -42,4 +42,5 @@ D="mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)"
 build iconswap  IconSwap  com.mymculture.iconswap  1.1 Tweaks "$D" "In jiggle mode, tap one app and then another to swap their positions."
 build powerplus PowerPlus com.mymculture.powerplus 1.2.1 Tweaks "$D" "Adds slide to respring and slide to reboot userspace to the power-off screen."
 build bartext   BarText   com.mymculture.bartext   1.0.1 Tweaks "$D" "Replace the carrier name, signal bars, Wi-Fi bars and network badge in the status bar with your own text."
+build doubledose DoubleDose com.mymculture.doubledose 1.0 Tweaks "$D" "Unlocks the Jailbreak button in a duplicated Dopamine while already jailbroken."
 ls -la $OUT

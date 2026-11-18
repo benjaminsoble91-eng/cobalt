@@ -74,6 +74,25 @@ Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymcultur
 SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/com.mymculture.bartext.json
 Tag: role::enduser
 
+Package: com.mymculture.doubledose
+Version: 1.0
+Architecture: iphoneos-arm64
+Maintainer: MYM Culture
+Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
+Filename: debs/com.mymculture.doubledose_1.0_iphoneos-arm64.deb
+Size: 5642
+MD5sum: 2e3f0364001dcc3110e1d118ecec0d65
+SHA1: e0f0a0e7989f09f0811272b6c500da43b7deb961
+SHA256: 45caf071d744c6239fa14abb558ebbf2fe12de1dbc3b981264a3e356d1969d2e
+Section: Tweaks
+Description: Unlocks the Jailbreak button in a duplicated Dopamine while already jailbroken.
+Author: MYM Culture
+Name: DoubleDose
+Icon: https://benjaminsoble91-eng.github.io/cobalt/assets/icon_com.mymculture.doubledose.png
+Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymculture.doubledose.html
+SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/com.mymculture.doubledose.json
+Tag: role::enduser
+
 Package: com.mymculture.trollamineinstaller
 Version: 5.4
 Architecture: iphoneos-arm64

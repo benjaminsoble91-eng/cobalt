@@ -10,6 +10,12 @@
       "hideShadow": false
     },
     {
+      "url": "https://benjaminsoble91-eng.github.io/cobalt/assets/banner_com.mymculture.doubledose.png",
+      "title": "DoubleDose",
+      "package": "com.mymculture.doubledose",
+      "hideShadow": false
+    },
+    {
       "url": "https://benjaminsoble91-eng.github.io/cobalt/assets/banner_com.mymculture.bartext.png",
       "title": "BarText",
       "package": "com.mymculture.bartext",
