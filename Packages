@@ -263,3 +263,22 @@ Icon: https://benjaminsoble91-eng.github.io/cobalt/assets/icon_com.mymculture.tr
 Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymculture.trollamineinstaller.html
 SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/com.mymculture.trollamineinstaller.json
 Tag: role::enduser
+
+Package: com.mymculture.rootrun
+Version: 1.0
+Architecture: iphoneos-arm64
+Maintainer: MYM Culture
+Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
+Filename: debs/com.mymculture.rootrun_1.0_iphoneos-arm64.deb
+Size: 7868
+MD5sum: ee387d2ec211ac9433b553b5c050a2a8
+SHA1: 1916cf6d94b36a129f4e3bbf0d39b341b5d2a431
+SHA256: f198d53fde789b197976f9a9fe9c757732c3ed6247a953233c32d1affbe55aef
+Section: Tweaks
+Description: Make the apps you choose launch as root.
+Author: MYM Culture
+Name: RootRun
+Icon: https://benjaminsoble91-eng.github.io/cobalt/assets/icon_com.mymculture.rootrun.png
+Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymculture.rootrun.html
+SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/com.mymculture.rootrun.json
+Tag: role::enduser

@@ -3,8 +3,9 @@
 // How it works:
 //   * The dylib is injected into every app (Filter: Classes = UIApplication) and also into
 //     the Settings app (Filter: Executables = Preferences) for the picker pane.
-//   * In Settings, RootRun adds a sub-page listing your installed apps, each with a switch.
-//     Toggling an app writes its bundle id into the "Apps" dict in com.mymculture.rootrun.
+//   * In Settings, RootRun registers a PSListController subclass (built at runtime, so it
+//     needs no private-framework stubs to link) that lists your installed apps, each with a
+//     switch. Toggling an app writes its bundle id into the "Apps" dict in com.mymculture.rootrun.
 //   * In any other app, the constructor checks that dict. If this app is switched on (and the
 //     master Enabled switch is on), it raises the process to root before the app's own code
 //     runs by calling setgid(0)/setuid(0). On Dopamine, if the plain POSIX call is refused it
@@ -19,7 +20,9 @@
 #import <unistd.h>
 
 #define RR_DOMAIN CFSTR("com.mymculture.rootrun")
-#define RR_PREFS  "com.mymculture.rootrun/prefs"
+
+// PSCellType values we use.
+enum { RR_PSGroupCell = 0, RR_PSSwitchCell = 6 };
 
 // ---- shared pref helpers --------------------------------------------------
 static BOOL RRMasterEnabled(void) {
@@ -42,6 +45,13 @@ static BOOL RRWantsRoot(NSString *bundleID) {
     id on = RRAppsDict()[bundleID];
     return [on respondsToSelector:@selector(boolValue)] && [on boolValue];
 }
+static void RRSetWantsRoot(NSString *bundleID, BOOL want) {
+    if (!bundleID) return;
+    NSMutableDictionary *apps = [RRAppsDict() mutableCopy];
+    if (want) apps[bundleID] = @YES; else [apps removeObjectForKey:bundleID];
+    CFPreferencesSetAppValue(CFSTR("Apps"), (__bridge CFPropertyListRef)apps, RR_DOMAIN);
+    CFPreferencesAppSynchronize(RR_DOMAIN);
+}
 
 // ---- elevation (runs inside the target app, before its own code) ----------
 static BOOL RRElevate(void) {
@@ -62,40 +72,44 @@ static BOOL RRElevate(void) {
 }
 
 // ===========================================================================
-//  Settings — app picker
+//  Settings — app picker, built entirely through the runtime so it links
+//  against nothing private.
 // ===========================================================================
-@interface PSSpecifier : NSObject
-+ (id)preferenceSpecifierNamed:(NSString *)name target:(id)target set:(SEL)set get:(SEL)get
-                        detail:(Class)detail cell:(NSInteger)cell edit:(Class)edit;
-- (void)setProperty:(id)value forKey:(NSString *)key;
-- (id)propertyForKey:(NSString *)key;
-@property (nonatomic, retain) id identifier;
-@property (nonatomic, retain) NSString *name;
-@end
+static id RRMsgCls(const char *cls, const char *sel) {
+    Class c = objc_getClass(cls);
+    if (!c) return nil;
+    return ((id (*)(id, SEL))objc_msgSend)((id)c, sel_registerName(sel));
+}
 
-@interface PSListController : NSObject
-- (id)specifiers;
-- (void)reloadSpecifiers;
-@end
+// [PSSpecifier preferenceSpecifierNamed:name target:t set:s get:g detail:Nil cell:cell edit:Nil]
+static id RRSpec(NSString *name, id target, SEL set, SEL get, NSInteger cell) {
+    Class PSSpecifier = objc_getClass("PSSpecifier");
+    if (!PSSpecifier) return nil;
+    SEL mk = sel_registerName("preferenceSpecifierNamed:target:set:get:detail:cell:edit:");
+    return ((id (*)(id, SEL, NSString *, id, SEL, SEL, Class, NSInteger, Class))objc_msgSend)(
+        (id)PSSpecifier, mk, name, target, set, get, Nil, cell, Nil);
+}
+static void RRSpecSet(id spec, id value, NSString *key) {
+    if (!spec) return;
+    ((void (*)(id, SEL, id, NSString *))objc_msgSend)(spec, sel_registerName("setProperty:forKey:"), value, key);
+}
+static id RRSpecGet(id spec, NSString *key) {
+    if (!spec) return nil;
+    return ((id (*)(id, SEL, NSString *))objc_msgSend)(spec, sel_registerName("propertyForKey:"), key);
+}
 
-@interface RRAppsController : PSListController @end
-@implementation RRAppsController
-
-// Build one group header + one PSSwitchCell per installed user app.
-- (id)specifiers {
-    static const NSInteger PSGroupCell = 0, PSSwitchCell = 6;
+// -- method implementations for the runtime PSListController subclass --------
+static id RRController_specifiers(id self, SEL _cmd) {
     NSMutableArray *specs = [NSMutableArray array];
 
-    PSSpecifier *grp = [PSSpecifier preferenceSpecifierNamed:@""
-        target:self set:NULL get:NULL detail:Nil cell:PSGroupCell edit:Nil];
-    [grp setProperty:@"Switch an app on to make it launch as root. The change takes effect the "
-                     @"next time that app is opened (force-quit it first if it's running)."
-              forKey:@"footerText"];
-    [specs addObject:grp];
+    id grp = RRSpec(@"", self, NULL, NULL, RR_PSGroupCell);
+    RRSpecSet(grp, @"Switch an app on to make it launch as root. The change takes effect the "
+                   @"next time that app is opened (force-quit it first if it's running).", @"footerText");
+    if (grp) [specs addObject:grp];
 
-    // LSApplicationWorkspace.allApplications -> each has bundleIdentifier + localizedName.
-    Class ws = objc_getClass("LSApplicationWorkspace");
-    id workspace = ws ? [ws performSelector:@selector(defaultWorkspace)] : nil;
+    // LSApplicationWorkspace.defaultWorkspace.allApplications -> each app: bundleIdentifier,
+    // localizedName, applicationType.
+    id workspace = RRMsgCls("LSApplicationWorkspace", "defaultWorkspace");
     NSArray *apps = workspace ? CBSendID(workspace, "allApplications") : nil;
 
     NSMutableArray *rows = [NSMutableArray array];
@@ -113,35 +127,38 @@ static BOOL RRElevate(void) {
     }];
 
     for (NSArray *row in rows) {
-        PSSpecifier *s = [PSSpecifier preferenceSpecifierNamed:row[0]
-            target:self set:@selector(setValue:forApp:) get:@selector(valueForApp:)
-            detail:Nil cell:PSSwitchCell edit:Nil];
-        s.identifier = row[1];
-        [s setProperty:row[1] forKey:@"appBundleID"];
-        [s setProperty:@NO forKey:@"default"];
-        [specs addObject:s];
+        id s = RRSpec(row[0], self, sel_registerName("setValue:forApp:"),
+                      sel_registerName("valueForApp:"), RR_PSSwitchCell);
+        RRSpecSet(s, row[1], @"appBundleID");
+        RRSpecSet(s, @NO, @"default");
+        if (s) [specs addObject:s];
     }
     if (rows.count == 0) {
-        PSSpecifier *empty = [PSSpecifier preferenceSpecifierNamed:@""
-            target:self set:NULL get:NULL detail:Nil cell:PSGroupCell edit:Nil];
-        [empty setProperty:@"No user apps found." forKey:@"footerText"];
-        [specs addObject:empty];
+        id empty = RRSpec(@"", self, NULL, NULL, RR_PSGroupCell);
+        RRSpecSet(empty, @"No user apps found.", @"footerText");
+        if (empty) [specs addObject:empty];
     }
     return specs;
 }
+static id RRController_valueForApp(id self, SEL _cmd, id spec) {
+    return @(RRWantsRoot(RRSpecGet(spec, @"appBundleID")));
+}
+static void RRController_setValueForApp(id self, SEL _cmd, id value, id spec) {
+    RRSetWantsRoot(RRSpecGet(spec, @"appBundleID"), [value boolValue]);
+}
 
-- (id)valueForApp:(PSSpecifier *)spec {
-    return @(RRWantsRoot([spec propertyForKey:@"appBundleID"]));
+// Build RRAppsController : PSListController at runtime (no compile-time link to Preferences).
+static void RRRegisterController(void) {
+    if (objc_getClass("RRAppsController")) return;
+    Class super = objc_getClass("PSListController");
+    if (!super) return;
+    Class c = objc_allocateClassPair(super, "RRAppsController", 0);
+    if (!c) return;
+    class_addMethod(c, sel_registerName("specifiers"),       (IMP)RRController_specifiers,   "@@:");
+    class_addMethod(c, sel_registerName("valueForApp:"),     (IMP)RRController_valueForApp,  "@@:@");
+    class_addMethod(c, sel_registerName("setValue:forApp:"), (IMP)RRController_setValueForApp, "v@:@@");
+    objc_registerClassPair(c);
 }
-- (void)setValue:(id)value forApp:(PSSpecifier *)spec {
-    NSString *bid = [spec propertyForKey:@"appBundleID"];
-    if (!bid) return;
-    NSMutableDictionary *apps = [RRAppsDict() mutableCopy];
-    if ([value boolValue]) apps[bid] = @YES; else [apps removeObjectForKey:bid];
-    CFPreferencesSetAppValue(CFSTR("Apps"), (__bridge CFPropertyListRef)apps, RR_DOMAIN);
-    CFPreferencesAppSynchronize(RR_DOMAIN);
-}
-@end
 
 // ===========================================================================
 //  Load
@@ -150,9 +167,14 @@ __attribute__((constructor)) static void RRInit(void) {
     @autoreleasepool {
         NSString *bid = [[NSBundle mainBundle] bundleIdentifier];
 
-        // Settings app: the RRAppsController class above is all we need; PreferenceLoader
-        // finds it by name from Prefs.plist. Don't elevate Settings itself.
-        if ([bid isEqualToString:@"com.apple.Preferences"]) return;
+        // Settings app: register the picker controller so PreferenceLoader can push it.
+        if ([bid isEqualToString:@"com.apple.Preferences"]) {
+            RRRegisterController();
+            if (!objc_getClass("PSListController"))
+                [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidFinishLaunchingNotification
+                    object:nil queue:nil usingBlock:^(NSNotification *n) { RRRegisterController(); }];
+            return;
+        }
 
         // SpringBoard and other Apple processes are left alone.
         if (!bid || [bid hasPrefix:@"com.apple."]) return;
