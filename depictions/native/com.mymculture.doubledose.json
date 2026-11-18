@@ -10,7 +10,7 @@
       "views": [
         {
           "class": "DepictionMarkdownView",
-          "markdown": "Dopamine greys out its Jailbreak button when the phone is already jailbroken. **DoubleDose** removes that lock inside a **duplicated** Dopamine, so you can press Jailbreak a second time and see what happens.",
+          "markdown": "Dopamine greys out its Jailbreak button when the phone is already jailbroken. **DoubleDose** removes that lock inside a **duplicated** Dopamine, so you can press Jailbreak a second time and see what happens.\n\nOff by default: turn it on in Settings > DoubleDose.",
           "useSpacing": true
         },
         {
@@ -59,7 +59,7 @@
         {
           "class": "DepictionTableTextView",
           "title": "Version",
-          "text": "1.0"
+          "text": "1.0.1"
         },
         {
           "class": "DepictionTableTextView",
@@ -96,6 +96,20 @@
       "tabname": "Changelog",
       "class": "DepictionStackView",
       "views": [
+        {
+          "class": "DepictionSubheaderView",
+          "title": "1.0.1",
+          "useBoldText": true,
+          "useBottomMargin": false
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- Now off by default. Switch it on in Settings > DoubleDose only when you want to use it.\n- Close and reopen the duplicated Dopamine after changing the switch.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
         {
           "class": "DepictionSubheaderView",
           "title": "1.0",

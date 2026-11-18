@@ -22,7 +22,7 @@
         },
         {
           "class": "DepictionMarkdownView",
-          "markdown": "- The phone **reboots immediately**. Save anything open.\n- Dopamine is semi-untethered, so you boot to stock. Re-jailbreak afterwards.\n- No data is lost. iOS journals the filesystem.\n- Works only while jailbroken with Dopamine on A9 devices (iPhone 6s, iPad Pro 9.7).",
+          "markdown": "- The phone **reboots immediately**. Save anything open.\n- Dopamine is semi-untethered, so you boot to stock. Re-jailbreak afterwards.\n- No data is lost. iOS journals the filesystem.\n- Works while jailbroken with Dopamine (rootless).",
           "useSpacing": true
         },
         {
@@ -34,7 +34,7 @@
         },
         {
           "class": "DepictionMarkdownView",
-          "markdown": "1. A suid-root helper loads Dopamine's `libjailbreak`.\n2. It acquires kernel read/write from the jailbreak server.\n3. It writes to an unmapped kernel address, triggering a data-abort panic.\n\nThe panic log contains the full register state and backtrace.",
+          "markdown": "1. You tap **Trigger Kernel Panic** in Settings.\n2. SpringBoard shows a system alert asking you to confirm.\n3. A suid-root helper calls `reboot` with `RB_PANIC`, the kernel's own debug panic.\n\nThe panic log is a normal `panic-full` log with the full backtrace. Nothing is written to kernel memory.",
           "useSpacing": true
         },
         {
@@ -59,7 +59,7 @@
         {
           "class": "DepictionTableTextView",
           "title": "Version",
-          "text": "1.0"
+          "text": "1.0.1"
         },
         {
           "class": "DepictionTableTextView",
@@ -69,7 +69,7 @@
         {
           "class": "DepictionTableTextView",
           "title": "Compatibility",
-          "text": "Dopamine 2 (rootless), A9"
+          "text": "Dopamine 2 (rootless)"
         },
         {
           "class": "DepictionTableTextView",
@@ -96,6 +96,20 @@
       "tabname": "Changelog",
       "class": "DepictionStackView",
       "views": [
+        {
+          "class": "DepictionSubheaderView",
+          "title": "1.0.1",
+          "useBoldText": true,
+          "useBottomMargin": false
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- Fixed: the panic never happened. 1.0 needed a kernel write function Dopamine doesn't provide.\n- Now uses the kernel's own debug panic (reboot with RB_PANIC). Nothing is written to kernel memory.\n- Fixed: the Trigger Kernel Panic button in Settings now works.\n- Confirmation is a system alert from SpringBoard, so other apps can't trigger a panic on their own.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
         {
           "class": "DepictionSubheaderView",
           "title": "1.0",

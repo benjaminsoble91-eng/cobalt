@@ -15,13 +15,15 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>footerText</key>
-			<string>Unlocks the Jailbreak button in a duplicated Dopamine while the phone is already jailbroken. Close and reopen the copy after changing this.</string>
+			<string>Off by default. Turn this on only when you want to run a duplicated Dopamine while already jailbroken, then close and reopen the copy.</string>
 		</dict>
 		<dict>
+			<key>PostNotification</key>
+			<string>com.mymculture.doubledose/prefs</string>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
 			<key>default</key>
-			<true/>
+			<false/>
 			<key>defaults</key>
 			<string>com.mymculture.doubledose</string>
 			<key>key</key>
@@ -35,7 +37,7 @@
 			<key>footerText</key>
 			<string>Warning: jailbreaking twice will most likely kernel panic and reboot the phone into a non-jailbroken state. Save anything open first. The Dopamine that did the jailbreak is never touched.
 
-DoubleDose 1.0 from Cobalt.</string>
+DoubleDose 1.0.1 from Cobalt.</string>
 		</dict>
 	</array>
 	<key>title</key>

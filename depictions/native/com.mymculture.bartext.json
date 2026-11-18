@@ -47,7 +47,7 @@
         {
           "class": "DepictionTableTextView",
           "title": "Version",
-          "text": "1.0.1"
+          "text": "1.0.2"
         },
         {
           "class": "DepictionTableTextView",
@@ -84,6 +84,20 @@
       "tabname": "Changelog",
       "class": "DepictionStackView",
       "views": [
+        {
+          "class": "DepictionSubheaderView",
+          "title": "1.0.2",
+          "useBoldText": true,
+          "useBottomMargin": false
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- Crash guard now only switches BarText off after a real crash. Resprings, userspace reboots and PowerPlus no longer trip it.\n- Turning BarText back on after a crash re-arms the guard.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
         {
           "class": "DepictionSubheaderView",
           "title": "1.0.1",

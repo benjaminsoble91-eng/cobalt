@@ -36,22 +36,20 @@
 			<string>PSGroupCell</string>
 		</dict>
 		<dict>
+			<key>action</key>
+			<string>triggerPanic</string>
 			<key>cell</key>
 			<string>PSButtonCell</string>
 			<key>label</key>
 			<string>Trigger Kernel Panic</string>
-			<key>action</key>
-			<string>triggerPanic</string>
-			<key>PostNotification</key>
-			<string>com.mymculture.panicbutton/trigger</string>
 		</dict>
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>footerText</key>
-			<string>Warning: This writes to an unmapped kernel address, causing a synchronous data abort. The resulting panic log contains the full register state and backtrace.
+			<string>Uses the kernel's own debug panic (reboot with RB_PANIC). Nothing is written to kernel memory. You'll be asked to confirm before anything happens.
 
-PanicButton 1.0 from Cobalt.</string>
+PanicButton 1.0.1 from Cobalt.</string>
 		</dict>
 	</array>
 	<key>title</key>

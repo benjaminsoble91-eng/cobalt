@@ -1,8 +1,10 @@
-// BarText - replace status bar pieces (carrier name, cellular bars, network badge, Wi-Fi bars) with your own text.
+// BarText 1.0.2 - replace status bar pieces (carrier name, cellular bars, network badge, Wi-Fi bars) with your own text.
 //
 // Settings live in SpringBoard's reach only, and the status bar is drawn inside every app, so SpringBoard
 // publishes the settings through notify(3) state slots, which sandboxed apps are allowed to read.
 #import "../common/cb.h"
+#import <fcntl.h>
+#import <signal.h>
 
 #define BT_DOMAIN  CFSTR("com.mymculture.bartext")
 #define BT_PREFS   "com.mymculture.bartext/prefs"     // posted by Settings
@@ -19,8 +21,9 @@ static BOOL gIsSB, gHooked, gTripped, gGuardOver, gSkipPublish;
 
 // ---- crash guard ----------------------------------------------------------
 // While SpringBoard is starting up with BarText active, a small breadcrumb file says so.
-// If SpringBoard dies before the guard window ends, the next launch finds the breadcrumb
-// and BarText stays switched off until a setting is changed, so one crash can't become a loop.
+// 1.0.2: only a real crash (a fault signal or abort) inside the guard window marks the
+// breadcrumb "crashed". A respring, userspace reboot or kill leaves it unmarked, so it no
+// longer switches BarText off. After a real crash BarText stays off until a setting changes.
 #define BT_CRUMB "/var/mobile/Library/Caches/com.mymculture.bartext.crumb"
 #define BT_GUARD_SECONDS 30
 static void BTCrumbWrite(const char *text) {
@@ -31,10 +34,51 @@ static NSString *BTCrumbRead(void) {
     NSString *s = [NSString stringWithContentsOfFile:@BT_CRUMB encoding:NSUTF8StringEncoding error:nil];
     return s.length ? s : nil;
 }
+// What the crash handler writes. Fixed strings so the handler never formats anything.
+static const char *const kCrashText[] = { "crashed in visit", "crashed in settext", "crashed in signal", "crashed in size",
+                                          "crashed in refresh", "crashed in hooks", "crashed in publish",
+                                          "crashed while loading", "crashed between steps" };
+enum { kCrashLoading = 7, kCrashBetween = 8 };
+static volatile int gCrashIdx = kCrashLoading;
+static const int kSignals[] = { SIGSEGV, SIGBUS, SIGILL, SIGABRT, SIGTRAP, SIGFPE, SIGSYS };
+#define BT_NSIG (sizeof kSignals / sizeof kSignals[0])
+static struct sigaction gOldAct[BT_NSIG];
+static BOOL gHandlersOn;
+static void BTCrashHandler(int sig, siginfo_t *info, void *uctx) {
+    int idx = gCrashIdx; if (idx < 0 || idx > 8) idx = kCrashBetween;
+    const char *t = kCrashText[idx];
+    int fd = open(BT_CRUMB, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    if (fd >= 0) { size_t n = 0; while (t[n]) n++; write(fd, t, n); close(fd); }
+    // hand the signal back to whoever had it before (crash reporter / tweak loader);
+    // a fault re-triggers on return, abort() raises again by itself
+    for (unsigned i = 0; i < BT_NSIG; i++) if (kSignals[i] == sig) { sigaction(sig, &gOldAct[i], NULL); return; }
+    signal(sig, SIG_DFL);
+}
+static void BTCrashHandlersOn(void) {
+    if (gHandlersOn) return;
+    for (unsigned i = 0; i < BT_NSIG; i++) {
+        struct sigaction sa; memset(&sa, 0, sizeof sa);
+        sa.sa_sigaction = BTCrashHandler; sa.sa_flags = SA_SIGINFO | SA_ONSTACK; sigemptyset(&sa.sa_mask);
+        sigaction(kSignals[i], &sa, &gOldAct[i]);
+    }
+    gHandlersOn = YES;
+}
+static void BTCrashHandlersOff(void) {
+    if (!gHandlersOn) return;
+    for (unsigned i = 0; i < BT_NSIG; i++) {
+        struct sigaction cur;
+        // only put the old handler back if nobody replaced ours in the meantime
+        if (sigaction(kSignals[i], NULL, &cur) == 0 && (cur.sa_flags & SA_SIGINFO) && cur.sa_sigaction == BTCrashHandler)
+            sigaction(kSignals[i], &gOldAct[i], NULL);
+    }
+    gHandlersOn = NO;
+}
+
 static void BTStep(int step, BOOL enter) {
     static const char *names[] = { "visit", "settext", "signal", "size", "refresh", "hooks", "publish" };
     static int counts[7];
     if (!gIsSB || gGuardOver || gTripped || step < 0 || step > 6) return;
+    gCrashIdx = enter ? step : kCrashBetween;
     if (enter) { if (counts[step] >= 5) return; counts[step]++; }
     char buf[48];
     if (enter) snprintf(buf, sizeof buf, "in %s", names[step]); else snprintf(buf, sizeof buf, "between steps");
@@ -337,8 +381,11 @@ static void BTReload(BOOL userChanged) {
     if (gPrefs.count && !gHooked) {
         if (gIsSB && !gGuardOver) {
             BTCrumbWrite("between steps");
+            gCrashIdx = kCrashBetween;
+            BTCrashHandlersOn();
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(BT_GUARD_SECONDS * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 gGuardOver = YES;
+                BTCrashHandlersOff();
                 BTCrumbWrite("ok");
             });
         }
@@ -367,12 +414,14 @@ __attribute__((constructor)) static void BTInit(void) {
 
         if (gIsSB) {
             NSString *crumb = BTCrumbRead();
-            if (crumb && ![crumb isEqualToString:@"ok"]) {
+            if ([crumb hasPrefix:@"crashed"]) {
                 gTripped = YES;       // SpringBoard went down last time while BarText was starting up
                 gSkipPublish = [crumb containsString:@"loading"] || [crumb containsString:@"publish"];
                 BTSetStatus([NSString stringWithFormat:@"Off after crash (%@)", crumb]);
             } else {
                 BTCrumbWrite("loading");
+                gCrashIdx = kCrashLoading;
+                BTCrashHandlersOn();      // removed again once the guard window ends
             }
         }
 
@@ -382,6 +431,6 @@ __attribute__((constructor)) static void BTInit(void) {
         else
             CFNotificationCenterAddObserver(dc, NULL, BTNote, CFSTR(BT_CHANGED), NULL, CFNotificationSuspensionBehaviorDeliverImmediately);
         BTReload(NO);
-        if (gIsSB && !gTripped && !gHooked) BTCrumbWrite("ok");   // loaded fine with nothing switched on
+        if (gIsSB && !gTripped && !gHooked) { BTCrashHandlersOff(); BTCrumbWrite("ok"); }   // loaded fine with nothing switched on
     }
 }

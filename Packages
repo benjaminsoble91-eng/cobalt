@@ -74,6 +74,25 @@ Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymcultur
 SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/com.mymculture.bartext.json
 Tag: role::enduser
 
+Package: com.mymculture.bartext
+Version: 1.0.2
+Architecture: iphoneos-arm64
+Maintainer: MYM Culture
+Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
+Filename: debs/com.mymculture.bartext_1.0.2_iphoneos-arm64.deb
+Size: 17108
+MD5sum: 216286729cc56b5f23206a83f82eb3e4
+SHA1: f862d36c56fd19012c23ba9abd905ab6f9299fe3
+SHA256: a4b571c8d743414e795a0d09ff3c7491d92d7abb46bb8db77f115d632f3e9910
+Section: Tweaks
+Description: Replace the carrier name, signal bars, Wi-Fi bars and network badge in the status bar with your own text.
+Author: MYM Culture
+Name: BarText
+Icon: https://benjaminsoble91-eng.github.io/cobalt/assets/icon_com.mymculture.bartext.png
+Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymculture.bartext.html
+SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/com.mymculture.bartext.json
+Tag: role::enduser
+
 Package: com.mymculture.doubledose
 Version: 1.0
 Architecture: iphoneos-arm64
@@ -93,6 +112,25 @@ Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymcultur
 SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/com.mymculture.doubledose.json
 Tag: role::enduser
 
+Package: com.mymculture.doubledose
+Version: 1.0.1
+Architecture: iphoneos-arm64
+Maintainer: MYM Culture
+Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
+Filename: debs/com.mymculture.doubledose_1.0.1_iphoneos-arm64.deb
+Size: 5668
+MD5sum: ab36b151d15e08ca9f627ac2f5d6e10d
+SHA1: cb9f4bfb5225a4ccf39df0e58dbee8e3af4d50d4
+SHA256: 27a8de2a33519e17e9318216f1b72515f26ef3f5d3f2e055a65380273fd82639
+Section: Tweaks
+Description: Unlocks the Jailbreak button in a duplicated Dopamine while already jailbroken.
+Author: MYM Culture
+Name: DoubleDose
+Icon: https://benjaminsoble91-eng.github.io/cobalt/assets/icon_com.mymculture.doubledose.png
+Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymculture.doubledose.html
+SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/com.mymculture.doubledose.json
+Tag: role::enduser
+
 Package: com.mymculture.panicbutton
 Version: 1.0
 Architecture: iphoneos-arm64
@@ -103,6 +141,25 @@ Size: 9614
 MD5sum: fa2fb9582129fb9ad920c4fd277a8632
 SHA1: 9d773de2b590e1a1a8703e80649f56cc2bcee7be
 SHA256: 101fdc4788a8f0819ce42a78ba655e5f9a48d1bcabdf68b4d5643ce07c2a4a9b
+Section: Tweaks
+Description: Triggers a true kernel panic for testing. Produces a panic-full log.
+Author: MYM Culture
+Name: PanicButton
+Icon: https://benjaminsoble91-eng.github.io/cobalt/assets/icon_com.mymculture.panicbutton.png
+Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymculture.panicbutton.html
+SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/com.mymculture.panicbutton.json
+Tag: role::enduser
+
+Package: com.mymculture.panicbutton
+Version: 1.0.1
+Architecture: iphoneos-arm64
+Maintainer: MYM Culture
+Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
+Filename: debs/com.mymculture.panicbutton_1.0.1_iphoneos-arm64.deb
+Size: 8946
+MD5sum: 8959b302bbb2ed6d570a066708b93401
+SHA1: c05371085ca952c1a6ff208c940b422c1246fbf6
+SHA256: ae94eff8d9fa19addf63b6e5dec4e4bb0474f5d7580cdc72986d03e96ccf2ad3
 Section: Tweaks
 Description: Triggers a true kernel panic for testing. Produces a panic-full log.
 Author: MYM Culture
