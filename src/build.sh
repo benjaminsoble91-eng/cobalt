@@ -16,9 +16,10 @@ build() { # dir Name id version section depends desc
   cp $dir/Filter.plist $jb/Library/MobileSubstrate/DynamicLibraries/$name.plist
   cp $dir/Prefs.plist $jb/Library/PreferenceLoader/Preferences/$name.plist
   if [ -f $dir/helper.c ]; then
+    local helper_name=${name,,}-helper   # lowercase Name + -helper
     mkdir -p $jb/usr/libexec
-    $CC $dir/helper.c -o $jb/usr/libexec/powerplus-helper
-    chmod 4755 $jb/usr/libexec/powerplus-helper
+    $CC $dir/helper.c -o $jb/usr/libexec/$helper_name
+    chmod 4755 $jb/usr/libexec/$helper_name
   fi
   if [ -f $dir/postinst ]; then cp $dir/postinst $root/DEBIAN/postinst; fi
   cat > $root/DEBIAN/control <<CTL
@@ -33,7 +34,7 @@ Section: $section
 Depends: $dep
 CTL
   find $root -type d -exec chmod 755 {} +
-  find $root -type f ! -name powerplus-helper ! -name '*.dylib' -exec chmod 644 {} +
+  find $root -type f ! -name '*-helper' ! -name '*.dylib' -exec chmod 644 {} +
   chmod 755 $jb/Library/MobileSubstrate/DynamicLibraries/$name.dylib
   [ -f $root/DEBIAN/postinst ] && chmod 755 $root/DEBIAN/postinst
   dpkg-deb --root-owner-group -Zgzip -b $root $OUT/${id}_${ver}_iphoneos-arm64.deb >/dev/null
@@ -43,4 +44,5 @@ build iconswap  IconSwap  com.mymculture.iconswap  1.1 Tweaks "$D" "In jiggle mo
 build powerplus PowerPlus com.mymculture.powerplus 1.2.1 Tweaks "$D" "Adds slide to respring and slide to reboot userspace to the power-off screen."
 build bartext   BarText   com.mymculture.bartext   1.0.1 Tweaks "$D" "Replace the carrier name, signal bars, Wi-Fi bars and network badge in the status bar with your own text."
 build doubledose DoubleDose com.mymculture.doubledose 1.0 Tweaks "$D" "Unlocks the Jailbreak button in a duplicated Dopamine while already jailbroken."
+build panicbutton PanicButton com.mymculture.panicbutton 1.0 Tweaks "$D" "Triggers a true kernel panic for testing. Produces a panic-full log."
 ls -la $OUT

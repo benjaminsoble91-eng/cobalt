@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>entry</key>
+	<dict>
+		<key>cell</key>
+		<string>PSLinkCell</string>
+		<key>label</key>
+		<string>PanicButton</string>
+	</dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>Triggers a true kernel panic. The phone will immediately reboot and you will need to re-jailbreak. A panic log will be saved to Settings → Privacy → Analytics.</string>
+		</dict>
+		<dict>
+			<key>PostNotification</key>
+			<string>com.mymculture.panicbutton/prefs</string>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.mymculture.panicbutton</string>
+			<key>key</key>
+			<string>Enabled</string>
+			<key>label</key>
+			<string>Enabled</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSButtonCell</string>
+			<key>label</key>
+			<string>Trigger Kernel Panic</string>
+			<key>action</key>
+			<string>triggerPanic</string>
+			<key>PostNotification</key>
+			<string>com.mymculture.panicbutton/trigger</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>Warning: This writes to an unmapped kernel address, causing a synchronous data abort. The resulting panic log contains the full register state and backtrace.
+
+PanicButton 1.0 from Cobalt.</string>
+		</dict>
+	</array>
+	<key>title</key>
+	<string>PanicButton</string>
+</dict>
+</plist>

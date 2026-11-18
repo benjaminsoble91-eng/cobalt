@@ -93,6 +93,25 @@ Depiction: depictions/com.mymculture.doubledose.html
 SileoDepiction: depictions/native/com.mymculture.doubledose.json
 Tag: role::enduser
 
+Package: com.mymculture.panicbutton
+Version: 1.0
+Architecture: iphoneos-arm64
+Maintainer: MYM Culture
+Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
+Filename: debs/com.mymculture.panicbutton_1.0_iphoneos-arm64.deb
+Size: 9614
+MD5sum: fa2fb9582129fb9ad920c4fd277a8632
+SHA1: 9d773de2b590e1a1a8703e80649f56cc2bcee7be
+SHA256: 101fdc4788a8f0819ce42a78ba655e5f9a48d1bcabdf68b4d5643ce07c2a4a9b
+Section: Tweaks
+Description: Triggers a true kernel panic for testing. Produces a panic-full log.
+Author: MYM Culture
+Name: PanicButton
+Icon: assets/icon_com.mymculture.panicbutton.png
+Depiction: depictions/com.mymculture.panicbutton.html
+SileoDepiction: depictions/native/com.mymculture.panicbutton.json
+Tag: role::enduser
+
 Package: com.mymculture.trollamineinstaller
 Version: 5.4
 Architecture: iphoneos-arm64
