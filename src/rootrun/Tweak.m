@@ -148,16 +148,24 @@ static void RRController_setValueForApp(id self, SEL _cmd, id value, id spec) {
 }
 
 // Build RRAppsController : PSListController at runtime (no compile-time link to Preferences).
-static void RRRegisterController(void) {
-    if (objc_getClass("RRAppsController")) return;
+// PSListController lives in Preferences.framework, which Settings loads lazily — so if it
+// isn't up yet, force-load it first. Returns YES once the class exists.
+static BOOL RRRegisterController(void) {
+    if (objc_getClass("RRAppsController")) return YES;
     Class super = objc_getClass("PSListController");
-    if (!super) return;
+    if (!super) {
+        // Apple frameworks stay under /System even on rootless jailbreaks.
+        dlopen("/System/Library/PrivateFrameworks/Preferences.framework/Preferences", RTLD_LAZY);
+        super = objc_getClass("PSListController");
+    }
+    if (!super) return NO;
     Class c = objc_allocateClassPair(super, "RRAppsController", 0);
-    if (!c) return;
+    if (!c) return objc_getClass("RRAppsController") != nil;   // someone else won the race
     class_addMethod(c, sel_registerName("specifiers"),       (IMP)RRController_specifiers,   "@@:");
     class_addMethod(c, sel_registerName("valueForApp:"),     (IMP)RRController_valueForApp,  "@@:@");
     class_addMethod(c, sel_registerName("setValue:forApp:"), (IMP)RRController_setValueForApp, "v@:@@");
     objc_registerClassPair(c);
+    return YES;
 }
 
 // ===========================================================================
@@ -169,10 +177,11 @@ __attribute__((constructor)) static void RRInit(void) {
 
         // Settings app: register the picker controller so PreferenceLoader can push it.
         if ([bid isEqualToString:@"com.apple.Preferences"]) {
-            RRRegisterController();
-            if (!objc_getClass("PSListController"))
+            if (!RRRegisterController()) {
+                // Framework still not up — try again once the app has finished launching.
                 [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidFinishLaunchingNotification
                     object:nil queue:nil usingBlock:^(NSNotification *n) { RRRegisterController(); }];
+            }
             return;
         }
 
