@@ -265,15 +265,15 @@ SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/c
 Tag: role::enduser
 
 Package: com.mymculture.rootrun
-Version: 1.0
+Version: 1.0.1
 Architecture: iphoneos-arm64
 Maintainer: MYM Culture
 Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
-Filename: debs/com.mymculture.rootrun_1.0_iphoneos-arm64.deb
-Size: 7868
-MD5sum: ee387d2ec211ac9433b553b5c050a2a8
-SHA1: 1916cf6d94b36a129f4e3bbf0d39b341b5d2a431
-SHA256: f198d53fde789b197976f9a9fe9c757732c3ed6247a953233c32d1affbe55aef
+Filename: debs/com.mymculture.rootrun_1.0.1_iphoneos-arm64.deb
+Size: 7928
+MD5sum: c390b5a6f951272563f95ef99ea32a78
+SHA1: 57a9309da44b2356cb95d9d224980656b4dfc3e5
+SHA256: 4afc2adee4eb8579f3534750b79eed28884971f02ba0683b5b8a84f724fc10e1
 Section: Tweaks
 Description: Make the apps you choose launch as root.
 Author: MYM Culture

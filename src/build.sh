@@ -45,7 +45,7 @@ build powerplus PowerPlus com.mymculture.powerplus 1.2.1 Tweaks "$D" "Adds slide
 build bartext   BarText   com.mymculture.bartext   1.0.2 Tweaks "$D" "Replace the carrier name, signal bars, Wi-Fi bars and network badge in the status bar with your own text."
 build doubledose DoubleDose com.mymculture.doubledose 1.0.1 Tweaks "$D" "Unlocks the Jailbreak button in a duplicated Dopamine while already jailbroken."
 build panicbutton PanicButton com.mymculture.panicbutton 1.0.1 Tweaks "$D" "Triggers a true kernel panic for testing. Produces a panic-full log."
-build rootrun    RootRun    com.mymculture.rootrun    1.0 Tweaks "$D" "Make the apps you choose launch as root."
+build rootrun    RootRun    com.mymculture.rootrun    1.0.1 Tweaks "$D" "Make the apps you choose launch as root."
 ls -la $OUT
 
 # Print the APT fields for each freshly built .deb so you can paste them into Packages.in
