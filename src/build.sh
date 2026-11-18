@@ -45,4 +45,17 @@ build powerplus PowerPlus com.mymculture.powerplus 1.2.1 Tweaks "$D" "Adds slide
 build bartext   BarText   com.mymculture.bartext   1.0.2 Tweaks "$D" "Replace the carrier name, signal bars, Wi-Fi bars and network badge in the status bar with your own text."
 build doubledose DoubleDose com.mymculture.doubledose 1.0.1 Tweaks "$D" "Unlocks the Jailbreak button in a duplicated Dopamine while already jailbroken."
 build panicbutton PanicButton com.mymculture.panicbutton 1.0.1 Tweaks "$D" "Triggers a true kernel panic for testing. Produces a panic-full log."
+build rootrun    RootRun    com.mymculture.rootrun    1.0 Tweaks "$D" "Make the apps you choose launch as root."
 ls -la $OUT
+
+# Print the APT fields for each freshly built .deb so you can paste them into Packages.in
+# (and copy the .deb into ../debs/). Covers the TODO placeholders on new packages like RootRun.
+echo; echo "== Packages.in fields =="
+for f in "$OUT"/*.deb; do
+  sz=$(stat -c%s "$f" 2>/dev/null || stat -f%z "$f")
+  md5=$( (md5sum "$f" 2>/dev/null || md5 -q "$f") | awk '{print $1}')
+  sha1=$( (sha1sum "$f" 2>/dev/null || shasum -a 1 "$f") | awk '{print $1}')
+  sha256=$( (sha256sum "$f" 2>/dev/null || shasum -a 256 "$f") | awk '{print $1}')
+  echo "--- $(basename "$f")"
+  echo "Size: $sz"; echo "MD5sum: $md5"; echo "SHA1: $sha1"; echo "SHA256: $sha256"
+done
