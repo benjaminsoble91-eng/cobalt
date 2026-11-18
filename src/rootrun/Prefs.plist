@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>entry</key>
+	<dict>
+		<key>cell</key>
+		<string>PSLinkCell</string>
+		<key>label</key>
+		<string>RootRun</string>
+	</dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>RootRun makes the apps you choose launch as root (uid 0). This is the jailbreak equivalent of running something with sudo — handy for apps that need full filesystem access. It only affects apps on this device.</string>
+		</dict>
+		<dict>
+			<key>PostNotification</key>
+			<string>com.mymculture.rootrun/prefs</string>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.mymculture.rootrun</string>
+			<key>key</key>
+			<string>Enabled</string>
+			<key>label</key>
+			<string>Enabled</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSLinkCell</string>
+			<key>label</key>
+			<string>Apps</string>
+			<key>class</key>
+			<string>RRAppsController</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>Running an app as root removes the sandbox protection that normally keeps it in its own container. Only switch on apps you trust. Force-quit an app after changing its switch so it picks up the change on next launch.
+
+RootRun 1.0 from Cobalt.</string>
+		</dict>
+	</array>
+	<key>title</key>
+	<string>RootRun</string>
+</dict>
+</plist>
