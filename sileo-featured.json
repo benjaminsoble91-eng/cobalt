@@ -16,6 +16,12 @@
       "hideShadow": false
     },
     {
+      "url": "https://benjaminsoble91-eng.github.io/cobalt/assets/banner_com.mymculture.panicbutton.png",
+      "title": "PanicButton",
+      "package": "com.mymculture.panicbutton",
+      "hideShadow": false
+    },
+    {
       "url": "https://benjaminsoble91-eng.github.io/cobalt/assets/banner_com.mymculture.bartext.png",
       "title": "BarText",
       "package": "com.mymculture.bartext",

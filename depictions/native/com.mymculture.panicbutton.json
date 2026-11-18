@@ -1,0 +1,113 @@
+{
+  "minVersion": "0.1",
+  "class": "DepictionTabView",
+  "tintColor": "#3c78ff",
+  "headerImage": "https://benjaminsoble91-eng.github.io/cobalt/assets/banner_com.mymculture.panicbutton.png",
+  "tabs": [
+    {
+      "tabname": "Details",
+      "class": "DepictionStackView",
+      "views": [
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "**PanicButton** triggers a true kernel panic from Settings. The phone reboots immediately and a full `panic-full` log is saved to Settings > Privacy > Analytics.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "Read this first"
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- The phone **reboots immediately**. Save anything open.\n- Dopamine is semi-untethered, so you boot to stock. Re-jailbreak afterwards.\n- No data is lost. iOS journals the filesystem.\n- Works only while jailbroken with Dopamine on A9 devices (iPhone 6s, iPad Pro 9.7).",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "How it works"
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "1. A suid-root helper loads Dopamine's `libjailbreak`.\n2. It acquires kernel read/write from the jailbreak server.\n3. It writes to an unmapped kernel address, triggering a data-abort panic.\n\nThe panic log contains the full register state and backtrace.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "How to use"
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "1. Install PanicButton from Cobalt.\n2. Open Settings > PanicButton.\n3. Tap **Trigger Kernel Panic** and confirm.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "Information"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Version",
+          "text": "1.0"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Section",
+          "text": "Tweaks"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Compatibility",
+          "text": "Dopamine 2 (rootless), A9"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Requires",
+          "text": "mobilesubstrate, preferenceloader"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Source",
+          "text": "Cobalt"
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionTableButtonView",
+          "title": "Cobalt storefront",
+          "action": "https://benjaminsoble91-eng.github.io/cobalt/",
+          "openExternal": true
+        }
+      ]
+    },
+    {
+      "tabname": "Changelog",
+      "class": "DepictionStackView",
+      "views": [
+        {
+          "class": "DepictionSubheaderView",
+          "title": "1.0",
+          "useBoldText": true,
+          "useBottomMargin": false
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- Initial release.",
+          "useSpacing": true
+        }
+      ]
+    }
+  ]
+}
