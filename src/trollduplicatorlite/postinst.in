@@ -1,0 +1,16 @@
+#!/bin/sh
+# TrollDuplicator Lite: sign the app with its entitlements and add it to the Home Screen.
+PREFIX="@PREFIX@"
+APP="$PREFIX/Applications/TrollDuplicatorLite.app"
+ENTS="$PREFIX/usr/share/trollduplicatorlite/ents.plist"
+export PATH="$PREFIX/usr/bin:$PREFIX/bin:$PREFIX/usr/sbin:$PREFIX/sbin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+
+[ "$1" = "configure" ] || exit 0
+
+if ! ldid -S"$ENTS" "$APP/TrollDuplicatorLite"; then
+    echo "TrollDuplicator Lite: signing with ldid failed. Reinstall ldid, then reinstall this package."
+    exit 1
+fi
+uicache -p "$APP" >/dev/null 2>&1 || uicache -a >/dev/null 2>&1
+echo "TrollDuplicator Lite is on your Home Screen as \"TD Lite\"."
+exit 0

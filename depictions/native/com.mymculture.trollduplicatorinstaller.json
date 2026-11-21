@@ -10,7 +10,7 @@
       "views": [
         {
           "class": "DepictionMarkdownView",
-          "markdown": "Installs **TrollDuplicator** through TrollStore, then removes itself. When it's done, only TrollDuplicator is left on your device.",
+          "markdown": "Installs **TrollDuplicator** through TrollStore, then removes itself. When it's done, only TrollDuplicator is left on your device.\n\nNo TrollStore? It installs TrollDuplicator as a jailbreak app instead and stays installed, so uninstalling it removes TrollDuplicator too.",
           "useSpacing": true
         },
         {
@@ -34,7 +34,7 @@
         },
         {
           "class": "DepictionMarkdownView",
-          "markdown": "- Needs **TrollStore** (or Trollamine) installed, with ldid.\n- If the install fails, the installer stays so you can reinstall it and try again.\n- Removing the installer never removes TrollDuplicator.\n- Already have TrollDuplicator? This updates it to 1.7.",
+          "markdown": "- Works best with **TrollStore** (or Trollamine). Without it, copies get saved as .tipa files — use **TrollDuplicator Lite** for jailbreak-only copies.\n- If the install fails, the installer stays so you can reinstall it and try again.\n- With TrollStore, removing the installer never removes TrollDuplicator.\n- Already have TrollDuplicator? This updates it to 1.7.",
           "useSpacing": true
         },
         {
@@ -47,7 +47,7 @@
         {
           "class": "DepictionTableTextView",
           "title": "Version",
-          "text": "1.0"
+          "text": "1.1"
         },
         {
           "class": "DepictionTableTextView",
@@ -62,12 +62,12 @@
         {
           "class": "DepictionTableTextView",
           "title": "Compatibility",
-          "text": "iOS 14.0 and later"
+          "text": "iOS 13.0 and later (rootful and rootless)"
         },
         {
           "class": "DepictionTableTextView",
           "title": "Requires",
-          "text": "TrollStore"
+          "text": "TrollStore, or a jailbreak with ldid"
         },
         {
           "class": "DepictionTableTextView",
@@ -89,6 +89,17 @@
       "tabname": "Changelog",
       "class": "DepictionStackView",
       "views": [
+        {
+          "class": "DepictionSubheaderView",
+          "title": "1.1",
+          "useBoldText": true,
+          "useBottomMargin": false
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- No TrollStore? TrollDuplicator now installs as a jailbreak app instead (signed with ldid, added with uicache). In that mode this installer stays installed; uninstall it to remove TrollDuplicator.\n- Works on iOS 13 jailbreaks like Odyssey, plus Taurine and other rootful jailbreaks.\n- On iOS 13, don't use the pick-an-image option for custom icons — that picker is iOS 14+ and will close the app.",
+          "useSpacing": true
+        },
         {
           "class": "DepictionSubheaderView",
           "title": "1.0",

@@ -284,17 +284,17 @@ SileoDepiction: depictions/native/com.mymculture.rootrun.json
 Tag: role::enduser
 
 Package: com.mymculture.trollduplicatorinstaller
-Version: 1.0
+Version: 1.1
 Architecture: iphoneos-arm64
 Maintainer: MYM Culture
-Depends: firmware (>= 14.0)
-Filename: debs/com.mymculture.trollduplicatorinstaller_1.0_iphoneos-arm64.deb
-Size: 220668
-MD5sum: 0f0c1f017823fd38664a9acc1cdf280e
-SHA1: 8e4cbb14d284891fe7a75486d7c296b61ed1d3a5
-SHA256: f9760d60b59bf76e41855682300ac4b0fa09e5129e949f30b56b65c9b51eb7b3
+Depends: firmware (>= 13.0), ldid
+Filename: debs/com.mymculture.trollduplicatorinstaller_1.1_iphoneos-arm64.deb
+Size: 409862
+MD5sum: 8bee8338feccc62bf591cff13bff66a6
+SHA1: 7c013f149c8f1b9132f40ff11b48f423a08264e9
+SHA256: 44e2ce9960935beffa8e76d33c2b6f8451103b14e9b1968f4e48c95b188a6dee
 Section: Utilities
-Description: Installs TrollDuplicator through TrollStore, then removes itself so only TrollDuplicator is left.
+Description: Installs TrollDuplicator through TrollStore, or as a jailbreak app when TrollStore is not installed.
 Author: MYM Culture
 Name: TrollDuplicator Installer
 Icon: assets/icon_com.mymculture.trollduplicatorinstaller.png
@@ -303,17 +303,17 @@ SileoDepiction: depictions/native/com.mymculture.trollduplicatorinstaller.json
 Tag: role::enduser
 
 Package: com.mymculture.trollduplicatorinstaller
-Version: 1.0
+Version: 1.1
 Architecture: iphoneos-arm
 Maintainer: MYM Culture
-Depends: firmware (>= 14.0)
-Filename: debs/com.mymculture.trollduplicatorinstaller_1.0_iphoneos-arm.deb
-Size: 220634
-MD5sum: 9e785ec6e30cb98b7ca64f5cc289e2f2
-SHA1: a7166a8c54bbb5d14dccb16f456f4ebde5508341
-SHA256: 8068c8383026286ff20e0efb61e14a9c13928302174e8659b13f990fcbf5f559
+Depends: firmware (>= 13.0), ldid
+Filename: debs/com.mymculture.trollduplicatorinstaller_1.1_iphoneos-arm.deb
+Size: 409814
+MD5sum: 71f07e5d6c4b097de0418adb961fe96e
+SHA1: 309fad31d350d570f38c3de963141dd78f5542f4
+SHA256: f513ad28b99c70158bc46f156fba3ede1d3ed117e7db922ef4da7d7edb4519a4
 Section: Utilities
-Description: Installs TrollDuplicator through TrollStore, then removes itself so only TrollDuplicator is left.
+Description: Installs TrollDuplicator through TrollStore, or as a jailbreak app when TrollStore is not installed.
 Author: MYM Culture
 Name: TrollDuplicator Installer
 Icon: assets/icon_com.mymculture.trollduplicatorinstaller.png
@@ -414,4 +414,44 @@ Name: RootRun
 Icon: assets/icon_com.mymculture.rootrun.png
 Depiction: depictions/com.mymculture.rootrun.html
 SileoDepiction: depictions/native/com.mymculture.rootrun.json
+Tag: role::enduser
+
+Package: com.mymculture.trollduplicatorlite
+Version: 1.0
+Architecture: iphoneos-arm64
+Maintainer: MYM Culture
+Depends: firmware (>= 13.0), ldid, ai.akemi.appsyncunified
+Recommends: ai.akemi.appinst
+Filename: debs/com.mymculture.trollduplicatorlite_1.0_iphoneos-arm64.deb
+Size: 150254
+MD5sum: e072e028c225c5710ba792828f2634d2
+SHA1: 0112558545dc435a38a0c07f3697ac6ab224f70e
+SHA256: 8da665d79946272dc9c95fd5e1a0bd25199e128acd6137184c5db3aefe0c3ba1
+Section: Utilities
+Description: Duplicate your apps using the jailbreak instead of TrollStore. Copies are normal apps with their own data.
+Author: MYM Culture
+Name: TrollDuplicator Lite
+Icon: assets/icon_com.mymculture.trollduplicatorlite.png
+Depiction: depictions/com.mymculture.trollduplicatorlite.html
+SileoDepiction: depictions/native/com.mymculture.trollduplicatorlite.json
+Tag: role::enduser
+
+Package: com.mymculture.trollduplicatorlite
+Version: 1.0
+Architecture: iphoneos-arm
+Maintainer: MYM Culture
+Depends: firmware (>= 13.0), ldid, ai.akemi.appsyncunified
+Recommends: ai.akemi.appinst
+Filename: debs/com.mymculture.trollduplicatorlite_1.0_iphoneos-arm.deb
+Size: 150202
+MD5sum: a90012e7599f791cfe3d1761291bf600
+SHA1: 14fa79e805da2d265bf577646fc27328a134c15e
+SHA256: 2f66b250baa4fa19c24c405c9084925f3bd15db8665a0c378a1188719bbb9929
+Section: Utilities
+Description: Duplicate your apps using the jailbreak instead of TrollStore. Copies are normal apps with their own data.
+Author: MYM Culture
+Name: TrollDuplicator Lite
+Icon: assets/icon_com.mymculture.trollduplicatorlite.png
+Depiction: depictions/com.mymculture.trollduplicatorlite.html
+SileoDepiction: depictions/native/com.mymculture.trollduplicatorlite.json
 Tag: role::enduser
