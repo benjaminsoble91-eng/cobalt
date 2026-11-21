@@ -1,4 +1,23 @@
 Package: com.mymculture.iconswap
+Version: 1.1
+Architecture: iphoneos-arm
+Maintainer: MYM Culture
+Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
+Filename: debs/com.mymculture.iconswap_1.1_iphoneos-arm.deb
+Size: 15398
+MD5sum: e93b6b774e8ba2a801758c0484e44718
+SHA1: 49b48ec625c55fc002d37c3abafdd15655db9c90
+SHA256: 2328fc9c077d08d02096bebadd82b1f45c6c7de560f78220ac68c03e68768265
+Section: Tweaks
+Description: In jiggle mode, tap one app and then another to swap their positions.
+Author: MYM Culture
+Name: IconSwap
+Icon: https://benjaminsoble91-eng.github.io/cobalt/assets/icon_com.mymculture.iconswap.png
+Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymculture.iconswap.html
+SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/com.mymculture.iconswap.json
+Tag: role::enduser
+
+Package: com.mymculture.iconswap
 Version: 1.0
 Architecture: iphoneos-arm64
 Maintainer: MYM Culture
@@ -38,6 +57,25 @@ Tag: role::enduser
 
 Package: com.mymculture.powerplus
 Version: 1.2.1
+Architecture: iphoneos-arm
+Maintainer: MYM Culture
+Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
+Filename: debs/com.mymculture.powerplus_1.2.1_iphoneos-arm.deb
+Size: 21798
+MD5sum: 636364dbb2f55bafe0d694746c7218f6
+SHA1: e91c512ae60f0b678eb891a3cf6a129a4ee1009b
+SHA256: 7109ecbd1caa8f69962cfbae529ee24b4ab8ed349b162baf4b8e629ba62be35c
+Section: Tweaks
+Description: Adds slide to respring and slide to reboot userspace to the power-off screen.
+Author: MYM Culture
+Name: PowerPlus
+Icon: https://benjaminsoble91-eng.github.io/cobalt/assets/icon_com.mymculture.powerplus.png
+Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymculture.powerplus.html
+SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/com.mymculture.powerplus.json
+Tag: role::enduser
+
+Package: com.mymculture.powerplus
+Version: 1.2.1
 Architecture: iphoneos-arm64
 Maintainer: MYM Culture
 Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
@@ -53,6 +91,25 @@ Name: PowerPlus
 Icon: https://benjaminsoble91-eng.github.io/cobalt/assets/icon_com.mymculture.powerplus.png
 Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymculture.powerplus.html
 SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/com.mymculture.powerplus.json
+Tag: role::enduser
+
+Package: com.mymculture.bartext
+Version: 1.0.2
+Architecture: iphoneos-arm
+Maintainer: MYM Culture
+Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
+Filename: debs/com.mymculture.bartext_1.0.2_iphoneos-arm.deb
+Size: 17080
+MD5sum: 09625b83949d3060c4b4861b14b3e1a7
+SHA1: 8a0ba1216b1794973a43637f5e95fe25637b837f
+SHA256: 84b4747253a92e2a57bcb5d145ce7cc7151fa9fe8de708df1e3661aa6bbd1228
+Section: Tweaks
+Description: Replace the carrier name, signal bars, Wi-Fi bars and network badge in the status bar with your own text.
+Author: MYM Culture
+Name: BarText
+Icon: https://benjaminsoble91-eng.github.io/cobalt/assets/icon_com.mymculture.bartext.png
+Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymculture.bartext.html
+SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/com.mymculture.bartext.json
 Tag: role::enduser
 
 Package: com.mymculture.bartext
@@ -132,6 +189,25 @@ SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/c
 Tag: role::enduser
 
 Package: com.mymculture.panicbutton
+Version: 1.0.1
+Architecture: iphoneos-arm
+Maintainer: MYM Culture
+Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
+Filename: debs/com.mymculture.panicbutton_1.0.1_iphoneos-arm.deb
+Size: 8900
+MD5sum: b4cfa546529e7fba5e2fa57a655388de
+SHA1: f01861606ac3304443f1411b76f20d37c0ce11af
+SHA256: 4dc24dc9e110c1015bd21cc6191f74944b47c001cfc3d1ef7755d61e9eb19818
+Section: Tweaks
+Description: Triggers a true kernel panic for testing. Produces a panic-full log.
+Author: MYM Culture
+Name: PanicButton
+Icon: https://benjaminsoble91-eng.github.io/cobalt/assets/icon_com.mymculture.panicbutton.png
+Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymculture.panicbutton.html
+SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/com.mymculture.panicbutton.json
+Tag: role::enduser
+
+Package: com.mymculture.panicbutton
 Version: 1.0
 Architecture: iphoneos-arm64
 Maintainer: MYM Culture
@@ -170,15 +246,15 @@ SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/c
 Tag: role::enduser
 
 Package: com.mymculture.trollamineinstaller
-Version: 5.4
-Architecture: iphoneos-arm64
+Version: 5.5
+Architecture: iphoneos-arm
 Maintainer: MYM Culture
 Depends: firmware (>= 14.0), curl
-Filename: debs/336d3906-com.mymculture.trollamineinstaller_5.4_iphoneos-arm64.deb
-Size: 5146270
-MD5sum: 6bebee8bcfcf2e25ac6d90a7704072f3
-SHA1: 94157fef62398ef6e4ded7e5ec15b18c78078301
-SHA256: 944fc112554d7e1d63efc9ddf4db9532c9ebd9c7aecc90ab28b43c02d9cabe85
+Filename: debs/com.mymculture.trollamineinstaller_5.5_iphoneos-arm.deb
+Size: 5146258
+MD5sum: 213d8e7f9a850cdfb5fcf5227458f672
+SHA1: f6de90c4d9f44f1004584db86f08800789ad8b37
+SHA256: 98246dd16b0891dedd0014b613881fbedf9a28c00ae9b723efaf361ca7469367
 Section: Utilities
 Description: Downloads the latest Dopamine and builds Trollamine on your device. No TrollStore needed.
 Author: MYM Culture
@@ -189,15 +265,34 @@ SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/c
 Tag: role::enduser
 
 Package: com.mymculture.trollamineinstaller
-Version: 5.5
+Version: 6.5
 Architecture: iphoneos-arm
 Maintainer: MYM Culture
 Depends: firmware (>= 14.0), curl
-Filename: debs/com.mymculture.trollamineinstaller_5.5_iphoneos-arm.deb
-Size: 5146258
-MD5sum: 213d8e7f9a850cdfb5fcf5227458f672
-SHA1: f6de90c4d9f44f1004584db86f08800789ad8b37
-SHA256: 98246dd16b0891dedd0014b613881fbedf9a28c00ae9b723efaf361ca7469367
+Filename: debs/com.mymculture.trollamineinstaller_6.5_iphoneos-arm.deb
+Size: 6315908
+MD5sum: 9066612189e55d761451ebf42e628e58
+SHA1: 149942d521a54cf2c15de9044ce2918beffcc06a
+SHA256: 26c090c2389ed4cd58957c3b28e9a91fb2e82f6aac6b7a4b9a2afbc825c3d53e
+Section: Utilities
+Description: Downloads the latest Dopamine and builds Trollamine on your device. No TrollStore needed.
+Author: MYM Culture
+Name: Trollamine Installer
+Icon: https://benjaminsoble91-eng.github.io/cobalt/assets/icon_com.mymculture.trollamineinstaller.png
+Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymculture.trollamineinstaller.html
+SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/com.mymculture.trollamineinstaller.json
+Tag: role::enduser
+
+Package: com.mymculture.trollamineinstaller
+Version: 5.4
+Architecture: iphoneos-arm64
+Maintainer: MYM Culture
+Depends: firmware (>= 14.0), curl
+Filename: debs/336d3906-com.mymculture.trollamineinstaller_5.4_iphoneos-arm64.deb
+Size: 5146270
+MD5sum: 6bebee8bcfcf2e25ac6d90a7704072f3
+SHA1: 94157fef62398ef6e4ded7e5ec15b18c78078301
+SHA256: 944fc112554d7e1d63efc9ddf4db9532c9ebd9c7aecc90ab28b43c02d9cabe85
 Section: Utilities
 Description: Downloads the latest Dopamine and builds Trollamine on your device. No TrollStore needed.
 Author: MYM Culture
@@ -228,25 +323,6 @@ Tag: role::enduser
 
 Package: com.mymculture.trollamineinstaller
 Version: 6.5
-Architecture: iphoneos-arm
-Maintainer: MYM Culture
-Depends: firmware (>= 14.0), curl
-Filename: debs/com.mymculture.trollamineinstaller_6.5_iphoneos-arm.deb
-Size: 6315908
-MD5sum: 9066612189e55d761451ebf42e628e58
-SHA1: 149942d521a54cf2c15de9044ce2918beffcc06a
-SHA256: 26c090c2389ed4cd58957c3b28e9a91fb2e82f6aac6b7a4b9a2afbc825c3d53e
-Section: Utilities
-Description: Downloads the latest Dopamine and builds Trollamine on your device. No TrollStore needed.
-Author: MYM Culture
-Name: Trollamine Installer
-Icon: https://benjaminsoble91-eng.github.io/cobalt/assets/icon_com.mymculture.trollamineinstaller.png
-Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymculture.trollamineinstaller.html
-SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/com.mymculture.trollamineinstaller.json
-Tag: role::enduser
-
-Package: com.mymculture.trollamineinstaller
-Version: 6.5
 Architecture: iphoneos-arm64
 Maintainer: MYM Culture
 Depends: firmware (>= 14.0), curl
@@ -262,6 +338,25 @@ Name: Trollamine Installer
 Icon: https://benjaminsoble91-eng.github.io/cobalt/assets/icon_com.mymculture.trollamineinstaller.png
 Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymculture.trollamineinstaller.html
 SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/com.mymculture.trollamineinstaller.json
+Tag: role::enduser
+
+Package: com.mymculture.rootrun
+Version: 1.0.1
+Architecture: iphoneos-arm
+Maintainer: MYM Culture
+Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
+Filename: debs/com.mymculture.rootrun_1.0.1_iphoneos-arm.deb
+Size: 7898
+MD5sum: 01ed6cbe61054070b0be062dddb22feb
+SHA1: fb1649741c3249c0db6fccb461cfcf9814abe0c6
+SHA256: 35b04fe6148a52bdf21540d62d77a8780ac745eec1963e9d5441619805b6d659
+Section: Tweaks
+Description: Make the apps you choose launch as root.
+Author: MYM Culture
+Name: RootRun
+Icon: https://benjaminsoble91-eng.github.io/cobalt/assets/icon_com.mymculture.rootrun.png
+Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymculture.rootrun.html
+SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/com.mymculture.rootrun.json
 Tag: role::enduser
 
 Package: com.mymculture.rootrun
@@ -285,25 +380,6 @@ Tag: role::enduser
 
 Package: com.mymculture.trollduplicatorinstaller
 Version: 1.1
-Architecture: iphoneos-arm64
-Maintainer: MYM Culture
-Depends: firmware (>= 13.0), ldid
-Filename: debs/com.mymculture.trollduplicatorinstaller_1.1_iphoneos-arm64.deb
-Size: 409862
-MD5sum: 8bee8338feccc62bf591cff13bff66a6
-SHA1: 7c013f149c8f1b9132f40ff11b48f423a08264e9
-SHA256: 44e2ce9960935beffa8e76d33c2b6f8451103b14e9b1968f4e48c95b188a6dee
-Section: Utilities
-Description: Installs TrollDuplicator through TrollStore, or as a jailbreak app when TrollStore is not installed.
-Author: MYM Culture
-Name: TrollDuplicator Installer
-Icon: https://benjaminsoble91-eng.github.io/cobalt/assets/icon_com.mymculture.trollduplicatorinstaller.png
-Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymculture.trollduplicatorinstaller.html
-SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/com.mymculture.trollduplicatorinstaller.json
-Tag: role::enduser
-
-Package: com.mymculture.trollduplicatorinstaller
-Version: 1.1
 Architecture: iphoneos-arm
 Maintainer: MYM Culture
 Depends: firmware (>= 13.0), ldid
@@ -321,99 +397,43 @@ Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymcultur
 SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/com.mymculture.trollduplicatorinstaller.json
 Tag: role::enduser
 
-Package: com.mymculture.bartext
-Version: 1.0.2
-Architecture: iphoneos-arm
-Maintainer: MYM Culture
-Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
-Filename: debs/com.mymculture.bartext_1.0.2_iphoneos-arm.deb
-Size: 17080
-MD5sum: 09625b83949d3060c4b4861b14b3e1a7
-SHA1: 8a0ba1216b1794973a43637f5e95fe25637b837f
-SHA256: 84b4747253a92e2a57bcb5d145ce7cc7151fa9fe8de708df1e3661aa6bbd1228
-Section: Tweaks
-Description: Replace the carrier name, signal bars, Wi-Fi bars and network badge in the status bar with your own text.
-Author: MYM Culture
-Name: BarText
-Icon: https://benjaminsoble91-eng.github.io/cobalt/assets/icon_com.mymculture.bartext.png
-Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymculture.bartext.html
-SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/com.mymculture.bartext.json
-Tag: role::enduser
-
-Package: com.mymculture.iconswap
+Package: com.mymculture.trollduplicatorinstaller
 Version: 1.1
-Architecture: iphoneos-arm
+Architecture: iphoneos-arm64
 Maintainer: MYM Culture
-Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
-Filename: debs/com.mymculture.iconswap_1.1_iphoneos-arm.deb
-Size: 15398
-MD5sum: e93b6b774e8ba2a801758c0484e44718
-SHA1: 49b48ec625c55fc002d37c3abafdd15655db9c90
-SHA256: 2328fc9c077d08d02096bebadd82b1f45c6c7de560f78220ac68c03e68768265
-Section: Tweaks
-Description: In jiggle mode, tap one app and then another to swap their positions.
+Depends: firmware (>= 13.0), ldid
+Filename: debs/com.mymculture.trollduplicatorinstaller_1.1_iphoneos-arm64.deb
+Size: 409862
+MD5sum: 8bee8338feccc62bf591cff13bff66a6
+SHA1: 7c013f149c8f1b9132f40ff11b48f423a08264e9
+SHA256: 44e2ce9960935beffa8e76d33c2b6f8451103b14e9b1968f4e48c95b188a6dee
+Section: Utilities
+Description: Installs TrollDuplicator through TrollStore, or as a jailbreak app when TrollStore is not installed.
 Author: MYM Culture
-Name: IconSwap
-Icon: https://benjaminsoble91-eng.github.io/cobalt/assets/icon_com.mymculture.iconswap.png
-Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymculture.iconswap.html
-SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/com.mymculture.iconswap.json
+Name: TrollDuplicator Installer
+Icon: https://benjaminsoble91-eng.github.io/cobalt/assets/icon_com.mymculture.trollduplicatorinstaller.png
+Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymculture.trollduplicatorinstaller.html
+SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/com.mymculture.trollduplicatorinstaller.json
 Tag: role::enduser
 
-Package: com.mymculture.panicbutton
-Version: 1.0.1
+Package: com.mymculture.trollduplicatorlite
+Version: 1.0
 Architecture: iphoneos-arm
 Maintainer: MYM Culture
-Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
-Filename: debs/com.mymculture.panicbutton_1.0.1_iphoneos-arm.deb
-Size: 8900
-MD5sum: b4cfa546529e7fba5e2fa57a655388de
-SHA1: f01861606ac3304443f1411b76f20d37c0ce11af
-SHA256: 4dc24dc9e110c1015bd21cc6191f74944b47c001cfc3d1ef7755d61e9eb19818
-Section: Tweaks
-Description: Triggers a true kernel panic for testing. Produces a panic-full log.
+Depends: firmware (>= 13.0), ldid, ai.akemi.appsyncunified
+Recommends: ai.akemi.appinst
+Filename: debs/com.mymculture.trollduplicatorlite_1.0_iphoneos-arm.deb
+Size: 150202
+MD5sum: a90012e7599f791cfe3d1761291bf600
+SHA1: 14fa79e805da2d265bf577646fc27328a134c15e
+SHA256: 2f66b250baa4fa19c24c405c9084925f3bd15db8665a0c378a1188719bbb9929
+Section: Utilities
+Description: Duplicate your apps using the jailbreak instead of TrollStore. Copies are normal apps with their own data.
 Author: MYM Culture
-Name: PanicButton
-Icon: https://benjaminsoble91-eng.github.io/cobalt/assets/icon_com.mymculture.panicbutton.png
-Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymculture.panicbutton.html
-SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/com.mymculture.panicbutton.json
-Tag: role::enduser
-
-Package: com.mymculture.powerplus
-Version: 1.2.1
-Architecture: iphoneos-arm
-Maintainer: MYM Culture
-Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
-Filename: debs/com.mymculture.powerplus_1.2.1_iphoneos-arm.deb
-Size: 21798
-MD5sum: 636364dbb2f55bafe0d694746c7218f6
-SHA1: e91c512ae60f0b678eb891a3cf6a129a4ee1009b
-SHA256: 7109ecbd1caa8f69962cfbae529ee24b4ab8ed349b162baf4b8e629ba62be35c
-Section: Tweaks
-Description: Adds slide to respring and slide to reboot userspace to the power-off screen.
-Author: MYM Culture
-Name: PowerPlus
-Icon: https://benjaminsoble91-eng.github.io/cobalt/assets/icon_com.mymculture.powerplus.png
-Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymculture.powerplus.html
-SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/com.mymculture.powerplus.json
-Tag: role::enduser
-
-Package: com.mymculture.rootrun
-Version: 1.0.1
-Architecture: iphoneos-arm
-Maintainer: MYM Culture
-Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
-Filename: debs/com.mymculture.rootrun_1.0.1_iphoneos-arm.deb
-Size: 7898
-MD5sum: 01ed6cbe61054070b0be062dddb22feb
-SHA1: fb1649741c3249c0db6fccb461cfcf9814abe0c6
-SHA256: 35b04fe6148a52bdf21540d62d77a8780ac745eec1963e9d5441619805b6d659
-Section: Tweaks
-Description: Make the apps you choose launch as root.
-Author: MYM Culture
-Name: RootRun
-Icon: https://benjaminsoble91-eng.github.io/cobalt/assets/icon_com.mymculture.rootrun.png
-Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymculture.rootrun.html
-SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/com.mymculture.rootrun.json
+Name: TrollDuplicator Lite
+Icon: https://benjaminsoble91-eng.github.io/cobalt/assets/icon_com.mymculture.trollduplicatorlite.png
+Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymculture.trollduplicatorlite.html
+SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/com.mymculture.trollduplicatorlite.json
 Tag: role::enduser
 
 Package: com.mymculture.trollduplicatorlite
@@ -436,22 +456,3 @@ Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymcultur
 SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/com.mymculture.trollduplicatorlite.json
 Tag: role::enduser
 
-Package: com.mymculture.trollduplicatorlite
-Version: 1.0
-Architecture: iphoneos-arm
-Maintainer: MYM Culture
-Depends: firmware (>= 13.0), ldid, ai.akemi.appsyncunified
-Recommends: ai.akemi.appinst
-Filename: debs/com.mymculture.trollduplicatorlite_1.0_iphoneos-arm.deb
-Size: 150202
-MD5sum: a90012e7599f791cfe3d1761291bf600
-SHA1: 14fa79e805da2d265bf577646fc27328a134c15e
-SHA256: 2f66b250baa4fa19c24c405c9084925f3bd15db8665a0c378a1188719bbb9929
-Section: Utilities
-Description: Duplicate your apps using the jailbreak instead of TrollStore. Copies are normal apps with their own data.
-Author: MYM Culture
-Name: TrollDuplicator Lite
-Icon: https://benjaminsoble91-eng.github.io/cobalt/assets/icon_com.mymculture.trollduplicatorlite.png
-Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymculture.trollduplicatorlite.html
-SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/com.mymculture.trollduplicatorlite.json
-Tag: role::enduser
