@@ -28,6 +28,7 @@ _sz(){  if stat -c%s "$1" >/dev/null 2>&1; then stat -c%s "$1"; else stat -f%z "
 
 {
   printf 'Origin: Cobalt\nLabel: Cobalt\nSuite: stable\nVersion: 1.0\nCodename: cobalt\n'
+  printf 'Date: %s\n' "$(LC_ALL=C date -u '+%a, %d %b %Y %H:%M:%S UTC')"
   printf 'Architectures: iphoneos-arm64 iphoneos-arm\nComponents: main\n'
   printf 'Description: Cobalt - a hand-built source for jailbreak tweaks and TrollStore apps.\n'
   printf 'MD5Sum:\n'
