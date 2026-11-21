@@ -10,7 +10,7 @@
       "views": [
         {
           "class": "DepictionMarkdownView",
-          "markdown": "Installs **TrollDuplicator** through TrollStore, then removes itself. When it's done, only TrollDuplicator is left on your device.",
+          "markdown": "Installs **TrollDuplicator** through TrollStore, then removes itself. When it's done, only TrollDuplicator is left on your device.\n\nNo TrollStore? It installs TrollDuplicator as a jailbreak app instead and stays installed, so uninstalling it removes TrollDuplicator too.",
           "useSpacing": true
         },
         {
@@ -34,7 +34,7 @@
         },
         {
           "class": "DepictionMarkdownView",
-          "markdown": "- Needs **TrollStore** (or Trollamine) installed, with ldid.\n- If the install fails, the installer stays so you can reinstall it and try again.\n- Removing the installer never removes TrollDuplicator.\n- Already have TrollDuplicator? This updates it to 1.7.",
+          "markdown": "- Works best with **TrollStore** (or Trollamine). Without it, copies get saved as .tipa files — use **TrollDuplicator Lite** for jailbreak-only copies.\n- If the install fails, the installer stays so you can reinstall it and try again.\n- With TrollStore, removing the installer never removes TrollDuplicator.\n- Already have TrollDuplicator? This updates it to 1.7.",
           "useSpacing": true
         },
         {

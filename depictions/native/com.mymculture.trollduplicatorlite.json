@@ -1,0 +1,100 @@
+{
+  "minVersion": "0.1",
+  "class": "DepictionTabView",
+  "tintColor": "#14c878",
+  "tabs": [
+    {
+      "tabname": "Details",
+      "class": "DepictionStackView",
+      "views": [
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "Make copies of your apps using the **jailbreak** \u2014 no TrollStore needed. Each copy is a normal app with its own name, its own data, and its own spot on the Home Screen.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "How it works"
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "1. Open **TD Lite** and tap the app you want to copy.\n2. Give the copy a name.\n3. TD Lite gives it a new bundle ID, re-signs it with ldid, and installs it with AppSync Unified.\n4. The copy shows up on your Home Screen. Delete it there, or from TD Lite.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "Good to know"
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- Needs **AppSync Unified** and **ldid** (Sileo installs both for you).\n- App Store apps must be **decrypted** first, or the copy won't open.\n- Widgets, extensions and Watch apps aren't copied.\n- Copies only run while the device is jailbroken.\n- Works on rootful (Odyssey, Taurine, Chimera) and rootless (Dopamine) jailbreaks.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "Information"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Version",
+          "text": "1.0"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Section",
+          "text": "Utilities"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Compatibility",
+          "text": "iOS 13.0 and later"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Requires",
+          "text": "Jailbreak, AppSync Unified, ldid"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Source",
+          "text": "Cobalt"
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionTableButtonView",
+          "title": "Cobalt storefront",
+          "action": "https://benjaminsoble91-eng.github.io/cobalt/",
+          "openExternal": true
+        }
+      ]
+    },
+    {
+      "tabname": "Changelog",
+      "class": "DepictionStackView",
+      "views": [
+        {
+          "class": "DepictionSubheaderView",
+          "title": "1.0",
+          "useBoldText": true,
+          "useBottomMargin": false
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- First release. Duplicates apps through the jailbreak (ldid + AppSync Unified) instead of TrollStore.",
+          "useSpacing": true
+        }
+      ]
+    }
+  ]
+}

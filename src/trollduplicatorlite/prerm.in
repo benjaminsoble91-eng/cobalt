@@ -1,0 +1,9 @@
+#!/bin/sh
+# TrollDuplicator Lite: take the app off the Home Screen before its files go away.
+# Copies it made are normal apps and stay installed.
+PREFIX="@PREFIX@"
+export PATH="$PREFIX/usr/bin:$PREFIX/bin:$PREFIX/usr/sbin:$PREFIX/sbin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+case "$1" in
+    remove|purge) uicache -u "$PREFIX/Applications/TrollDuplicatorLite.app" >/dev/null 2>&1 ;;
+esac
+exit 0
