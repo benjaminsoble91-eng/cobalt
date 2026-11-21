@@ -1,4 +1,4 @@
-#!/var/jb/bin/sh
+#!@SH@
 # Runs when PowerPlus is installed or updated: clears the tweak loader's Safe Mode flag.
 F=/var/mobile/.eksafemode
 if [ -e "$F" ]; then

@@ -320,3 +320,98 @@ Icon: assets/icon_com.mymculture.trollduplicatorinstaller.png
 Depiction: depictions/com.mymculture.trollduplicatorinstaller.html
 SileoDepiction: depictions/native/com.mymculture.trollduplicatorinstaller.json
 Tag: role::enduser
+
+Package: com.mymculture.bartext
+Version: 1.0.2
+Architecture: iphoneos-arm
+Maintainer: MYM Culture
+Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
+Filename: debs/com.mymculture.bartext_1.0.2_iphoneos-arm.deb
+Size: 17080
+MD5sum: 09625b83949d3060c4b4861b14b3e1a7
+SHA1: 8a0ba1216b1794973a43637f5e95fe25637b837f
+SHA256: 84b4747253a92e2a57bcb5d145ce7cc7151fa9fe8de708df1e3661aa6bbd1228
+Section: Tweaks
+Description: Replace the carrier name, signal bars, Wi-Fi bars and network badge in the status bar with your own text.
+Author: MYM Culture
+Name: BarText
+Icon: assets/icon_com.mymculture.bartext.png
+Depiction: depictions/com.mymculture.bartext.html
+SileoDepiction: depictions/native/com.mymculture.bartext.json
+Tag: role::enduser
+
+Package: com.mymculture.iconswap
+Version: 1.1
+Architecture: iphoneos-arm
+Maintainer: MYM Culture
+Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
+Filename: debs/com.mymculture.iconswap_1.1_iphoneos-arm.deb
+Size: 15398
+MD5sum: e93b6b774e8ba2a801758c0484e44718
+SHA1: 49b48ec625c55fc002d37c3abafdd15655db9c90
+SHA256: 2328fc9c077d08d02096bebadd82b1f45c6c7de560f78220ac68c03e68768265
+Section: Tweaks
+Description: In jiggle mode, tap one app and then another to swap their positions.
+Author: MYM Culture
+Name: IconSwap
+Icon: assets/icon_com.mymculture.iconswap.png
+Depiction: depictions/com.mymculture.iconswap.html
+SileoDepiction: depictions/native/com.mymculture.iconswap.json
+Tag: role::enduser
+
+Package: com.mymculture.panicbutton
+Version: 1.0.1
+Architecture: iphoneos-arm
+Maintainer: MYM Culture
+Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
+Filename: debs/com.mymculture.panicbutton_1.0.1_iphoneos-arm.deb
+Size: 8900
+MD5sum: b4cfa546529e7fba5e2fa57a655388de
+SHA1: f01861606ac3304443f1411b76f20d37c0ce11af
+SHA256: 4dc24dc9e110c1015bd21cc6191f74944b47c001cfc3d1ef7755d61e9eb19818
+Section: Tweaks
+Description: Triggers a true kernel panic for testing. Produces a panic-full log.
+Author: MYM Culture
+Name: PanicButton
+Icon: assets/icon_com.mymculture.panicbutton.png
+Depiction: depictions/com.mymculture.panicbutton.html
+SileoDepiction: depictions/native/com.mymculture.panicbutton.json
+Tag: role::enduser
+
+Package: com.mymculture.powerplus
+Version: 1.2.1
+Architecture: iphoneos-arm
+Maintainer: MYM Culture
+Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
+Filename: debs/com.mymculture.powerplus_1.2.1_iphoneos-arm.deb
+Size: 21798
+MD5sum: 636364dbb2f55bafe0d694746c7218f6
+SHA1: e91c512ae60f0b678eb891a3cf6a129a4ee1009b
+SHA256: 7109ecbd1caa8f69962cfbae529ee24b4ab8ed349b162baf4b8e629ba62be35c
+Section: Tweaks
+Description: Adds slide to respring and slide to reboot userspace to the power-off screen.
+Author: MYM Culture
+Name: PowerPlus
+Icon: assets/icon_com.mymculture.powerplus.png
+Depiction: depictions/com.mymculture.powerplus.html
+SileoDepiction: depictions/native/com.mymculture.powerplus.json
+Tag: role::enduser
+
+Package: com.mymculture.rootrun
+Version: 1.0.1
+Architecture: iphoneos-arm
+Maintainer: MYM Culture
+Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
+Filename: debs/com.mymculture.rootrun_1.0.1_iphoneos-arm.deb
+Size: 7898
+MD5sum: 01ed6cbe61054070b0be062dddb22feb
+SHA1: fb1649741c3249c0db6fccb461cfcf9814abe0c6
+SHA256: 35b04fe6148a52bdf21540d62d77a8780ac745eec1963e9d5441619805b6d659
+Section: Tweaks
+Description: Make the apps you choose launch as root.
+Author: MYM Culture
+Name: RootRun
+Icon: assets/icon_com.mymculture.rootrun.png
+Depiction: depictions/com.mymculture.rootrun.html
+SileoDepiction: depictions/native/com.mymculture.rootrun.json
+Tag: role::enduser

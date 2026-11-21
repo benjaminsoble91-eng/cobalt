@@ -12,7 +12,10 @@
 #import <sys/wait.h>
 
 #define PB_DOMAIN  CFSTR("com.mymculture.panicbutton")
-#define PB_HELPER  "/var/jb/usr/libexec/panicbutton-helper"
+#ifndef JBROOT
+#define JBROOT "/var/jb"   /* "" for rootful builds (set by build.sh) */
+#endif
+#define PB_HELPER  JBROOT "/usr/libexec/panicbutton-helper"
 #define PB_TRIGGER "com.mymculture.panicbutton/trigger"
 
 extern char **environ;
