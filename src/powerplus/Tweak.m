@@ -4,7 +4,10 @@
 #import <sys/wait.h>
 
 #define PP_DOMAIN CFSTR("com.mymculture.powerplus")
-#define PP_HELPER "/var/jb/usr/libexec/powerplus-helper"
+#ifndef JBROOT
+#define JBROOT "/var/jb"   /* "" for rootful builds (set by build.sh) */
+#endif
+#define PP_HELPER JBROOT "/usr/libexec/powerplus-helper"
 extern char **environ;
 static char kBarKey;
 static BOOL gEnabled = YES;
