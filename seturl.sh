@@ -12,8 +12,23 @@ if [ -z "$BASE" ]; then
 fi
 cd "$(dirname "$0")"
 
-# rebuild Packages from the pristine template, then make the two paths absolute
-cp Packages.in Packages
+# rebuild Packages from the pristine template, then make the two paths absolute.
+# Rootful (iphoneos-arm) stanzas are written before rootless (iphoneos-arm64) ones for each
+# package: Sileo 2.3 and older (Odyssey, Taurine, Chimera...) ignore Architecture and keep the
+# FIRST stanza when two have the same version, then hand only that one to APT, so a rootless
+# stanza first means "Unable to locate package" on rootful jailbreaks. Sileo 2.4+ filters by
+# architecture, so this order is right for every version.
+awk 'BEGIN { RS = ""; ORS = "\n\n" }
+     { pkg = ""; arch = ""
+       n = split($0, lines, "\n")
+       for (i = 1; i <= n; i++) {
+         if (lines[i] ~ /^Package: /) pkg = substr(lines[i], 10)
+         if (lines[i] ~ /^Architecture: /) arch = substr(lines[i], 15)
+       }
+       if (!(pkg in seen)) { seen[pkg] = 1; order[++count] = pkg }
+       if (arch == "iphoneos-arm") rootful[pkg] = rootful[pkg] $0 ORS
+       else other[pkg] = other[pkg] $0 ORS }
+     END { for (i = 1; i <= count; i++) printf "%s%s", rootful[order[i]], other[order[i]] }' Packages.in > Packages
 # Icon:/Depiction:/SileoDepiction: lines currently hold relative paths -> prefix with BASE
 sed -i.bak -E "s#^(Icon: )(assets/)#\\1${BASE//#/\\#}/\\2#; s#^((Sileo)?Depiction: )(depictions/)#\\1${BASE//#/\\#}/\\3#" Packages
 rm -f Packages.bak
