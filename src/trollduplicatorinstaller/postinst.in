@@ -1,0 +1,87 @@
+#!/bin/sh
+# TrollDuplicator Installer (com.mymculture.trollduplicatorinstaller)
+# Installs TrollDuplicator through TrollStore, then removes this package so only
+# TrollDuplicator is left. @PREFIX@ is filled in by build.sh ("" rootful, "/var/jb" rootless).
+
+PKG=com.mymculture.trollduplicatorinstaller
+PREFIX="@PREFIX@"
+TIPA="$PREFIX/usr/share/trollduplicatorinstaller/TrollDuplicator.tipa"
+LOG=/var/tmp/trollduplicatorinstaller.log
+export PATH="$PREFIX/usr/bin:$PREFIX/bin:$PREFIX/usr/sbin:$PREFIX/sbin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+
+[ "$1" = "configure" ] || exit 0
+
+say() { echo "TrollDuplicator Installer: $*"; }
+
+# TrollStore's installer engine. Trollamine carries the same engine, so it works too.
+find_engine() {
+    for app in TrollStore.app Trollamine.app; do
+        for h in /var/containers/Bundle/Application/*/"$app"/trollstorehelper; do
+            if [ -f "$h" ]; then echo "$h"; return 0; fi
+        done
+    done
+    return 1
+}
+
+explain() {
+    case "$1" in
+        171) echo "Another copy of TrollDuplicator that TrollStore doesn't own is in the way." ;;
+        173) echo "TrollStore needs ldid. Open TrollStore > Settings > Install ldid, then reinstall this package." ;;
+        175) echo "TrollStore couldn't sign the app." ;;
+        *)   echo "TrollStore's installer returned code $1." ;;
+    esac
+}
+
+if [ ! -f "$TIPA" ]; then
+    say "The TrollDuplicator app file is missing from this package."
+    exit 0
+fi
+
+ENGINE=$(find_engine)
+if [ -z "$ENGINE" ]; then
+    say "TrollStore isn't installed, so TrollDuplicator can't be installed."
+    say "Install TrollStore, then reinstall this package from Cobalt."
+    exit 0
+fi
+
+say "Installing TrollDuplicator through $(basename "$(dirname "$ENGINE")" .app)..."
+"$ENGINE" install installd "$TIPA" >"$LOG" 2>&1
+CODE=$?
+if [ "$CODE" = "171" ]; then
+    say "Replacing the copy that's already there..."
+    "$ENGINE" install installd force "$TIPA" >>"$LOG" 2>&1
+    CODE=$?
+fi
+
+if [ "$CODE" != "0" ]; then
+    say "Install failed. $(explain "$CODE")"
+    say "This installer stays on your device so you can try again (reinstall it in Sileo). Log: $LOG"
+    exit 0
+fi
+
+say "TrollDuplicator installed. Look for it on your Home Screen."
+say "This installer will now remove itself."
+
+# Remove this package once Sileo/apt has finished and let go of the dpkg lock.
+# Runs detached so this script can exit and release the lock first.
+cleanup_job='
+    unset DPKG_FRONTEND_LOCKED
+    i=0
+    sleep 2
+    while [ $i -lt 150 ]; do
+        st=$(dpkg-query -W -f="\${Status}" '"$PKG"' 2>/dev/null)
+        [ -z "$st" ] && exit 0
+        case "$st" in
+            *not-installed*|*config-files*) exit 0 ;;
+            "install ok installed") dpkg --purge '"$PKG"' && exit 0 ;;
+        esac
+        i=$((i+1))
+        sleep 2
+    done
+'
+if command -v nohup >/dev/null 2>&1; then
+    nohup sh -c "$cleanup_job" >>"$LOG" 2>&1 </dev/null &
+else
+    sh -c "$cleanup_job" >>"$LOG" 2>&1 </dev/null &
+fi
+exit 0

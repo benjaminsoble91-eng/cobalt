@@ -4,6 +4,12 @@
   "itemCornerRadius": 10,
   "banners": [
     {
+      "url": "https://benjaminsoble91-eng.github.io/cobalt/assets/banner_com.mymculture.trollduplicatorinstaller.png",
+      "title": "TrollDuplicator Installer",
+      "package": "com.mymculture.trollduplicatorinstaller",
+      "hideShadow": false
+    },
+    {
       "url": "https://benjaminsoble91-eng.github.io/cobalt/assets/banner_com.mymculture.rootrun.png",
       "title": "RootRun",
       "package": "com.mymculture.rootrun",

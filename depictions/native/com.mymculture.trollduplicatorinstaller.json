@@ -1,0 +1,106 @@
+{
+  "minVersion": "0.1",
+  "class": "DepictionTabView",
+  "tintColor": "#8c50ff",
+  "headerImage": "https://benjaminsoble91-eng.github.io/cobalt/assets/banner_com.mymculture.trollduplicatorinstaller.png",
+  "tabs": [
+    {
+      "tabname": "Details",
+      "class": "DepictionStackView",
+      "views": [
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "Installs **TrollDuplicator** through TrollStore, then removes itself. When it's done, only TrollDuplicator is left on your device.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "How it works"
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "1. Install **TrollDuplicator Installer** from Cobalt.\n2. It hands TrollDuplicator to TrollStore's installer, so the app is a normal TrollStore app.\n3. As soon as Sileo finishes, the installer package removes itself.\n4. Open TrollDuplicator from the Home Screen.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "Good to know"
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- Needs **TrollStore** (or Trollamine) installed, with ldid.\n- If the install fails, the installer stays so you can reinstall it and try again.\n- Removing the installer never removes TrollDuplicator.\n- Already have TrollDuplicator? This updates it to 1.7.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "Information"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Version",
+          "text": "1.0"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Installs",
+          "text": "TrollDuplicator 1.7"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Section",
+          "text": "Utilities"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Compatibility",
+          "text": "iOS 14.0 and later"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Requires",
+          "text": "TrollStore"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Source",
+          "text": "Cobalt"
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionTableButtonView",
+          "title": "Cobalt storefront",
+          "action": "https://benjaminsoble91-eng.github.io/cobalt/",
+          "openExternal": true
+        }
+      ]
+    },
+    {
+      "tabname": "Changelog",
+      "class": "DepictionStackView",
+      "views": [
+        {
+          "class": "DepictionSubheaderView",
+          "title": "1.0",
+          "useBoldText": true,
+          "useBottomMargin": false
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- First release. Installs TrollDuplicator 1.7 through TrollStore and removes itself afterwards.",
+          "useSpacing": true
+        }
+      ]
+    }
+  ]
+}

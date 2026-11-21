@@ -20,6 +20,7 @@ assets/                 icons + art
 seturl.sh               optional: bake an absolute URL for Zebra/Cydia
 src/                    source for the tweaks (IconSwap, PowerPlus, BarText, DoubleDose, PanicButton, RootRun) + build.sh
 src/trollamine/         source for Trollamine Installer (installer app + add-on library) + build.sh
+src/trollduplicatorinstaller/  TrollDuplicator Installer (.deb that installs TrollDuplicator via TrollStore, then removes itself)
 ```
 
 ## Host it on GitHub Pages (recommended)

@@ -282,3 +282,41 @@ Icon: https://benjaminsoble91-eng.github.io/cobalt/assets/icon_com.mymculture.ro
 Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymculture.rootrun.html
 SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/com.mymculture.rootrun.json
 Tag: role::enduser
+
+Package: com.mymculture.trollduplicatorinstaller
+Version: 1.0
+Architecture: iphoneos-arm64
+Maintainer: MYM Culture
+Depends: firmware (>= 14.0)
+Filename: debs/com.mymculture.trollduplicatorinstaller_1.0_iphoneos-arm64.deb
+Size: 220668
+MD5sum: 0f0c1f017823fd38664a9acc1cdf280e
+SHA1: 8e4cbb14d284891fe7a75486d7c296b61ed1d3a5
+SHA256: f9760d60b59bf76e41855682300ac4b0fa09e5129e949f30b56b65c9b51eb7b3
+Section: Utilities
+Description: Installs TrollDuplicator through TrollStore, then removes itself so only TrollDuplicator is left.
+Author: MYM Culture
+Name: TrollDuplicator Installer
+Icon: https://benjaminsoble91-eng.github.io/cobalt/assets/icon_com.mymculture.trollduplicatorinstaller.png
+Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymculture.trollduplicatorinstaller.html
+SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/com.mymculture.trollduplicatorinstaller.json
+Tag: role::enduser
+
+Package: com.mymculture.trollduplicatorinstaller
+Version: 1.0
+Architecture: iphoneos-arm
+Maintainer: MYM Culture
+Depends: firmware (>= 14.0)
+Filename: debs/com.mymculture.trollduplicatorinstaller_1.0_iphoneos-arm.deb
+Size: 220634
+MD5sum: 9e785ec6e30cb98b7ca64f5cc289e2f2
+SHA1: a7166a8c54bbb5d14dccb16f456f4ebde5508341
+SHA256: 8068c8383026286ff20e0efb61e14a9c13928302174e8659b13f990fcbf5f559
+Section: Utilities
+Description: Installs TrollDuplicator through TrollStore, then removes itself so only TrollDuplicator is left.
+Author: MYM Culture
+Name: TrollDuplicator Installer
+Icon: https://benjaminsoble91-eng.github.io/cobalt/assets/icon_com.mymculture.trollduplicatorinstaller.png
+Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymculture.trollduplicatorinstaller.html
+SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/com.mymculture.trollduplicatorinstaller.json
+Tag: role::enduser
