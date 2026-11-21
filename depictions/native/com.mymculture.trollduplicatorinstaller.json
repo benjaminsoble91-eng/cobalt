@@ -47,7 +47,7 @@
         {
           "class": "DepictionTableTextView",
           "title": "Version",
-          "text": "1.0"
+          "text": "1.1"
         },
         {
           "class": "DepictionTableTextView",
@@ -62,12 +62,12 @@
         {
           "class": "DepictionTableTextView",
           "title": "Compatibility",
-          "text": "iOS 14.0 and later"
+          "text": "iOS 13.0 and later (rootful and rootless)"
         },
         {
           "class": "DepictionTableTextView",
           "title": "Requires",
-          "text": "TrollStore"
+          "text": "TrollStore, or a jailbreak with ldid"
         },
         {
           "class": "DepictionTableTextView",
@@ -89,6 +89,17 @@
       "tabname": "Changelog",
       "class": "DepictionStackView",
       "views": [
+        {
+          "class": "DepictionSubheaderView",
+          "title": "1.1",
+          "useBoldText": true,
+          "useBottomMargin": false
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- No TrollStore? TrollDuplicator now installs as a jailbreak app instead (signed with ldid, added with uicache). In that mode this installer stays installed; uninstall it to remove TrollDuplicator.\n- Works on iOS 13 jailbreaks like Odyssey, plus Taurine and other rootful jailbreaks.\n- On iOS 13, don't use the pick-an-image option for custom icons — that picker is iOS 14+ and will close the app.",
+          "useSpacing": true
+        },
         {
           "class": "DepictionSubheaderView",
           "title": "1.0",

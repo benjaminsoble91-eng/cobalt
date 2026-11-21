@@ -1,11 +1,20 @@
 #!/bin/sh
 # TrollDuplicator Installer (com.mymculture.trollduplicatorinstaller)
-# Installs TrollDuplicator through TrollStore, then removes this package so only
-# TrollDuplicator is left. @PREFIX@ is filled in by build.sh ("" rootful, "/var/jb" rootless).
+# With TrollStore: installs TrollDuplicator through TrollStore, then removes this package so only
+# TrollDuplicator is left.
+# Without TrollStore (e.g. iOS 13, or a jailbreak that never set TrollStore up): installs
+# TrollDuplicator as a jailbreak app in @PREFIX@/Applications instead. In that mode this package
+# stays installed and owns the app, so removing it in Sileo removes TrollDuplicator too.
+# @PREFIX@ is filled in by build.sh ("" rootful, "/var/jb" rootless).
 
 PKG=com.mymculture.trollduplicatorinstaller
 PREFIX="@PREFIX@"
-TIPA="$PREFIX/usr/share/trollduplicatorinstaller/TrollDuplicator.tipa"
+SHARE="$PREFIX/usr/share/trollduplicatorinstaller"
+TIPA="$SHARE/TrollDuplicator.tipa"
+JBAPP="$SHARE/TrollDuplicator.app"
+ENTS="$SHARE/ents.plist"
+JBDEST="$PREFIX/Applications/TrollDuplicator.app"
+JBMARK="$SHARE/.jailbreak-app"
 LOG=/var/tmp/trollduplicatorinstaller.log
 export PATH="$PREFIX/usr/bin:$PREFIX/bin:$PREFIX/usr/sbin:$PREFIX/sbin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
 
@@ -37,11 +46,54 @@ if [ ! -f "$TIPA" ]; then
     exit 0
 fi
 
+# No TrollStore: put TrollDuplicator in the jailbreak's Applications folder instead.
+install_as_jailbreak_app() {
+    if [ ! -d "$JBAPP" ] || [ ! -f "$ENTS" ]; then
+        say "The jailbreak copy of TrollDuplicator is missing from this package."
+        return 1
+    fi
+    if ! command -v ldid >/dev/null 2>&1; then
+        say "ldid is missing. Install ldid in Sileo, then reinstall this package."
+        return 1
+    fi
+    if ! command -v uicache >/dev/null 2>&1; then
+        say "uicache is missing from the jailbreak, so the app can't be added to the Home Screen."
+        return 1
+    fi
+    say "TrollStore isn't installed, so TrollDuplicator is being installed as a jailbreak app."
+    [ -d "$JBDEST" ] && uicache -u "$JBDEST" >>"$LOG" 2>&1
+    rm -rf "$JBDEST"
+    mkdir -p "$PREFIX/Applications"
+    cp -R "$JBAPP" "$JBDEST" || { say "Couldn't copy the app into $PREFIX/Applications."; return 1; }
+    chown -R root:wheel "$JBDEST" 2>/dev/null
+    find "$JBDEST" -type d -exec chmod 755 {} +
+    find "$JBDEST" -type f -exec chmod 644 {} +
+    chmod 755 "$JBDEST/TrollDuplicator"
+    if ! ldid -S"$ENTS" "$JBDEST/TrollDuplicator" >>"$LOG" 2>&1; then
+        say "Signing the app with ldid failed. Log: $LOG"
+        rm -rf "$JBDEST"
+        return 1
+    fi
+    if ! uicache -p "$JBDEST" >>"$LOG" 2>&1; then
+        say "uicache couldn't add the app to the Home Screen. Try running uicache -a, or respring. Log: $LOG"
+    fi
+    touch "$JBMARK"
+    say "TrollDuplicator installed as a jailbreak app. Look for it on your Home Screen."
+    say "To remove it later, uninstall TrollDuplicator Installer in Sileo."
+    say "Copies it makes still go through TrollStore, so on devices without TrollStore it saves them as .tipa files."
+    return 0
+}
+
 ENGINE=$(find_engine)
 if [ -z "$ENGINE" ]; then
-    say "TrollStore isn't installed, so TrollDuplicator can't be installed."
-    say "Install TrollStore, then reinstall this package from Cobalt."
+    install_as_jailbreak_app
     exit 0
+fi
+
+# TrollStore is here. Clear out a jailbreak-app copy from an earlier install so TrollStore can own it.
+if [ -f "$JBMARK" ] || [ -d "$JBDEST" ]; then
+    uicache -u "$JBDEST" >>"$LOG" 2>&1
+    rm -rf "$JBDEST" "$JBMARK"
 fi
 
 say "Installing TrollDuplicator through $(basename "$(dirname "$ENGINE")" .app)..."
