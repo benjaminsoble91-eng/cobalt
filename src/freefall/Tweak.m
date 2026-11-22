@@ -2,7 +2,7 @@
 // Shake the device on the Home Screen (or optionally double-tap it) and every visible icon
 // falls with gravity, follows the tilt of the device, bounces off the edges and each
 // other, and can be grabbed and flicked. Tap an icon to open its app. Double-tap empty
-// space or press Home to send everything home.
+// space, press Home, or shake again to send everything home.
 #import "../common/cb.h"
 #import <CoreMotion/CoreMotion.h>
 
@@ -155,7 +155,8 @@ static void FFLaunch(NSString *bid) {
 @property (nonatomic, strong) CMMotionManager *motion;
 @property (nonatomic, strong) NSTimer *watchdog;
 @property (nonatomic, strong) UIImpactFeedbackGenerator *thud;
-@property (nonatomic, assign) CFTimeInterval lastThud, lastShake;
+@property (nonatomic, assign) CFTimeInterval lastThud, startTime;
+@property (nonatomic, strong) NSMutableArray<NSNumber *> *jolts;
 @property (nonatomic, assign) CGSize lastSize;
 @property (nonatomic, assign) BOOL stopping;
 @end
@@ -165,6 +166,8 @@ static void FFLaunch(NSString *bid) {
 - (instancetype)initInWindow:(UIWindow *)win iconViews:(NSArray<UIView *> *)views {
     if (!(self = [super init])) return nil;
     _bodies = [NSMutableArray array];
+    _jolts = [NSMutableArray array];
+    _startTime = CACurrentMediaTime();
     _overlay = [[FFOverlay alloc] initWithFrame:win.bounds];
     _overlay.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
     _overlay.backgroundColor = [UIColor clearColor];
@@ -284,6 +287,10 @@ static void FFLaunch(NSString *bid) {
         [_motion startAccelerometerUpdatesToQueue:[NSOperationQueue mainQueue] withHandler:^(CMAccelerometerData *d, NSError *e) {
             FFWorld *s = ws; if (!s || !d || s.stopping) return;
             if (gTilt) [s applyGravity:[s screenVectorFor:d.acceleration]];
+            if (gShake) {
+                CMAcceleration a = d.acceleration;
+                [s jolt:fabs(sqrt(a.x * a.x + a.y * a.y + a.z * a.z) - 1.0)];
+            }
         }];
         return;
     }
@@ -294,13 +301,7 @@ static void FFLaunch(NSString *bid) {
         if (gTilt) [s applyGravity:[s screenVectorFor:m.gravity]];
         if (gShake) {
             CMAcceleration a = m.userAcceleration;
-            double mag = sqrt(a.x * a.x + a.y * a.y + a.z * a.z);
-            CFTimeInterval now = CACurrentMediaTime();
-            if (mag > 1.6 && now - s.lastShake > 0.35) {
-                s.lastShake = now;
-                CGVector v = [s screenVectorFor:a];
-                [s scatterAlong:v strength:mag];
-            }
+            [s jolt:sqrt(a.x * a.x + a.y * a.y + a.z * a.z)];
         }
     }];
 }
@@ -310,16 +311,20 @@ static void FFLaunch(NSString *bid) {
     _gravity.gravityDirection = CGVectorMake(v.dx * gGravity, v.dy * gGravity);
 }
 
-- (void)scatterAlong:(CGVector)v strength:(double)mag {
-    CGFloat k = 900 * MIN(mag, 4.0);
-    for (FFBody *b in _bodies) {
-        if (b.drag) continue;
-        CGPoint jitter = CGPointMake(((CGFloat)arc4random_uniform(200) - 100) * 3, ((CGFloat)arc4random_uniform(200) - 100) * 3);
-        // userAcceleration is the push of the hand; icons get flung the opposite way, like loose objects
-        [_material addLinearVelocity:CGPointMake(-v.dx * k + jitter.x, -v.dy * k + jitter.y) forItem:b.view];
-        if (gRotate) [_material addAngularVelocity:((CGFloat)arc4random_uniform(400) - 200) / 40.0 forItem:b.view];
+// Shake again to put everything back: same detector as the one that starts Freefall
+// (two hard jolts within 0.7s). Ignores the first second so the tail of the shake that
+// dropped the icons doesn't immediately put them back.
+- (void)jolt:(double)mag {
+    if (mag <= 2.0 - 1.2 * gSensitivity) return;
+    CFTimeInterval now = CACurrentMediaTime();
+    if (now - _startTime < 1.0) return;
+    if (_jolts.count && now - _jolts.lastObject.doubleValue < 0.09) return;
+    [_jolts addObject:@(now)];
+    while (_jolts.count && now - _jolts.firstObject.doubleValue > 0.7) [_jolts removeObjectAtIndex:0];
+    if (_jolts.count >= 2) {
+        [_jolts removeAllObjects];
+        dispatch_async(dispatch_get_main_queue(), ^{ FFStop(YES); });
     }
-    if (gHaptics) [[[UIImpactFeedbackGenerator alloc] initWithStyle:UIImpactFeedbackStyleMedium] impactOccurred];
 }
 
 - (FFBody *)bodyFor:(UIView *)v {

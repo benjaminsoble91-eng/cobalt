@@ -15,7 +15,7 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>footerText</key>
-			<string>Shake your device on the Home Screen and your icons fall. Tilt to steer them, grab and flick them, tap one to open it. Double-tap empty space or press Home to put them back.</string>
+			<string>Shake your device on the Home Screen and your icons fall. Tilt to steer them, grab and flick them, tap one to open it. Shake again, press Home or double-tap empty space to put them back.</string>
 		</dict>
 		<dict>
 			<key>PostNotification</key>
@@ -221,7 +221,7 @@
 			<key>key</key>
 			<string>Shake</string>
 			<key>label</key>
-			<string>Shake again to scatter icons</string>
+			<string>Shake again to put icons back</string>
 		</dict>
 		<dict>
 			<key>PostNotification</key>

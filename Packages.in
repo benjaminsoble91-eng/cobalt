@@ -462,10 +462,10 @@ Architecture: iphoneos-arm
 Maintainer: MYM Culture
 Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
 Filename: debs/com.mymculture.freefall_1.0_iphoneos-arm.deb
-Size: 28820
-MD5sum: 597a28d07a6cc324fb238b8a33ccea55
-SHA1: bc23899c56e7abbd8e6e67212ccc50f93f86563d
-SHA256: 757eefe3c3eec897796e8c504142972fe548126e275d4d2a7d2514e6c374268a
+Size: 28700
+MD5sum: c25ab7e0be070dc2fe763f13cc96edbe
+SHA1: 1c3f96cfad1bb9641e6cec5e8f3948dcd2b4956a
+SHA256: f4412f5707088b3d436215ee39e1d4eb01d0754e3248e70e2c80576f84c8fce1
 Section: Tweaks
 Description: Shake your device and your Home Screen icons fall into real physics: gravity, tilt, bounce, flick.
 Author: MYM Culture
@@ -481,10 +481,10 @@ Architecture: iphoneos-arm64
 Maintainer: MYM Culture
 Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
 Filename: debs/com.mymculture.freefall_1.0_iphoneos-arm64.deb
-Size: 28846
-MD5sum: bba42ff5d071ec90ba6784fac74a7f95
-SHA1: f09d4f73d3698ca1fcc0c53fbd951532e3382492
-SHA256: d884de1a81710517a6aa814452a36293ac34e8cffe52e1a58fb07ba33ca53168
+Size: 28736
+MD5sum: c8a25a3e0e9f2f618ea172fc113de3bd
+SHA1: 515d88b03b08e6ede06a35c1dd05a5249e8b82ff
+SHA256: aa55861d1e6a0baac28403bd77cd3883928670c5be74dad42f8008ec2f058c65
 Section: Tweaks
 Description: Shake your device and your Home Screen icons fall into real physics: gravity, tilt, bounce, flick.
 Author: MYM Culture
