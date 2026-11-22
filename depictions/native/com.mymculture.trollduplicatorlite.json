@@ -21,7 +21,7 @@
         },
         {
           "class": "DepictionMarkdownView",
-          "markdown": "1. Open **TD Lite** and tap the app you want to copy.\n2. Give the copy a name.\n3. TD Lite gives it a new bundle ID, re-signs it with ldid, and installs it through TrollStore Lite.\n4. The copy shows up on your Home Screen. Delete it there, or from TD Lite.",
+          "markdown": "1. Open **TD Lite** and tap the app you want to copy. Every app is listed, including TrollStore and jailbreak apps.\n2. Give the copy a name and choose how many copies to make.\n3. TD Lite gives it a new bundle ID, re-signs it with ldid, and installs it through TrollStore Lite.\n4. The copy shows up on your Home Screen. Delete it there, or from TD Lite.",
           "useSpacing": true
         },
         {
@@ -46,7 +46,7 @@
         {
           "class": "DepictionTableTextView",
           "title": "Version",
-          "text": "1.1"
+          "text": "1.2"
         },
         {
           "class": "DepictionTableTextView",
@@ -83,6 +83,17 @@
       "tabname": "Changelog",
       "class": "DepictionStackView",
       "views": [
+        {
+          "class": "DepictionSubheaderView",
+          "title": "1.2",
+          "useBoldText": true,
+          "useBottomMargin": false
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- The app list now shows every app, including TrollStore, TrollStore Lite and jailbreak apps (like Sileo and Dopamine).\n- Make several copies at once: enter a number and TD Lite makes that many (App 2, App 3, App 4...).",
+          "useSpacing": true
+        },
         {
           "class": "DepictionSubheaderView",
           "title": "1.1",

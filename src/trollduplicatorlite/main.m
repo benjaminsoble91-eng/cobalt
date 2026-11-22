@@ -30,6 +30,7 @@ extern int posix_spawnattr_set_persona_gid_np(const posix_spawnattr_t *attr, gid
 #pragma mark - Private API glue
 
 @interface NSObject (TDLitePrivate)
+- (NSArray *)appTags;
 + (id)defaultWorkspace;
 - (NSArray *)allInstalledApplications;
 - (NSString *)applicationIdentifier;
@@ -236,7 +237,14 @@ static NSError *TDError(NSString *msg) {
     return [NSError errorWithDomain:@"TDLite" code:1 userInfo:@{NSLocalizedDescriptionKey: msg}];
 }
 
+static NSMutableSet<NSString *> *ClaimedIDs(void) {
+    static NSMutableSet *set; static dispatch_once_t once;
+    dispatch_once(&once, ^{ set = [NSMutableSet set]; });
+    return set;
+}
+
 static BOOL BundleIDTaken(NSString *bid) {
+    @synchronized (ClaimedIDs()) { if ([ClaimedIDs() containsObject:bid]) return YES; }
     for (id app in [Workspace() allInstalledApplications])
         if ([[app applicationIdentifier] isEqualToString:bid]) return YES;
     return NO;
@@ -309,6 +317,7 @@ static BOOL DuplicateApp(id proxy, NSString *newName, NSString **newIDOut, NSErr
     NSString *base = [srcInfo[kOriginalKey] isKindOfClass:NSString.class] ? srcInfo[kOriginalKey] : oldID;
     NSString *newID = [base stringByAppendingString:@".copy"];
     for (int n = 2; BundleIDTaken(newID); n++) newID = [NSString stringWithFormat:@"%@.copy%d", base, n];
+    @synchronized (ClaimedIDs()) { [ClaimedIDs() addObject:newID]; }
 
     NSString *workDir = [@"/var/tmp/tdlite" stringByAppendingPathComponent:NSUUID.UUID.UUIDString];
     NSString *payload = [workDir stringByAppendingPathComponent:@"ipa/Payload"];
@@ -382,9 +391,13 @@ static BOOL RemoveCopy(NSString *bid, NSError **err) {
     NSMutableArray *apps = [NSMutableArray array], *copies = [NSMutableArray array];
     NSString *me = NSBundle.mainBundle.bundleIdentifier;
     for (id app in [Workspace() allInstalledApplications]) {
-        if (![[app applicationType] isEqualToString:@"User"]) continue;
         if ([[app applicationIdentifier] isEqualToString:me]) continue;
-        if (InfoForBundle([app bundleURL])[kOriginalKey]) [copies addObject:app];
+        NSDictionary *info = InfoForBundle([app bundleURL]);
+        if (!info) continue;
+        // Skip iOS's hidden internal apps (no Home Screen icon) - they can't be opened anyway.
+        NSArray *tags = [app respondsToSelector:@selector(appTags)] ? [app appTags] : info[@"SBAppTags"];
+        if ([tags isKindOfClass:NSArray.class] && [tags containsObject:@"hidden"]) continue;
+        if (info[kOriginalKey]) [copies addObject:app];
         else [apps addObject:app];
     }
     NSComparator byName = ^NSComparisonResult(id a, id b) {
@@ -412,7 +425,7 @@ static BOOL RemoveCopy(NSString *bid, NSError **err) {
 - (NSInteger)tableView:(UITableView *)tv numberOfRowsInSection:(NSInteger)s { return MAX((NSInteger)[self itemsIn:s].count, 1); }
 - (NSString *)tableView:(UITableView *)tv titleForHeaderInSection:(NSInteger)s { return s == 0 ? @"Your copies" : @"Apps"; }
 - (NSString *)tableView:(UITableView *)tv titleForFooterInSection:(NSInteger)s {
-    return s == 1 ? @"Tap an app to make a copy. App Store apps must be decrypted first." : nil;
+    return s == 1 ? @"Tap an app to make one or more copies. App Store apps must be decrypted first." : nil;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tv cellForRowAtIndexPath:(NSIndexPath *)ip {
@@ -429,7 +442,10 @@ static BOOL RemoveCopy(NSString *bid, NSError **err) {
     id app = items[ip.row];
     c.textLabel.text = [app localizedName];
     c.textLabel.textColor = UIColor.labelColor;
-    c.detailTextLabel.text = [app applicationIdentifier];
+    NSString *type = [app applicationType];
+    c.detailTextLabel.text = (ip.section == 1 && type.length && ![type isEqualToString:@"User"])
+        ? [NSString stringWithFormat:@"%@ · %@", [app applicationIdentifier], type]
+        : [app applicationIdentifier];
     c.detailTextLabel.textColor = UIColor.secondaryLabelColor;
     c.selectionStyle = UITableViewCellSelectionStyleDefault;
     UIImage *icon = nil;
@@ -450,32 +466,74 @@ static BOOL RemoveCopy(NSString *bid, NSError **err) {
 
 - (void)askToDuplicate:(id)app {
     UIAlertController *a = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"Duplicate %@", [app localizedName]]
-                                                               message:@"Name for the copy:"
+                                                               message:@"Name for the copy, and how many copies to make.\nWith more than one, the number at the end counts up (App 2, App 3...)."
                                                         preferredStyle:UIAlertControllerStyleAlert];
     [a addTextFieldWithConfigurationHandler:^(UITextField *f) {
+        f.placeholder = @"Name";
         f.text = [NSString stringWithFormat:@"%@ 2", [app localizedName]];
+        f.clearButtonMode = UITextFieldViewModeWhileEditing;
+    }];
+    [a addTextFieldWithConfigurationHandler:^(UITextField *f) {
+        f.placeholder = @"Number of copies";
+        f.text = @"1";
+        f.keyboardType = UIKeyboardTypeNumberPad;
         f.clearButtonMode = UITextFieldViewModeWhileEditing;
     }];
     [a addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
     [a addAction:[UIAlertAction actionWithTitle:@"Duplicate" style:UIAlertActionStyleDefault handler:^(UIAlertAction *x) {
-        NSString *name = [a.textFields.firstObject.text stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceCharacterSet];
-        [self duplicate:app name:name.length ? name : [app localizedName]];
+        NSString *name = [a.textFields[0].text stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceCharacterSet];
+        NSInteger count = a.textFields[1].text.integerValue;
+        if (count < 1) count = 1;
+        if (count > 50) { [self alert:@"Too many" message:@"You can make up to 50 copies at a time."]; return; }
+        [self duplicate:app names:[self namesFrom:name.length ? name : [app localizedName] count:count]];
     }]];
     [self presentViewController:a animated:YES completion:nil];
 }
 
-- (void)duplicate:(id)app name:(NSString *)name {
+// "App 2" x3 -> App 2, App 3, App 4. "App" x3 -> App, App 2, App 3.
+- (NSArray<NSString *> *)namesFrom:(NSString *)name count:(NSInteger)count {
+    if (count == 1) return @[name];
+    NSString *stem = name; NSInteger start = 1;
+    NSRange r = [name rangeOfString:@"\\s\\d+$" options:NSRegularExpressionSearch];
+    if (r.location != NSNotFound) {
+        stem = [name substringToIndex:r.location];
+        start = [[name substringFromIndex:r.location + 1] integerValue];
+    }
+    NSMutableArray *names = [NSMutableArray array];
+    for (NSInteger i = 0; i < count; i++) {
+        NSInteger n = start + i;
+        [names addObject:n <= 1 ? stem : [NSString stringWithFormat:@"%@ %ld", stem, (long)n]];
+    }
+    return names;
+}
+
+- (void)duplicate:(id)app names:(NSArray<NSString *> *)names {
+    NSUInteger total = names.count;
     UIAlertController *busy = [UIAlertController alertControllerWithTitle:@"Duplicating…" message:@"This can take a minute for big apps." preferredStyle:UIAlertControllerStyleAlert];
     [self presentViewController:busy animated:YES completion:^{
         dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
             NSError *err = nil;
-            NSString *newID = nil;
-            BOOL ok = DuplicateApp(app, name, &newID, &err);
+            NSUInteger done = 0;
+            for (NSString *name in names) {
+                if (total > 1) dispatch_async(dispatch_get_main_queue(), ^{
+                    busy.title = [NSString stringWithFormat:@"Duplicating %lu of %lu…", (unsigned long)done + 1, (unsigned long)total];
+                    busy.message = name;
+                });
+                if (!DuplicateApp(app, name, NULL, &err)) break;
+                done++;
+            }
             dispatch_async(dispatch_get_main_queue(), ^{
                 [busy dismissViewControllerAnimated:YES completion:^{
                     [self reload];
-                    if (ok) [self alert:@"Done" message:[NSString stringWithFormat:@"\"%@\" is on your Home Screen.", name]];
-                    else [self alert:@"Couldn't duplicate" message:err.localizedDescription ?: @"Unknown error."];
+                    if (done == total) {
+                        NSString *msg = total == 1 ? [NSString stringWithFormat:@"\"%@\" is on your Home Screen.", names.firstObject]
+                                                   : [NSString stringWithFormat:@"%lu copies are on your Home Screen.", (unsigned long)total];
+                        [self alert:@"Done" message:msg];
+                    } else {
+                        NSString *why = err.localizedDescription ?: @"Unknown error.";
+                        NSString *msg = done ? [NSString stringWithFormat:@"Made %lu of %lu copies, then hit an error:\n%@", (unsigned long)done, (unsigned long)total, why] : why;
+                        [self alert:@"Couldn't duplicate" message:msg];
+                    }
                 }];
             });
         });
