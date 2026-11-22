@@ -21,7 +21,7 @@
         },
         {
           "class": "DepictionMarkdownView",
-          "markdown": "1. Open **TD Lite** and tap the app you want to copy.\n2. Give the copy a name.\n3. TD Lite gives it a new bundle ID, re-signs it with ldid, and installs it with AppSync Unified.\n4. The copy shows up on your Home Screen. Delete it there, or from TD Lite.",
+          "markdown": "1. Open **TD Lite** and tap the app you want to copy.\n2. Give the copy a name.\n3. TD Lite gives it a new bundle ID, re-signs it with ldid, and installs it through TrollStore Lite.\n4. The copy shows up on your Home Screen. Delete it there, or from TD Lite.",
           "useSpacing": true
         },
         {
@@ -33,7 +33,7 @@
         },
         {
           "class": "DepictionMarkdownView",
-          "markdown": "- Needs **AppSync Unified** and **ldid** (Sileo installs both for you).\n- App Store apps must be **decrypted** first, or the copy won't open.\n- Widgets, extensions and Watch apps aren't copied.\n- Copies only run while the device is jailbroken.\n- Works on rootful (Odyssey, Taurine, Chimera) and rootless (Dopamine) jailbreaks.",
+          "markdown": "- Needs **TrollStore Lite** and **ldid** (Sileo installs both for you). No AppSync Unified.\n- App Store apps must be **decrypted** first, or the copy won't open.\n- Widgets, extensions and Watch apps aren't copied.\n- Copies only run while the device is jailbroken.\n- Works on rootful and rootless (Dopamine) jailbreaks on iOS 14 and later.",
           "useSpacing": true
         },
         {
@@ -46,7 +46,7 @@
         {
           "class": "DepictionTableTextView",
           "title": "Version",
-          "text": "1.0.1"
+          "text": "1.1"
         },
         {
           "class": "DepictionTableTextView",
@@ -56,12 +56,12 @@
         {
           "class": "DepictionTableTextView",
           "title": "Compatibility",
-          "text": "iOS 13.0 and later"
+          "text": "iOS 14.0 and later"
         },
         {
           "class": "DepictionTableTextView",
           "title": "Requires",
-          "text": "Jailbreak, AppSync Unified, ldid"
+          "text": "Jailbreak, TrollStore Lite, ldid"
         },
         {
           "class": "DepictionTableTextView",
@@ -83,6 +83,17 @@
       "tabname": "Changelog",
       "class": "DepictionStackView",
       "views": [
+        {
+          "class": "DepictionSubheaderView",
+          "title": "1.1",
+          "useBoldText": true,
+          "useBottomMargin": false
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- Copies now install through **TrollStore Lite** instead of AppSync Unified. AppSync is no longer needed.\n- Removing a copy from TD Lite uninstalls it through TrollStore Lite.\n- Now needs iOS 14 or later (TrollStore Lite's minimum).",
+          "useSpacing": true
+        },
         {
           "class": "DepictionSubheaderView",
           "title": "1.0.1",

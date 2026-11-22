@@ -417,17 +417,17 @@ SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/c
 Tag: role::enduser
 
 Package: com.mymculture.trollduplicatorlite
-Version: 1.0.1
+Version: 1.1
 Architecture: iphoneos-arm
 Maintainer: MYM Culture
-Depends: firmware (>= 13.0), ldid, ai.akemi.appsyncunified
-Filename: debs/com.mymculture.trollduplicatorlite_1.0.1_iphoneos-arm.deb
-Size: 150210
-MD5sum: e4ab6189f0176543f08601f54abd67bf
-SHA1: 6d16568f2cb99d1f00975b72e629b6c626632cff
-SHA256: beb041c23ce8c7deaaffeb3b441fc7ae62e24d69acecfb51b2c4fa4648b25e69
+Depends: firmware (>= 14.0), ldid, com.opa334.trollstorelite
+Filename: debs/com.mymculture.trollduplicatorlite_1.1_iphoneos-arm.deb
+Size: 150770
+MD5sum: 2531e556f840e4918fe940aa2a12def7
+SHA1: d1f2bff8723ca10702623ce40b6ce30554ee15cd
+SHA256: f44491cfd0d900c070d5bbdd6aca22d8a6de96304bdef0ba56d7db6dfd735843
 Section: Utilities
-Description: Duplicate your apps using the jailbreak instead of TrollStore. Copies are normal apps with their own data.
+Description: Duplicate your apps through TrollStore Lite. Copies get their own name and data. No AppSync needed.
 Author: MYM Culture
 Name: TrollDuplicator Lite
 Icon: https://benjaminsoble91-eng.github.io/cobalt/assets/icon_com.mymculture.trollduplicatorlite.png
@@ -436,17 +436,17 @@ SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/c
 Tag: role::enduser
 
 Package: com.mymculture.trollduplicatorlite
-Version: 1.0.1
+Version: 1.1
 Architecture: iphoneos-arm64
 Maintainer: MYM Culture
-Depends: firmware (>= 13.0), ldid, ai.akemi.appsyncunified
-Filename: debs/com.mymculture.trollduplicatorlite_1.0.1_iphoneos-arm64.deb
-Size: 150264
-MD5sum: 16966ad8d6e8925352649a87170c07b2
-SHA1: d581bb0767464985eb294d07a33112a9ae968b6e
-SHA256: a792b0a077be017a46b169e16e7e34f4f5151dfd7c973f6c456d0aa96ee2fd56
+Depends: firmware (>= 14.0), ldid, com.opa334.trollstorelite
+Filename: debs/com.mymculture.trollduplicatorlite_1.1_iphoneos-arm64.deb
+Size: 150810
+MD5sum: ff17dd384bb7661e8dd6db356212dd80
+SHA1: 7c6c79f45e4bb95d1a862867f5892a606a671974
+SHA256: 10f122534199f73a0b05eaa1840772cf288a9018f0c8bc4229a48a48aa94614e
 Section: Utilities
-Description: Duplicate your apps using the jailbreak instead of TrollStore. Copies are normal apps with their own data.
+Description: Duplicate your apps through TrollStore Lite. Copies get their own name and data. No AppSync needed.
 Author: MYM Culture
 Name: TrollDuplicator Lite
 Icon: https://benjaminsoble91-eng.github.io/cobalt/assets/icon_com.mymculture.trollduplicatorlite.png

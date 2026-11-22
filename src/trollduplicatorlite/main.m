@@ -1,8 +1,9 @@
 // TrollDuplicator Lite (com.mymculture.trollduplicatorlite)
 // Duplicates installed apps using the jailbreak instead of TrollStore:
 //   copy the .app -> give it a new bundle ID and name -> re-sign the main binary with the
-//   jailbreak's ldid -> install it through installd, which AppSync Unified lets through.
-// Copies are normal user apps: they get their own data and can be deleted from the Home Screen.
+//   jailbreak's ldid -> pack it as an .ipa -> install it through TrollStore Lite's root helper.
+// No AppSync Unified needed. Copies are TrollStore Lite apps with their own data; like every
+// TrollStore Lite app they need the jailbreak to be active to open.
 // JBROOT is "" on rootful jailbreaks and "/var/jb" on rootless ones (set by build.sh).
 
 #import <UIKit/UIKit.h>
@@ -19,6 +20,12 @@
 
 static NSString *const kOriginalKey = @"TDLiteOriginal";
 extern char **environ;
+
+// Private posix_spawn persona API (what TrollStore uses to run its helper as root).
+#define TD_PERSONA_FLAGS_OVERRIDE 1
+extern int posix_spawnattr_set_persona_np(const posix_spawnattr_t *attr, uid_t persona_id, uint32_t flags);
+extern int posix_spawnattr_set_persona_uid_np(const posix_spawnattr_t *attr, uid_t uid);
+extern int posix_spawnattr_set_persona_gid_np(const posix_spawnattr_t *attr, gid_t gid);
 
 #pragma mark - Private API glue
 
@@ -58,7 +65,7 @@ static NSString *FindTool(NSArray<NSString *> *names) {
 }
 
 // Runs a tool, returns its exit code; stdout goes to *outData when asked for.
-static int RunTool(NSString *tool, NSArray<NSString *> *args, NSData **outData) {
+static int RunToolAs(NSString *tool, NSArray<NSString *> *args, NSData **outData, BOOL asRoot) {
     NSMutableArray *all = [NSMutableArray arrayWithObject:tool];
     [all addObjectsFromArray:args];
     char **argv = calloc(all.count + 1, sizeof(char *));
@@ -72,8 +79,16 @@ static int RunTool(NSString *tool, NSArray<NSString *> *args, NSData **outData) 
     posix_spawn_file_actions_adddup2(&fa, fds[1], STDERR_FILENO);
     posix_spawn_file_actions_addclose(&fa, fds[0]);
 
+    posix_spawnattr_t attr;
+    posix_spawnattr_init(&attr);
+    if (asRoot) {
+        posix_spawnattr_set_persona_np(&attr, 99, TD_PERSONA_FLAGS_OVERRIDE);
+        posix_spawnattr_set_persona_uid_np(&attr, 0);
+        posix_spawnattr_set_persona_gid_np(&attr, 0);
+    }
     pid_t pid = 0;
-    int rc = posix_spawn(&pid, argv[0], &fa, NULL, argv, environ);
+    int rc = posix_spawn(&pid, argv[0], &fa, &attr, argv, environ);
+    posix_spawnattr_destroy(&attr);
     posix_spawn_file_actions_destroy(&fa);
     close(fds[1]);
 
@@ -92,6 +107,29 @@ static int RunTool(NSString *tool, NSArray<NSString *> *args, NSData **outData) 
     free(argv);
     if (outData) *outData = buf;
     return rc == 0 ? status : -1;
+}
+
+static int RunTool(NSString *tool, NSArray<NSString *> *args, NSData **outData) {
+    return RunToolAs(tool, args, outData, NO);
+}
+
+// TrollStore Lite's root helper (com.opa334.trollstorelite).
+static NSString *TSLiteHelper(void) {
+    NSString *p = JBPath(@"/Applications/TrollStoreLite.app/trollstorehelper");
+    return [NSFileManager.defaultManager fileExistsAtPath:p] ? p : nil;
+}
+
+static NSString *TSLiteExplain(int code) {
+    switch (code) {
+        case 166: case 168: return @"TrollStore Lite couldn't unpack the copy.";
+        case 167: case 172: case 176: return @"The copy isn't a valid app (no app bundle, Info.plist or bundle ID).";
+        case 170: case 178: return @"TrollStore Lite couldn't copy the app into place.";
+        case 171: return @"An app TrollStore Lite doesn't own already uses this bundle ID.";
+        case 173: return @"TrollStore Lite couldn't sign the copy. Make sure ldid is installed.";
+        case 179: return @"TrollStore Lite won't install an app with this bundle ID.";
+        case 180: return @"The app is still encrypted. Decrypt it first.";
+        default:  return [NSString stringWithFormat:@"TrollStore Lite's installer returned code %d.", code];
+    }
 }
 
 static NSDictionary *InfoForBundle(NSURL *bundleURL) {
@@ -131,7 +169,7 @@ static BOOL IsEncrypted(NSString *path) {
     return NO;
 }
 
-#pragma mark - Minimal .ipa writer (stored, no compression) for the appinst fallback
+#pragma mark - Minimal .ipa writer (stored, no compression) for TrollStore Lite
 
 static void PutLE16(NSMutableData *d, uint16_t v) { [d appendBytes:&v length:2]; }
 static void PutLE32(NSMutableData *d, uint32_t v) { [d appendBytes:&v length:4]; }
@@ -238,30 +276,20 @@ static BOOL ResignMainBinary(NSString *exe, NSString *oldID, NSString *newID, NS
 }
 
 static BOOL InstallBundle(NSString *appPath, NSString *workDir, NSError **err) {
-    // 1. installd directly, as a developer-type install. AppSync Unified lets the fake signature through.
-    id ws = Workspace();
-    SEL sel = @selector(installApplication:withOptions:error:);
-    NSError *installErr = nil;
-    if ([ws respondsToSelector:sel]) {
-        BOOL ok = ((BOOL (*)(id, SEL, NSURL *, NSDictionary *, NSError **))objc_msgSend)(
-            ws, sel, [NSURL fileURLWithPath:appPath], @{@"PackageType": @"Developer"}, &installErr);
-        if (ok) return YES;
-    }
-    // 2. Fallback: pack an .ipa and hand it to appinst (comes with AppSync Unified's appinst package).
-    NSString *appinst = FindTool(@[@"appinst"]);
-    if (appinst) {
-        NSString *ipa = [workDir stringByAppendingPathComponent:@"copy.ipa"];
-        if (WriteStoredZip([workDir stringByAppendingPathComponent:@"ipa"], ipa, err)) {
-            NSData *log = nil;
-            if (RunTool(appinst, @[ipa], &log) == 0) return YES;
-            NSString *s = [[NSString alloc] initWithData:log encoding:NSUTF8StringEncoding] ?: @"";
-            if (err) *err = TDError([@"appinst couldn't install the copy. " stringByAppendingString:s]);
-            return NO;
-        }
+    NSString *helper = TSLiteHelper();
+    if (!helper) { if (err) *err = TDError(@"TrollStore Lite isn't installed. Install TrollStore Lite in Sileo and try again."); return NO; }
+    NSString *ipa = [workDir stringByAppendingPathComponent:@"copy.ipa"];
+    if (!WriteStoredZip([workDir stringByAppendingPathComponent:@"ipa"], ipa, err)) return NO;
+    NSData *log = nil;
+    int code = RunToolAs(helper, @[@"install", ipa], &log, YES);
+    if (code == 0) return YES;
+    NSString *s = [[NSString alloc] initWithData:log encoding:NSUTF8StringEncoding] ?: @"";
+    if (code == -1 || code == 255) {
+        if (err) *err = TDError([@"Couldn't start TrollStore Lite's installer as root. Make sure the jailbreak is active, then reinstall TrollDuplicator Lite. " stringByAppendingString:s]);
         return NO;
     }
-    NSString *why = installErr.localizedDescription ?: @"installd refused it.";
-    if (err) *err = TDError([NSString stringWithFormat:@"Installing the copy failed: %@ Make sure AppSync Unified is installed and the jailbreak is active.", why]);
+    if (err) *err = TDError(TSLiteExplain(code));
+    NSLog(@"[TDLite] trollstorehelper install -> %d\n%@", code, s);
     return NO;
 }
 
@@ -318,6 +346,8 @@ static BOOL DuplicateApp(id proxy, NSString *newName, NSString **newIDOut, NSErr
 }
 
 static BOOL RemoveCopy(NSString *bid, NSError **err) {
+    NSString *helper = TSLiteHelper();
+    if (helper && RunToolAs(helper, @[@"uninstall", bid], NULL, YES) == 0) return YES;
     id ws = Workspace();
     SEL sel = @selector(uninstallApplication:withOptions:);
     if (![ws respondsToSelector:sel]) { if (err) *err = TDError(@"This iOS version can't remove apps this way. Delete the copy from the Home Screen instead."); return NO; }
@@ -368,7 +398,7 @@ static BOOL RemoveCopy(NSString *bid, NSError **err) {
 
 - (void)about {
     [self alert:@"TrollDuplicator Lite"
-        message:@"Makes copies of your apps using the jailbreak instead of TrollStore. Copies are normal apps with their own data.\n\nNeeds AppSync Unified and ldid. App Store apps must be decrypted first. Extensions and widgets aren't copied."];
+        message:@"Makes copies of your apps and installs them through TrollStore Lite. Each copy has its own data.\n\nNeeds TrollStore Lite and ldid. Copies only open while the jailbreak is active. App Store apps must be decrypted first. Extensions and widgets aren't copied."];
 }
 
 - (void)alert:(NSString *)title message:(NSString *)msg {
