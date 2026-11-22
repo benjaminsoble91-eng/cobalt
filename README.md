@@ -23,6 +23,14 @@ src/trollamine/         source for Trollamine Installer (installer app + add-on 
 src/trollduplicatorinstaller/  TrollDuplicator Installer (.deb that installs TrollDuplicator via TrollStore, then removes itself)
 ```
 
+## Cobalt app (IPA)
+
+`ipa/Cobalt.ipa` is the source as a normal iOS app (no jailbreak entitlements, so any sideloader can sign it). It reads `Packages`, `sileo-featured.json`, the native depictions and `apps.json`.
+
+- `apps.json` lists the TrollStore apps in `tipa/` (the app can't see them otherwise) and the latest Cobalt app version under `"cobalt"`. Bump that version when you ship a new IPA and the app shows an update banner.
+- Source: `src/cobaltapp/` — `VER=1.1 ./build.sh` builds `out/Cobalt.ipa`; copy it to `ipa/`.
+- Updates tab: the app can't read dpkg from the sandbox, so it tracks what you install through it (or mark "I already have this installed") and flags newer versions, plus anything new or updated since your last visit.
+
 ## Host it on GitHub Pages (recommended)
 
 1. Create a new **public** repo, e.g. `cobalt`.
