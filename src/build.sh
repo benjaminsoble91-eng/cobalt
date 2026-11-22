@@ -13,7 +13,8 @@ build() { # dir Name id version section depends desc
   local dir=$1 name=$2 id=$3 ver=$4 section=$5 dep=$6 desc=$7
   local root=stage/$ARCH/$id; local jb=$root$JB
   mkdir -p $jb/Library/MobileSubstrate/DynamicLibraries $jb/Library/PreferenceLoader/Preferences $root/DEBIAN
-  $CC -DJBROOT=\"$JB\" -dynamiclib -install_name $JB/Library/MobileSubstrate/DynamicLibraries/$name.dylib $FW $dir/Tweak.m \
+  local xfw=""; [ -f $dir/frameworks ] && xfw=$(cat $dir/frameworks)
+  $CC -DJBROOT=\"$JB\" -dynamiclib -install_name $JB/Library/MobileSubstrate/DynamicLibraries/$name.dylib $FW $xfw $dir/Tweak.m \
       -o $jb/Library/MobileSubstrate/DynamicLibraries/$name.dylib
   cp $dir/Filter.plist $jb/Library/MobileSubstrate/DynamicLibraries/$name.plist
   cp $dir/Prefs.plist $jb/Library/PreferenceLoader/Preferences/$name.plist
@@ -50,6 +51,7 @@ for variant in "iphoneos-arm64 /var/jb" "iphoneos-arm "; do
   [ "$ARCH" = iphoneos-arm64 ] && build doubledose DoubleDose com.mymculture.doubledose 1.0.1 Tweaks "$D" "Unlocks the Jailbreak button in a duplicated Dopamine while already jailbroken."
   build panicbutton PanicButton com.mymculture.panicbutton 1.0.1 Tweaks "$D" "Triggers a true kernel panic for testing. Produces a panic-full log."
   build rootrun    RootRun    com.mymculture.rootrun    1.0.1 Tweaks "$D" "Make the apps you choose launch as root."
+  build freefall   Freefall   com.mymculture.freefall   1.0 Tweaks "$D" "Drop your Home Screen icons into real physics: gravity, tilt, bounce, flick."
 done
 ls -la $OUT
 

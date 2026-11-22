@@ -455,3 +455,41 @@ Icon: assets/icon_com.mymculture.trollduplicatorlite.png
 Depiction: depictions/com.mymculture.trollduplicatorlite.html
 SileoDepiction: depictions/native/com.mymculture.trollduplicatorlite.json
 Tag: role::enduser
+
+Package: com.mymculture.freefall
+Version: 1.0
+Architecture: iphoneos-arm
+Maintainer: MYM Culture
+Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
+Filename: debs/com.mymculture.freefall_1.0_iphoneos-arm.deb
+Size: 26212
+MD5sum: 039190fdc413f0137dcc89339d2b356f
+SHA1: 5596779cbe5574db0794edf4ee97eefdb234aeb9
+SHA256: ffa7f4db7b512e6a16d787907ec8dc1d0758b455720981849b38ec3d241ef3be
+Section: Tweaks
+Description: Drop your Home Screen icons into real physics: gravity, tilt, bounce, flick.
+Author: MYM Culture
+Name: Freefall
+Icon: assets/icon_com.mymculture.freefall.png
+Depiction: depictions/com.mymculture.freefall.html
+SileoDepiction: depictions/native/com.mymculture.freefall.json
+Tag: role::enduser
+
+Package: com.mymculture.freefall
+Version: 1.0
+Architecture: iphoneos-arm64
+Maintainer: MYM Culture
+Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
+Filename: debs/com.mymculture.freefall_1.0_iphoneos-arm64.deb
+Size: 26244
+MD5sum: 31c678e59112968d6099758e8bed331f
+SHA1: 296777a478461cd61c739a477926fac431f98bc2
+SHA256: e711fc9a591b62fd24d4252d3807161ee6dbc4b3de0ec6528c8c5da5bd4629fe
+Section: Tweaks
+Description: Drop your Home Screen icons into real physics: gravity, tilt, bounce, flick.
+Author: MYM Culture
+Name: Freefall
+Icon: assets/icon_com.mymculture.freefall.png
+Depiction: depictions/com.mymculture.freefall.html
+SileoDepiction: depictions/native/com.mymculture.freefall.json
+Tag: role::enduser

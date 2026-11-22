@@ -1,0 +1,101 @@
+{
+  "minVersion": "0.1",
+  "class": "DepictionTabView",
+  "tintColor": "#3c78ff",
+  "headerImage": "https://benjaminsoble91-eng.github.io/cobalt/assets/banner_com.mymculture.freefall.png",
+  "tabs": [
+    {
+      "tabname": "Details",
+      "class": "DepictionStackView",
+      "views": [
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "**Freefall**: double-tap your Home Screen with two fingers and every icon drops. They fall with real gravity, follow the tilt of your phone, bounce off the edges and each other, and spin as they tumble. Grab one and fling it across the screen, shake the phone to scatter the pile, or tap an icon to open its app.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "How to use"
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "1. Go to your Home Screen.\n2. Double-tap anywhere with two fingers (or three, in Settings).\n3. Tilt the phone to steer the icons, shake to scatter them, drag and flick to throw them.\n4. Tap an icon to open its app.\n5. Double-tap empty space, or repeat the gesture, and every icon flies back to its spot.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "Settings"
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- Turn Freefall on or off without uninstalling.\n- Two- or three-finger trigger.\n- Gravity strength, bounce and friction sliders.\n- Follow device tilt, shake to scatter, spinning icons.\n- Include the Dock, include app names, haptics.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "Information"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Version",
+          "text": "1.0"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Section",
+          "text": "Tweaks"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Compatibility",
+          "text": "iOS 14.0 and later (rootless + rootful)"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Requires",
+          "text": "mobilesubstrate, preferenceloader"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Source",
+          "text": "Cobalt"
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionTableButtonView",
+          "title": "Cobalt storefront",
+          "action": "https://benjaminsoble91-eng.github.io/cobalt/",
+          "openExternal": true
+        }
+      ]
+    },
+    {
+      "tabname": "Changelog",
+      "class": "DepictionStackView",
+      "views": [
+        {
+          "class": "DepictionSubheaderView",
+          "title": "1.0",
+          "useBoldText": true,
+          "useBottomMargin": false
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- Initial release.",
+          "useSpacing": true
+        }
+      ]
+    }
+  ]
+}
