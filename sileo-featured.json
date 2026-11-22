@@ -4,49 +4,19 @@
   "itemCornerRadius": 10,
   "banners": [
     {
-      "url": "https://benjaminsoble91-eng.github.io/cobalt/assets/banner_com.mymculture.trollduplicatorinstaller.png",
+      "url": "https://cobaltrepo.app/assets/banner_com.mymculture.trollduplicatorinstaller.png",
       "title": "TrollDuplicator Installer",
       "package": "com.mymculture.trollduplicatorinstaller",
       "hideShadow": false
     },
     {
-      "url": "https://benjaminsoble91-eng.github.io/cobalt/assets/banner_com.mymculture.rootrun.png",
-      "title": "RootRun",
-      "package": "com.mymculture.rootrun",
-      "hideShadow": false
-    },
-    {
-      "url": "https://benjaminsoble91-eng.github.io/cobalt/assets/banner_com.mymculture.trollamineinstaller.png",
+      "url": "https://cobaltrepo.app/assets/banner_com.mymculture.trollamineinstaller.png",
       "title": "Trollamine Installer",
       "package": "com.mymculture.trollamineinstaller",
       "hideShadow": false
     },
     {
-      "url": "https://benjaminsoble91-eng.github.io/cobalt/assets/banner_com.mymculture.doubledose.png",
-      "title": "DoubleDose",
-      "package": "com.mymculture.doubledose",
-      "hideShadow": false
-    },
-    {
-      "url": "https://benjaminsoble91-eng.github.io/cobalt/assets/banner_com.mymculture.panicbutton.png",
-      "title": "PanicButton",
-      "package": "com.mymculture.panicbutton",
-      "hideShadow": false
-    },
-    {
-      "url": "https://benjaminsoble91-eng.github.io/cobalt/assets/banner_com.mymculture.bartext.png",
-      "title": "BarText",
-      "package": "com.mymculture.bartext",
-      "hideShadow": false
-    },
-    {
-      "url": "https://benjaminsoble91-eng.github.io/cobalt/assets/banner_com.mymculture.powerplus.png",
-      "title": "PowerPlus",
-      "package": "com.mymculture.powerplus",
-      "hideShadow": false
-    },
-    {
-      "url": "https://benjaminsoble91-eng.github.io/cobalt/assets/banner_com.mymculture.iconswap.png",
+      "url": "https://cobaltrepo.app/assets/banner_com.mymculture.iconswap.png",
       "title": "IconSwap",
       "package": "com.mymculture.iconswap",
       "hideShadow": false
