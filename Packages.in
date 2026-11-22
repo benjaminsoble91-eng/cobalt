@@ -417,16 +417,15 @@ SileoDepiction: depictions/native/com.mymculture.rootrun.json
 Tag: role::enduser
 
 Package: com.mymculture.trollduplicatorlite
-Version: 1.0
+Version: 1.0.1
 Architecture: iphoneos-arm64
 Maintainer: MYM Culture
 Depends: firmware (>= 13.0), ldid, ai.akemi.appsyncunified
-Recommends: ai.akemi.appinst
-Filename: debs/com.mymculture.trollduplicatorlite_1.0_iphoneos-arm64.deb
-Size: 150254
-MD5sum: e072e028c225c5710ba792828f2634d2
-SHA1: 0112558545dc435a38a0c07f3697ac6ab224f70e
-SHA256: 8da665d79946272dc9c95fd5e1a0bd25199e128acd6137184c5db3aefe0c3ba1
+Filename: debs/com.mymculture.trollduplicatorlite_1.0.1_iphoneos-arm64.deb
+Size: 150264
+MD5sum: 16966ad8d6e8925352649a87170c07b2
+SHA1: d581bb0767464985eb294d07a33112a9ae968b6e
+SHA256: a792b0a077be017a46b169e16e7e34f4f5151dfd7c973f6c456d0aa96ee2fd56
 Section: Utilities
 Description: Duplicate your apps using the jailbreak instead of TrollStore. Copies are normal apps with their own data.
 Author: MYM Culture
@@ -437,16 +436,15 @@ SileoDepiction: depictions/native/com.mymculture.trollduplicatorlite.json
 Tag: role::enduser
 
 Package: com.mymculture.trollduplicatorlite
-Version: 1.0
+Version: 1.0.1
 Architecture: iphoneos-arm
 Maintainer: MYM Culture
 Depends: firmware (>= 13.0), ldid, ai.akemi.appsyncunified
-Recommends: ai.akemi.appinst
-Filename: debs/com.mymculture.trollduplicatorlite_1.0_iphoneos-arm.deb
-Size: 150202
-MD5sum: a90012e7599f791cfe3d1761291bf600
-SHA1: 14fa79e805da2d265bf577646fc27328a134c15e
-SHA256: 2f66b250baa4fa19c24c405c9084925f3bd15db8665a0c378a1188719bbb9929
+Filename: debs/com.mymculture.trollduplicatorlite_1.0.1_iphoneos-arm.deb
+Size: 150210
+MD5sum: e4ab6189f0176543f08601f54abd67bf
+SHA1: 6d16568f2cb99d1f00975b72e629b6c626632cff
+SHA256: beb041c23ce8c7deaaffeb3b441fc7ae62e24d69acecfb51b2c4fa4648b25e69
 Section: Utilities
 Description: Duplicate your apps using the jailbreak instead of TrollStore. Copies are normal apps with their own data.
 Author: MYM Culture

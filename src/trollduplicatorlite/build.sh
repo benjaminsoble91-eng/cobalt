@@ -6,7 +6,7 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 ID=com.mymculture.trollduplicatorlite
-VER=${VER:-1.0}
+VER=${VER:-1.0.1}
 SDK=${SDK:-/home/claude/build/sdks/iPhoneOS14.5.sdk}
 OUT=$PWD/out; rm -rf "$OUT" stage; mkdir -p "$OUT"
 CC="clang -target arm64-apple-ios13.0 -isysroot $SDK -fobjc-arc -Os -Wall -Wno-unused-function -fuse-ld=lld -Wl,-adhoc_codesign"
@@ -59,7 +59,6 @@ Maintainer: MYM Culture
 Author: MYM Culture
 Section: Utilities
 Depends: firmware (>= 13.0), ldid, ai.akemi.appsyncunified
-Recommends: ai.akemi.appinst
 CTL
   find "$root" -type d -exec chmod 755 {} +
   find "$root" -type f -exec chmod 644 {} +
