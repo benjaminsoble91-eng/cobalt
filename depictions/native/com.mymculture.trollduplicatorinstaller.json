@@ -2,7 +2,7 @@
   "minVersion": "0.1",
   "class": "DepictionTabView",
   "tintColor": "#8c50ff",
-  "headerImage": "https://benjaminsoble91-eng.github.io/cobalt/assets/banner_com.mymculture.trollduplicatorinstaller.png",
+  "headerImage": "https://cobaltrepo.app/assets/banner_com.mymculture.trollduplicatorinstaller.png",
   "tabs": [
     {
       "tabname": "Details",
@@ -80,7 +80,7 @@
         {
           "class": "DepictionTableButtonView",
           "title": "Cobalt storefront",
-          "action": "https://benjaminsoble91-eng.github.io/cobalt/",
+          "action": "https://cobaltrepo.app/",
           "openExternal": true
         }
       ]
