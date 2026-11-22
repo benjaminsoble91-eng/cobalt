@@ -1,0 +1,31 @@
+{
+  "cobalt": {
+    "version": "1.0",
+    "url": "ipa/Cobalt.ipa",
+    "notes": "Download the new IPA, then sideload it over this one (same bundle ID keeps your settings)."
+  },
+  "apps": [
+    {
+      "id": "com.mymculture.trollduplicator",
+      "name": "TrollDuplicator",
+      "version": "1.7",
+      "url": "tipa/TrollDuplicator.tipa",
+      "icon": "assets/icon_com.mymculture.trollduplicator.png",
+      "description": "Duplicate any installed app with a new bundle ID, name, and custom icon.",
+      "size": 226975,
+      "minOS": "14.0",
+      "section": "TrollStore Apps"
+    },
+    {
+      "id": "com.mymculture.trollamineinstaller.app",
+      "name": "Trollamine Installer",
+      "version": "5.5",
+      "url": "tipa/TrollamineInstaller.tipa",
+      "icon": "assets/icon_com.mymculture.trollamineinstaller.png",
+      "description": "Downloads the latest official Dopamine and builds Trollamine on-device. No TrollStore needed.",
+      "size": 5234033,
+      "minOS": "14.0",
+      "section": "TrollStore Apps"
+    }
+  ]
+}
