@@ -22,6 +22,8 @@
 		<string>UninstallForLaunchServices</string>
 		<string>Lookup</string>
 	</array>
+	<key>com.apple.private.persona-mgmt</key>
+	<true/>
 	<key>com.apple.springboard.launchapplications</key>
 	<true/>
 </dict>
