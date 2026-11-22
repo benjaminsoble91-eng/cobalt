@@ -46,7 +46,7 @@
         {
           "class": "DepictionTableTextView",
           "title": "Version",
-          "text": "1.0"
+          "text": "1.0.1"
         },
         {
           "class": "DepictionTableTextView",
@@ -83,6 +83,17 @@
       "tabname": "Changelog",
       "class": "DepictionStackView",
       "views": [
+        {
+          "class": "DepictionSubheaderView",
+          "title": "1.0.1",
+          "useBoldText": true,
+          "useBottomMargin": false
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- Fixed the Sileo install error \"Recommends ai.akemi.appinst\". appinst is no longer required; it's still used automatically as a fallback if you have it.",
+          "useSpacing": true
+        },
         {
           "class": "DepictionSubheaderView",
           "title": "1.0",
