@@ -1,15 +1,16 @@
 // Freefall 1.0 - drop your Home Screen icons into a real physics world.
-// Double-tap the Home Screen with two fingers (configurable) and every visible icon
+// Shake the device on the Home Screen (or optionally double-tap it) and every visible icon
 // falls with gravity, follows the tilt of the device, bounces off the edges and each
 // other, and can be grabbed and flicked. Tap an icon to open its app. Double-tap empty
-// space (or use the same gesture again) to send everything home.
+// space or press Home to send everything home.
 #import "../common/cb.h"
 #import <CoreMotion/CoreMotion.h>
 
 #define FF_DOMAIN CFSTR("com.mymculture.freefall")
 
 static BOOL gEnabled = YES, gTilt = YES, gDock = YES, gLabels = NO, gHaptics = YES, gShake = YES, gRotate = YES;
-static NSInteger gFingers = 2;
+static NSInteger gFingers = 2, gTrigger = 0; // trigger: 0 shake, 1 double-tap, 2 both
+static CGFloat gSensitivity = 0.5;
 static CGFloat gGravity = 1.0, gBounce = 0.55, gFriction = 0.3;
 
 static CGFloat FFPrefFloat(CFStringRef key, CGFloat def) {
@@ -38,11 +39,15 @@ static void FFLoadPrefs(void) {
     gRotate   = CBPrefBool(FF_DOMAIN, CFSTR("Rotate"), YES);
     gFingers  = (NSInteger)FFPrefFloat(CFSTR("Fingers"), 2);
     if (gFingers < 1 || gFingers > 4) gFingers = 2;
+    gTrigger  = (NSInteger)FFPrefFloat(CFSTR("Trigger"), 0);
+    if (gTrigger < 0 || gTrigger > 2) gTrigger = 0;
+    gSensitivity = MAX(0.0, MIN(1.0, FFPrefFloat(CFSTR("Sensitivity"), 0.5)));
     gGravity  = MAX(0.1, MIN(5.0, FFPrefFloat(CFSTR("Gravity"), 1.0)));
     gBounce   = MAX(0.0, MIN(1.0, FFPrefFloat(CFSTR("Bounce"), 0.55)));
     gFriction = MAX(0.0, MIN(1.0, FFPrefFloat(CFSTR("Friction"), 0.3)));
     if (!gEnabled) FFStop(NO);
 }
+static void FFWatchTick(void);
 
 // ---- SpringBoard state ---------------------------------------------------
 static BOOL FFHomeScreenIsUp(void) {
@@ -415,9 +420,11 @@ static void FFLaunch(NSString *bid) {
 @end
 
 // ---- start / stop ----------------------------------------------------------
+static CFTimeInterval gLastStop;
 static void FFStop(BOOL animated) {
     FFWorld *w = gWorld;
     gWorld = nil;
+    if (w) gLastStop = CACurrentMediaTime();
     @try { [w teardown:animated]; } @catch (__unused NSException *e) {}
 }
 
@@ -446,6 +453,7 @@ static void FFStart(UIWindow *win) {
 }
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gr {
     if (!gEnabled) return NO;
+    if (!gWorld && gTrigger == 0) return NO; // shake-only: the tap never starts it
     ((UITapGestureRecognizer *)gr).numberOfTouchesRequired = gFingers;
     return gWorld != nil || FFHomeScreenIsUp();
 }
@@ -454,9 +462,12 @@ static void FFStart(UIWindow *win) {
 
 static char kTriggerKey;
 static BOOL gTaggedHome;
+static __weak UIWindow *gHomeWindow;
 
 static void FFTagWindow(UIWindow *win) {
-    if (!win || objc_getAssociatedObject(win, &kTriggerKey)) return;
+    if (!win) return;
+    gHomeWindow = win;
+    if (objc_getAssociatedObject(win, &kTriggerKey)) return;
     UITapGestureRecognizer *t = [[UITapGestureRecognizer alloc] initWithTarget:[FFTrigger shared] action:@selector(fired:)];
     t.numberOfTapsRequired = 2;
     t.numberOfTouchesRequired = gFingers;
@@ -498,11 +509,112 @@ static void FFInstall(void) {
     });
 }
 
+// ---- shake watcher --------------------------------------------------------
+// Runs only while the Home Screen is showing and Freefall isn't already active, at a
+// low rate, so it costs next to nothing the rest of the time.
+static CMMotionManager *gWatch;
+static NSTimer *gWatchTimer;
+static NSMutableArray<NSNumber *> *gPeaks;
+
+static UIWindow *FFFindHomeWindow(void) {
+    UIWindow *w = gHomeWindow;
+    if (w) return w;
+    Class cls = objc_getClass("SBIconView");
+    for (UIScene *sc in [UIApplication sharedApplication].connectedScenes) {
+        if (![sc isKindOfClass:[UIWindowScene class]]) continue;
+        for (UIWindow *win in ((UIWindowScene *)sc).windows) {
+            if ([NSStringFromClass([win class]) containsString:@"HomeScreen"]) { gHomeWindow = win; return win; }
+        }
+        for (UIWindow *win in ((UIWindowScene *)sc).windows) {
+            NSMutableArray *found = [NSMutableArray array];
+            FFCollectIconViews(win, win, cls, found);
+            if (found.count >= 4) { gHomeWindow = win; return win; }
+        }
+    }
+    return nil;
+}
+
+static void FFShakeSeen(double mag) {
+    // a shake is two or more hard jolts within 0.7s (back-and-forth), not one bump
+    CFTimeInterval now = CACurrentMediaTime();
+    if (!gPeaks) gPeaks = [NSMutableArray array];
+    if (gPeaks.count && now - gPeaks.lastObject.doubleValue < 0.09) return; // same jolt
+    [gPeaks addObject:@(now)];
+    while (gPeaks.count && now - gPeaks.firstObject.doubleValue > 0.7) [gPeaks removeObjectAtIndex:0];
+    if (gPeaks.count >= 2) {
+        [gPeaks removeAllObjects];
+        if (now - gLastStop < 1.2) return; // don't instantly restart right after putting icons back
+        FFStart(FFFindHomeWindow());
+        FFWatchTick();
+    }
+}
+
+static void FFWatchStart(void) {
+    if (gWatch) return;
+    gWatch = [CMMotionManager new];
+    // sensitivity 0..1 -> jolt threshold 2.0g (firm shake) .. 0.8g (gentle)
+    double threshold = 2.0 - 1.2 * gSensitivity;
+    if (gWatch.deviceMotionAvailable) {
+        gWatch.deviceMotionUpdateInterval = 1.0 / 30;
+        [gWatch startDeviceMotionUpdatesToQueue:[NSOperationQueue mainQueue] withHandler:^(CMDeviceMotion *m, NSError *e) {
+            if (!m) return;
+            CMAcceleration a = m.userAcceleration;
+            double mag = sqrt(a.x * a.x + a.y * a.y + a.z * a.z);
+            if (mag > threshold) FFShakeSeen(mag);
+        }];
+    } else if (gWatch.accelerometerAvailable) {
+        gWatch.accelerometerUpdateInterval = 1.0 / 30;
+        [gWatch startAccelerometerUpdatesToQueue:[NSOperationQueue mainQueue] withHandler:^(CMAccelerometerData *d, NSError *e) {
+            if (!d) return;
+            CMAcceleration a = d.acceleration;
+            double mag = fabs(sqrt(a.x * a.x + a.y * a.y + a.z * a.z) - 1.0); // remove gravity
+            if (mag > threshold) FFShakeSeen(mag);
+        }];
+    } else gWatch = nil;
+}
+
+static void FFWatchStop(void) {
+    [gWatch stopDeviceMotionUpdates];
+    [gWatch stopAccelerometerUpdates];
+    gWatch = nil;
+    [gPeaks removeAllObjects];
+}
+
+static void FFWatchTick(void) {
+    BOOL want = NO;
+    @try { want = gEnabled && gTrigger != 1 && !gWorld && FFHomeScreenIsUp(); } @catch (__unused NSException *e) {}
+    if (want) FFWatchStart(); else FFWatchStop();
+}
+
+// ---- Home button puts the icons back ---------------------------------------
+static void FFHookHomeButton(void) {
+    const char *classes[] = {"SBHomeHardwareButton", "SBHomeHardwareButtonActions", "SpringBoard"};
+    const char *sels[]    = {"singlePressUp:", "performSinglePressUpActions", "_handleMenuButtonEvent"};
+    for (int i = 0; i < 3; i++) {
+        Class c = objc_getClass(classes[i]);
+        SEL sel = sel_registerName(sels[i]);
+        if (!c || !class_getInstanceMethod(c, sel)) continue;
+        __block IMP orig = NULL;
+        if (strchr(sels[i], ':')) {
+            orig = CBHook(c, sel, ^(id self, id arg) {
+                if (gWorld) { dispatch_async(dispatch_get_main_queue(), ^{ FFStop(YES); }); return; }
+                ((void (*)(id, SEL, id))orig)(self, sel, arg);
+            });
+        } else {
+            orig = CBHook(c, sel, ^(id self) {
+                if (gWorld) { dispatch_async(dispatch_get_main_queue(), ^{ FFStop(YES); }); return; }
+                ((void (*)(id, SEL))orig)(self, sel);
+            });
+        }
+        return; // hook only the first one this iOS version has
+    }
+}
+
 static void FFPrefsChanged(CFNotificationCenterRef c, void *o, CFStringRef n, const void *obj, CFDictionaryRef i) {
-    dispatch_async(dispatch_get_main_queue(), ^{ FFLoadPrefs(); });
+    dispatch_async(dispatch_get_main_queue(), ^{ FFWatchStop(); FFLoadPrefs(); FFWatchTick(); });
 }
 static void FFLocked(CFNotificationCenterRef c, void *o, CFStringRef n, const void *obj, CFDictionaryRef i) {
-    dispatch_async(dispatch_get_main_queue(), ^{ FFStop(NO); });
+    dispatch_async(dispatch_get_main_queue(), ^{ FFStop(NO); FFWatchStop(); });
 }
 
 __attribute__((constructor)) static void FFInit(void) {
@@ -517,6 +629,11 @@ __attribute__((constructor)) static void FFInit(void) {
         FFInstall();
         [[NSNotificationCenter defaultCenter] addObserverForName:UIApplicationDidFinishLaunchingNotification object:nil
                                                            queue:[NSOperationQueue mainQueue]
-                                                      usingBlock:^(NSNotification *n) { FFInstall(); }];
+                                                      usingBlock:^(NSNotification *n) {
+            FFInstall();
+            FFHookHomeButton();
+            // cheap check twice a second: is the Home Screen up? only then listen for shakes
+            gWatchTimer = [NSTimer scheduledTimerWithTimeInterval:0.5 repeats:YES block:^(NSTimer *t) { FFWatchTick(); }];
+        }];
     }
 }

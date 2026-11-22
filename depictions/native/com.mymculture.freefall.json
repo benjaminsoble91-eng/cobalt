@@ -10,7 +10,7 @@
       "views": [
         {
           "class": "DepictionMarkdownView",
-          "markdown": "**Freefall**: double-tap your Home Screen with two fingers and every icon drops. They fall with real gravity, follow the tilt of your phone, bounce off the edges and each other, and spin as they tumble. Grab one and fling it across the screen, shake the phone to scatter the pile, or tap an icon to open its app.",
+          "markdown": "**Freefall**: shake your device on the Home Screen and every icon drops. They fall with real gravity, follow the tilt of your device, bounce off the edges and each other, and spin as they tumble. Tilt to steer them. Grab one and fling it across the screen, shake again to scatter the pile, or tap an icon to open its app.",
           "useSpacing": true
         },
         {
@@ -22,7 +22,7 @@
         },
         {
           "class": "DepictionMarkdownView",
-          "markdown": "1. Go to your Home Screen.\n2. Double-tap anywhere with two fingers (or three, in Settings).\n3. Tilt the phone to steer the icons, shake to scatter them, drag and flick to throw them.\n4. Tap an icon to open its app.\n5. Double-tap empty space, or repeat the gesture, and every icon flies back to its spot.",
+          "markdown": "1. Go to your Home Screen.\n2. Give your device a quick shake.\n3. Tilt to steer the icons, shake again to scatter them, drag and flick to throw them.\n4. Tap an icon to open its app.\n5. Double-tap empty space or press Home and every icon flies back to its spot.",
           "useSpacing": true
         },
         {
@@ -34,7 +34,7 @@
         },
         {
           "class": "DepictionMarkdownView",
-          "markdown": "- Turn Freefall on or off without uninstalling.\n- Two- or three-finger trigger.\n- Gravity strength, bounce and friction sliders.\n- Follow device tilt, shake to scatter, spinning icons.\n- Include the Dock, include app names, haptics.",
+          "markdown": "- Turn Freefall on or off without uninstalling.\n- Trigger: shake, two/three-finger double-tap, or both; shake sensitivity.\n- Gravity strength, bounce and friction sliders.\n- Follow device tilt, shake to scatter, spinning icons.\n- Include the Dock, include app names, haptics.",
           "useSpacing": true
         },
         {

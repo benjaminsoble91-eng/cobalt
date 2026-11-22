@@ -15,7 +15,7 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>footerText</key>
-			<string>Double-tap the Home Screen with the fingers below and your icons fall. Tilt to steer them, grab and flick them, tap one to open it. Double-tap empty space to put them back.</string>
+			<string>Shake your device on the Home Screen and your icons fall. Tilt to steer them, grab and flick them, tap one to open it. Double-tap empty space or press Home to put them back.</string>
 		</dict>
 		<dict>
 			<key>PostNotification</key>
@@ -34,8 +34,34 @@
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>Finger count only applies to the double-tap trigger.</string>
 			<key>label</key>
-			<string>Gesture</string>
+			<string>Trigger</string>
+		</dict>
+		<dict>
+			<key>PostNotification</key>
+			<string>com.mymculture.freefall/prefs</string>
+			<key>cell</key>
+			<string>PSSegmentCell</string>
+			<key>default</key>
+			<integer>0</integer>
+			<key>defaults</key>
+			<string>com.mymculture.freefall</string>
+			<key>key</key>
+			<string>Trigger</string>
+			<key>validTitles</key>
+			<array>
+				<string>Shake</string>
+				<string>Double-tap</string>
+				<string>Both</string>
+			</array>
+			<key>validValues</key>
+			<array>
+				<integer>0</integer>
+				<integer>1</integer>
+				<integer>2</integer>
+			</array>
 		</dict>
 		<dict>
 			<key>PostNotification</key>
@@ -58,6 +84,32 @@
 				<integer>2</integer>
 				<integer>3</integer>
 			</array>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>Higher means a gentler shake starts it.</string>
+			<key>label</key>
+			<string>Shake sensitivity</string>
+		</dict>
+		<dict>
+			<key>PostNotification</key>
+			<string>com.mymculture.freefall/prefs</string>
+			<key>cell</key>
+			<string>PSSliderCell</string>
+			<key>default</key>
+			<real>0.5</real>
+			<key>defaults</key>
+			<string>com.mymculture.freefall</string>
+			<key>key</key>
+			<string>Sensitivity</string>
+			<key>max</key>
+			<real>1.0</real>
+			<key>min</key>
+			<real>0.0</real>
+			<key>showValue</key>
+			<true/>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -169,7 +221,7 @@
 			<key>key</key>
 			<string>Shake</string>
 			<key>label</key>
-			<string>Shake to scatter icons</string>
+			<string>Shake again to scatter icons</string>
 		</dict>
 		<dict>
 			<key>PostNotification</key>
