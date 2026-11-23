@@ -417,15 +417,15 @@ SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/c
 Tag: role::enduser
 
 Package: com.mymculture.trollduplicatorlite
-Version: 1.2
+Version: 1.3
 Architecture: iphoneos-arm
 Maintainer: MYM Culture
 Depends: firmware (>= 14.0), ldid, com.opa334.trollstorelite
-Filename: debs/com.mymculture.trollduplicatorlite_1.2_iphoneos-arm.deb
-Size: 153294
-MD5sum: 790c077cb920888b32dc72a896e3f5cc
-SHA1: f6cc91899e2346ce85fc1340d710463ce00fc60b
-SHA256: 6ed5beb3e0ef3e72c3afbb177bc85a1288a0bc3283bd3a74db8be3d890a8b0cd
+Filename: debs/com.mymculture.trollduplicatorlite_1.3_iphoneos-arm.deb
+Size: 152968
+MD5sum: da8781b218ce6879fb6e5a2bb1a347e9
+SHA1: b000bb8f2182822c0edeec6802d7050e4e9e6054
+SHA256: 4402d31c34fcdec54b544e2a5c957fb1afe3804e46099256492e80a450eaedb5
 Section: Utilities
 Description: Duplicate your apps through TrollStore Lite. Copies get their own name and data. No AppSync needed.
 Author: MYM Culture
@@ -436,15 +436,15 @@ SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/c
 Tag: role::enduser
 
 Package: com.mymculture.trollduplicatorlite
-Version: 1.2
+Version: 1.3
 Architecture: iphoneos-arm64
 Maintainer: MYM Culture
 Depends: firmware (>= 14.0), ldid, com.opa334.trollstorelite
-Filename: debs/com.mymculture.trollduplicatorlite_1.2_iphoneos-arm64.deb
-Size: 153352
-MD5sum: f7c1499d79c02a1cb867bd4b5fed20c7
-SHA1: 553ad34944ea86eab93596cf3a2277e0db53cafd
-SHA256: dcb8e9265d84b38390a8cdbfd4b98fcad8f9cc7de7b70e6f6b778779b9a8d488
+Filename: debs/com.mymculture.trollduplicatorlite_1.3_iphoneos-arm64.deb
+Size: 153026
+MD5sum: 95c7031ec6f0bcd160907369673fdfb9
+SHA1: 114b6724a803cbc76ade710c9483bea19681ba98
+SHA256: ab255fc9401f888a2542479afdedf15cc8375aea8bd51730a09817c5f2ad14a9
 Section: Utilities
 Description: Duplicate your apps through TrollStore Lite. Copies get their own name and data. No AppSync needed.
 Author: MYM Culture

@@ -6,7 +6,7 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 ID=com.mymculture.trollduplicatorlite
-VER=${VER:-1.2}
+VER=${VER:-1.3}
 SDK=${SDK:-/home/claude/build/sdks/iPhoneOS14.5.sdk}
 OUT=$PWD/out; rm -rf "$OUT" stage; mkdir -p "$OUT"
 CC="clang -target arm64-apple-ios13.0 -isysroot $SDK -fobjc-arc -Os -Wall -Wno-unused-function -fuse-ld=lld -Wl,-adhoc_codesign"
