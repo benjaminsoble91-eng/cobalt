@@ -455,17 +455,17 @@ SileoDepiction: depictions/native/com.mymculture.trollduplicatorlite.json
 Tag: role::enduser
 
 Package: com.mymculture.gridsize
-Version: 1.0
+Version: 1.1
 Architecture: iphoneos-arm
 Maintainer: MYM Culture
 Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
-Filename: debs/com.mymculture.gridsize_1.0_iphoneos-arm.deb
-Size: 8488
-MD5sum: 9b286517d6e39fd4ab3c7a76dc805117
-SHA1: ebfd7b448e24de2a2a98600696138ad91202ea47
-SHA256: 503f49f94703f54f9f6165cc5d408714abebbe3f1072a37b6cf07c6500d89f37
+Filename: debs/com.mymculture.gridsize_1.1_iphoneos-arm.deb
+Size: 9878
+MD5sum: dbe5f045a1aa0ae4b06ec0fe7ef70147
+SHA1: 7359edf880c91af930baa2e5e18d80a62431f204
+SHA256: 93fc4c0caeb70517f523d5697e954d68d3a090eb47392d9a46723f2a3dc96410
 Section: Tweaks
-Description: Choose how many apps go in each Home Screen row. Icons resize to fit.
+Description: Choose how many apps go in each Home Screen row. Icons and widgets resize to fit.
 Author: MYM Culture
 Name: GridSize
 Icon: assets/icon_com.mymculture.gridsize.png
@@ -474,17 +474,17 @@ SileoDepiction: depictions/native/com.mymculture.gridsize.json
 Tag: role::enduser
 
 Package: com.mymculture.gridsize
-Version: 1.0
+Version: 1.1
 Architecture: iphoneos-arm64
 Maintainer: MYM Culture
 Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
-Filename: debs/com.mymculture.gridsize_1.0_iphoneos-arm64.deb
-Size: 8516
-MD5sum: 24ac5cf17872a0d12b78e3274cc6d46e
-SHA1: 496b6e05aa892fc138985679cb6a4a54a1e7a633
-SHA256: dc6056ad281311c025516d80d90728c73cfe1360c078f65ec7a87fe98e768d16
+Filename: debs/com.mymculture.gridsize_1.1_iphoneos-arm64.deb
+Size: 9916
+MD5sum: 1a8c57508a93b178a4787c97cdce079b
+SHA1: a14e7c6ddb04cca792592095a369973cd4d8faa2
+SHA256: 8d4aa02df89fda4f2e95fd074719dd7df8978baff2cfdcb266ab0e050ab7a6ff
 Section: Tweaks
-Description: Choose how many apps go in each Home Screen row. Icons resize to fit.
+Description: Choose how many apps go in each Home Screen row. Icons and widgets resize to fit.
 Author: MYM Culture
 Name: GridSize
 Icon: assets/icon_com.mymculture.gridsize.png
