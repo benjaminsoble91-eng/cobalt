@@ -10,7 +10,7 @@
       "views": [
         {
           "class": "DepictionMarkdownView",
-          "markdown": "On the iPhone 6s Plus the Home Screen is stuck at 4 apps per row. **GridSize** lets you pick how many apps go in each row (3 to 8) and how many rows per page (3 to 10). Icons shrink automatically so everything fits.",
+          "markdown": "On the iPhone 6s Plus the Home Screen is stuck at 4 apps per row. **GridSize** lets you pick how many apps go in each row (3 to 8) and how many rows per page (3 to 10). Icons and widgets resize automatically so everything fits.",
           "useSpacing": true
         },
         {
@@ -100,13 +100,13 @@
       "views": [
         {
           "class": "DepictionSubheaderView",
-          "title": "1.0",
+          "title": "1.1",
           "useBoldText": true,
           "useBottomMargin": false
         },
         {
           "class": "DepictionMarkdownView",
-          "markdown": "- Initial release.",
+          "markdown": "- Widgets now resize with the grid. They take the same share of the page as stock and keep Apple's shape, so they don't overlap apps or look stretched.\n- New \"Resize widgets to fit\" switch (on by default).",
           "useSpacing": true
         }
       ]
