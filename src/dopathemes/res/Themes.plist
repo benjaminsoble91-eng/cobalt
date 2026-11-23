@@ -4,7 +4,9 @@
 <array>
 	<dict>
 		<key>actionMenuColor</key>
-		<string>4F0C4A5A</string>
+		<string>4F0C3A5A</string>
+		<key>appIcon</key>
+		<string>icon_trollamine.png</string>
 		<key>blur</key>
 		<integer>30</integer>
 		<key>image</key>
@@ -16,59 +18,49 @@
 		<key>titleShadow</key>
 		<false/>
 		<key>windowColor</key>
-		<string>60040A0A</string>
+		<string>60030A0C</string>
 	</dict>
 	<dict>
 		<key>actionMenuColor</key>
-		<string>4F0C2A71</string>
-		<key>blur</key>
-		<integer>35</integer>
-		<key>image</key>
-		<string>dopathemes_cobalt.jpg</string>
-		<key>key</key>
-		<string>dopathemes.cobalt</string>
-		<key>name</key>
-		<string>Cobalt</string>
-		<key>titleShadow</key>
-		<false/>
-		<key>windowColor</key>
-		<string>6003060F</string>
-	</dict>
-	<dict>
-		<key>actionMenuColor</key>
-		<string>4F0C3F3A</string>
-		<key>blur</key>
-		<integer>25</integer>
-		<key>image</key>
-		<string>dopathemes_aurora.jpg</string>
-		<key>key</key>
-		<string>dopathemes.aurora</string>
-		<key>name</key>
-		<string>Aurora</string>
-		<key>titleShadow</key>
-		<false/>
-		<key>windowColor</key>
-		<string>6002080A</string>
-	</dict>
-	<dict>
-		<key>actionMenuColor</key>
-		<string>5F5A1E1A</string>
+		<string>5F4A3505</string>
+		<key>appIcon</key>
+		<string>icon_gold.png</string>
 		<key>blur</key>
 		<integer>30</integer>
 		<key>image</key>
-		<string>dopathemes_sunset.jpg</string>
+		<string>dopathemes_gold.jpg</string>
 		<key>key</key>
-		<string>dopathemes.sunset</string>
+		<string>dopathemes.gold</string>
 		<key>name</key>
-		<string>Sunset</string>
+		<string>Gold</string>
 		<key>titleShadow</key>
-		<false/>
+		<true/>
 		<key>windowColor</key>
-		<string>600F0505</string>
+		<string>600C0800</string>
 	</dict>
 	<dict>
 		<key>actionMenuColor</key>
-		<string>7F151515</string>
+		<string>5F2A3A05</string>
+		<key>appIcon</key>
+		<string>icon_lime.png</string>
+		<key>blur</key>
+		<integer>30</integer>
+		<key>image</key>
+		<string>dopathemes_lime.jpg</string>
+		<key>key</key>
+		<string>dopathemes.lime</string>
+		<key>name</key>
+		<string>Lime</string>
+		<key>titleShadow</key>
+		<false/>
+		<key>windowColor</key>
+		<string>60050800</string>
+	</dict>
+	<dict>
+		<key>actionMenuColor</key>
+		<string>7F161616</string>
+		<key>appIcon</key>
+		<string>icon_midnight.png</string>
 		<key>blur</key>
 		<integer>12</integer>
 		<key>image</key>
@@ -84,51 +76,57 @@
 	</dict>
 	<dict>
 		<key>actionMenuColor</key>
-		<string>4F5A1A35</string>
+		<string>5F1A2A3A</string>
+		<key>appIcon</key>
+		<string>icon_frost.png</string>
 		<key>blur</key>
 		<integer>30</integer>
 		<key>image</key>
-		<string>dopathemes_sakura.jpg</string>
+		<string>dopathemes_frost.jpg</string>
 		<key>key</key>
-		<string>dopathemes.sakura</string>
+		<string>dopathemes.frost</string>
 		<key>name</key>
-		<string>Sakura</string>
+		<string>Frost</string>
 		<key>titleShadow</key>
 		<true/>
 		<key>windowColor</key>
-		<string>600A0407</string>
+		<string>60101820</string>
 	</dict>
 	<dict>
 		<key>actionMenuColor</key>
-		<string>5F4A2E08</string>
+		<string>5F3A2412</string>
+		<key>appIcon</key>
+		<string>icon_mocha.png</string>
 		<key>blur</key>
 		<integer>30</integer>
 		<key>image</key>
-		<string>dopathemes_goldenhour.jpg</string>
+		<string>dopathemes_mocha.jpg</string>
 		<key>key</key>
-		<string>dopathemes.goldenhour</string>
+		<string>dopathemes.mocha</string>
 		<key>name</key>
-		<string>Golden Hour</string>
+		<string>Mocha</string>
 		<key>titleShadow</key>
 		<true/>
 		<key>windowColor</key>
-		<string>600A0602</string>
+		<string>60140C06</string>
 	</dict>
 	<dict>
 		<key>actionMenuColor</key>
-		<string>4F2A0C5A</string>
+		<string>5F3A0A40</string>
+		<key>appIcon</key>
+		<string>icon_neon.png</string>
 		<key>blur</key>
-		<integer>35</integer>
+		<integer>25</integer>
 		<key>image</key>
-		<string>dopathemes_phantom.jpg</string>
+		<string>dopathemes_neon.jpg</string>
 		<key>key</key>
-		<string>dopathemes.phantom</string>
+		<string>dopathemes.neon</string>
 		<key>name</key>
-		<string>Phantom</string>
+		<string>Neon</string>
 		<key>titleShadow</key>
-		<false/>
+		<true/>
 		<key>windowColor</key>
-		<string>6008040A</string>
+		<string>60050208</string>
 	</dict>
 </array>
 </plist>

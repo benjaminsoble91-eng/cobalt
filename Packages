@@ -493,17 +493,17 @@ SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/c
 Tag: role::enduser
 
 Package: com.mymculture.dopathemes
-Version: 1.0
+Version: 1.1
 Architecture: iphoneos-arm64
 Maintainer: MYM Culture
 Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
-Filename: debs/com.mymculture.dopathemes_1.0_iphoneos-arm64.deb
-Size: 3121790
-MD5sum: 8f339a8c98d514141edebbd751df7e93
-SHA1: a73fec69455bda8f07eb93d5c537327ae783668b
-SHA256: 6dbfba7fab015d466abd61290f86e6ecac62fe75e6cc8298a2b58017b4b4a5df
+Filename: debs/com.mymculture.dopathemes_1.1_iphoneos-arm64.deb
+Size: 2864010
+MD5sum: b2ce3a7fe30b2bcceb502f15fc8b9940
+SHA1: 1966f8c30ac988c6bf248d57e7da8485bddf5e5e
+SHA256: f85374dafe8136cbdb5c24a9b9992ac40e7e0687d14d0805ea18fed13e6f0155
 Section: Themes
-Description: Adds new themes to Dopamine, alongside the stock ones.
+Description: Adds new themes to Dopamine, alongside the stock ones, each with its own icon.
 Author: MYM Culture
 Name: DopaThemes
 Icon: https://benjaminsoble91-eng.github.io/cobalt/assets/icon_com.mymculture.dopathemes.png

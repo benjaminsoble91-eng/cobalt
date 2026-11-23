@@ -15,9 +15,11 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>footerText</key>
-			<string>Adds new themes to Dopamine, alongside the stock ones. Pick one in Dopamine → Settings → Theme.</string>
+			<string>Adds new themes to Dopamine, alongside the stock ones, each with its own app icon. Pick one in Dopamine → Settings → Theme.</string>
 		</dict>
 		<dict>
+			<key>PostNotification</key>
+			<string>com.mymculture.dopathemes/prefs</string>
 			<key>cell</key>
 			<string>PSSwitchCell</string>
 			<key>default</key>
@@ -32,16 +34,16 @@
 		<dict>
 			<key>cell</key>
 			<string>PSGroupCell</string>
-			<key>label</key>
-			<string>Included themes</string>
 			<key>footerText</key>
-			<string>Trollamine, Cobalt, Aurora, Sunset, Midnight, Sakura, Golden Hour, Phantom.
+			<string>Trollamine, Gold, Lime, Midnight, Frost, Mocha, Neon.
 
 Close Dopamine from the app switcher and reopen it after installing or flipping the switch.
 
-Add your own: put a .plist (same keys as Dopamine's Themes.plist) and a background image in /var/jb/Library/DopaThemes.
+Add your own: put a .plist (same keys as Dopamine's Themes.plist, plus "appIcon" for a square PNG icon) and its images in /var/jb/Library/DopaThemes.
 
-DopaThemes 1.0 from Cobalt.</string>
+DopaThemes 1.1 from Cobalt.</string>
+			<key>label</key>
+			<string>Included themes</string>
 		</dict>
 	</array>
 	<key>title</key>

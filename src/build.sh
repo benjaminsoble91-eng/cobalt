@@ -16,6 +16,11 @@ build() { # dir Name id version section depends desc
   $CC -DJBROOT=\"$JB\" -dynamiclib -install_name $JB/Library/MobileSubstrate/DynamicLibraries/$name.dylib $FW $dir/Tweak.m \
       -o $jb/Library/MobileSubstrate/DynamicLibraries/$name.dylib
   cp $dir/Filter.plist $jb/Library/MobileSubstrate/DynamicLibraries/$name.plist
+  if [ -f $dir/SpringBoard.m ]; then   # optional second dylib that loads into SpringBoard (e.g. DopaThemes' icons)
+    $CC -DJBROOT=\"$JB\" -dynamiclib -install_name $JB/Library/MobileSubstrate/DynamicLibraries/${name}SB.dylib $FW $dir/SpringBoard.m \
+        -o $jb/Library/MobileSubstrate/DynamicLibraries/${name}SB.dylib
+    cp $dir/SBFilter.plist $jb/Library/MobileSubstrate/DynamicLibraries/${name}SB.plist
+  fi
   cp $dir/Prefs.plist $jb/Library/PreferenceLoader/Preferences/$name.plist
   if [ -d $dir/res ]; then   # extra files (e.g. DopaThemes' theme backgrounds) -> JBROOT/Library/Name
     mkdir -p $jb/Library/$name; cp $dir/res/* $jb/Library/$name/
@@ -40,7 +45,7 @@ Depends: $dep
 CTL
   find $root -type d -exec chmod 755 {} +
   find $root -type f ! -name '*-helper' ! -name '*.dylib' -exec chmod 644 {} +
-  chmod 755 $jb/Library/MobileSubstrate/DynamicLibraries/$name.dylib
+  chmod 755 $jb/Library/MobileSubstrate/DynamicLibraries/*.dylib
   [ -f $root/DEBIAN/postinst ] && chmod 755 $root/DEBIAN/postinst
   dpkg-deb --root-owner-group -Zgzip -b $root $OUT/${id}_${ver}_$ARCH.deb >/dev/null
 }
@@ -53,7 +58,7 @@ for variant in "iphoneos-arm64 /var/jb" "iphoneos-arm "; do
   [ "$ARCH" = iphoneos-arm64 ] && build doubledose DoubleDose com.mymculture.doubledose 1.0.1 Tweaks "$D" "Unlocks the Jailbreak button in a duplicated Dopamine while already jailbroken."
   build panicbutton PanicButton com.mymculture.panicbutton 1.0.1 Tweaks "$D" "Triggers a true kernel panic for testing. Produces a panic-full log."
   build rootrun    RootRun    com.mymculture.rootrun    1.0.1 Tweaks "$D" "Make the apps you choose launch as root."
-  [ "$ARCH" = iphoneos-arm64 ] && build dopathemes DopaThemes com.mymculture.dopathemes 1.0 Themes "$D" "Adds new themes to Dopamine, alongside the stock ones."
+  [ "$ARCH" = iphoneos-arm64 ] && build dopathemes DopaThemes com.mymculture.dopathemes 1.1 Themes "$D" "Adds new themes to Dopamine, alongside the stock ones, each with its own icon."
   build gridsize   GridSize   com.mymculture.gridsize   1.0   Tweaks "$D" "Choose how many apps go in each Home Screen row. Icons resize to fit."
 done
 ls -la $OUT
