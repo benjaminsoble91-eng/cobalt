@@ -491,3 +491,22 @@ Icon: assets/icon_com.mymculture.gridsize.png
 Depiction: depictions/com.mymculture.gridsize.html
 SileoDepiction: depictions/native/com.mymculture.gridsize.json
 Tag: role::enduser
+
+Package: com.mymculture.dopathemes
+Version: 1.0
+Architecture: iphoneos-arm64
+Maintainer: MYM Culture
+Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
+Filename: debs/com.mymculture.dopathemes_1.0_iphoneos-arm64.deb
+Size: 3121790
+MD5sum: 8f339a8c98d514141edebbd751df7e93
+SHA1: a73fec69455bda8f07eb93d5c537327ae783668b
+SHA256: 6dbfba7fab015d466abd61290f86e6ecac62fe75e6cc8298a2b58017b4b4a5df
+Section: Themes
+Description: Adds new themes to Dopamine, alongside the stock ones.
+Author: MYM Culture
+Name: DopaThemes
+Icon: assets/icon_com.mymculture.dopathemes.png
+Depiction: depictions/com.mymculture.dopathemes.html
+SileoDepiction: depictions/native/com.mymculture.dopathemes.json
+Tag: role::enduser

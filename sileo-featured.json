@@ -4,6 +4,12 @@
   "itemCornerRadius": 10,
   "banners": [
     {
+      "url": "https://benjaminsoble91-eng.github.io/cobalt/assets/banner_com.mymculture.dopathemes.png",
+      "title": "DopaThemes",
+      "package": "com.mymculture.dopathemes",
+      "hideShadow": false
+    },
+    {
       "url": "https://benjaminsoble91-eng.github.io/cobalt/assets/banner_com.mymculture.gridsize.png",
       "title": "GridSize",
       "package": "com.mymculture.gridsize",

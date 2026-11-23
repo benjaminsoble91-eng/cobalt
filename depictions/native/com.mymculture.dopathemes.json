@@ -1,0 +1,113 @@
+{
+  "minVersion": "0.1",
+  "class": "DepictionTabView",
+  "tintColor": "#3c78ff",
+  "headerImage": "https://benjaminsoble91-eng.github.io/cobalt/assets/banner_com.mymculture.dopathemes.png",
+  "tabs": [
+    {
+      "tabname": "Details",
+      "class": "DepictionStackView",
+      "views": [
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "**DopaThemes** adds 8 new themes to Dopamine's Theme picker, right alongside the stock ones (Dopamine, ElleKit, Deep Blue Sky, Blood Sky, Desert Dusk).",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "Themes"
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "Trollamine (blue into green), Cobalt, Aurora, Sunset, Midnight (near-black), Sakura, Golden Hour and Phantom (purple). Each one sets the background, the menu and window tint, and the boot logo, the same way a stock theme does.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "How to use"
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "1. Install DopaThemes.\n2. Close Dopamine from the app switcher and reopen it.\n3. Open Dopamine → Settings → Theme and pick one.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "Make your own"
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "Drop a .plist (same keys as Dopamine's Themes.plist: key, name, image, actionMenuColor, windowColor, blur, titleShadow) plus its background image into /var/jb/Library/DopaThemes, then reopen Dopamine.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "Good to know"
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "Works in Dopamine 2.x, Trollamine and duplicated Dopamine copies. Themes show up while you're jailbroken (that's when tweaks load). The app icon stays the default one, since iOS only allows icons built into the app. Turn it off in Settings → DopaThemes.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Version",
+          "text": "1.0"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Section",
+          "text": "Themes"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Compatibility",
+          "text": "iOS 15.0 and later (Dopamine, rootless)"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Requires",
+          "text": "mobilesubstrate, preferenceloader"
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionTableButtonView",
+          "title": "Cobalt storefront",
+          "action": "https://benjaminsoble91-eng.github.io/cobalt/",
+          "openExternal": true
+        }
+      ]
+    },
+    {
+      "tabname": "Changelog",
+      "class": "DepictionStackView",
+      "views": [
+        {
+          "class": "DepictionSubheaderView",
+          "title": "1.0",
+          "useBoldText": true,
+          "useBottomMargin": false
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- Initial release: 8 themes, plus support for your own.",
+          "useSpacing": true
+        }
+      ]
+    }
+  ]
+}
