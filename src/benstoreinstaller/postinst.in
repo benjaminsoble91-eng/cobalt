@@ -1,0 +1,141 @@
+#!/bin/sh
+# Benstore Installer (com.mymculture.benstoreinstaller)
+# With TrollStore: installs Benstore through TrollStore, then removes this package so only
+# Benstore is left.
+# Without TrollStore (a jailbreak that never set TrollStore up): installs
+# Benstore as a jailbreak app in @PREFIX@/Applications instead. In that mode this package
+# stays installed and owns the app, so removing it in Sileo removes Benstore too.
+# @PREFIX@ is filled in by build.sh ("" rootful, "/var/jb" rootless).
+
+PKG=com.mymculture.benstoreinstaller
+PREFIX="@PREFIX@"
+SHARE="$PREFIX/usr/share/benstoreinstaller"
+TIPA="$SHARE/Benstore.tipa"
+JBAPP="$SHARE/Benstore.app"
+ENTS="$SHARE/ents.plist"
+JBDEST="$PREFIX/Applications/Benstore.app"
+JBMARK="$SHARE/.jailbreak-app"
+LOG=/var/tmp/benstoreinstaller.log
+export PATH="$PREFIX/usr/bin:$PREFIX/bin:$PREFIX/usr/sbin:$PREFIX/sbin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+
+[ "$1" = "configure" ] || exit 0
+
+say() { echo "Benstore Installer: $*"; }
+
+# TrollStore's installer engine. Trollamine carries the same engine, so it works too.
+find_engine() {
+    for app in TrollStore.app Trollamine.app; do
+        for h in /var/containers/Bundle/Application/*/"$app"/trollstorehelper; do
+            if [ -f "$h" ]; then echo "$h"; return 0; fi
+        done
+    done
+    return 1
+}
+
+explain() {
+    case "$1" in
+        171) echo "Another copy of Benstore that TrollStore doesn't own is in the way." ;;
+        173) echo "TrollStore needs ldid. Open TrollStore > Settings > Install ldid, then reinstall this package." ;;
+        175) echo "TrollStore couldn't sign the app." ;;
+        *)   echo "TrollStore's installer returned code $1." ;;
+    esac
+}
+
+if [ ! -f "$TIPA" ]; then
+    say "The Benstore app file is missing from this package."
+    exit 0
+fi
+
+# No TrollStore: put Benstore in the jailbreak's Applications folder instead.
+install_as_jailbreak_app() {
+    if [ ! -d "$JBAPP" ] || [ ! -f "$ENTS" ]; then
+        say "The jailbreak copy of Benstore is missing from this package."
+        return 1
+    fi
+    if ! command -v ldid >/dev/null 2>&1; then
+        say "ldid is missing. Install ldid in Sileo, then reinstall this package."
+        return 1
+    fi
+    if ! command -v uicache >/dev/null 2>&1; then
+        say "uicache is missing from the jailbreak, so the app can't be added to the Home Screen."
+        return 1
+    fi
+    say "TrollStore isn't installed, so Benstore is being installed as a jailbreak app."
+    [ -d "$JBDEST" ] && uicache -u "$JBDEST" >>"$LOG" 2>&1
+    rm -rf "$JBDEST"
+    mkdir -p "$PREFIX/Applications"
+    cp -R "$JBAPP" "$JBDEST" || { say "Couldn't copy the app into $PREFIX/Applications."; return 1; }
+    chown -R root:wheel "$JBDEST" 2>/dev/null
+    find "$JBDEST" -type d -exec chmod 755 {} +
+    find "$JBDEST" -type f -exec chmod 644 {} +
+    chmod 755 "$JBDEST/Benstore"
+    if ! ldid -S"$ENTS" "$JBDEST/Benstore" >>"$LOG" 2>&1; then
+        say "Signing the app with ldid failed. Log: $LOG"
+        rm -rf "$JBDEST"
+        return 1
+    fi
+    if ! uicache -p "$JBDEST" >>"$LOG" 2>&1; then
+        say "uicache couldn't add the app to the Home Screen. Try running uicache -a, or respring. Log: $LOG"
+    fi
+    touch "$JBMARK"
+    say "Benstore installed as a jailbreak app. Look for it on your Home Screen."
+    say "To remove it later, uninstall Benstore Installer in Sileo."
+    say "Benstore still needs LocalDevVPN connected to install and refresh apps."
+    return 0
+}
+
+ENGINE=$(find_engine)
+if [ -z "$ENGINE" ]; then
+    install_as_jailbreak_app
+    exit 0
+fi
+
+# TrollStore is here. Clear out a jailbreak-app copy from an earlier install so TrollStore can own it.
+if [ -f "$JBMARK" ] || [ -d "$JBDEST" ]; then
+    uicache -u "$JBDEST" >>"$LOG" 2>&1
+    rm -rf "$JBDEST" "$JBMARK"
+fi
+
+say "Installing Benstore through $(basename "$(dirname "$ENGINE")" .app)..."
+"$ENGINE" install installd "$TIPA" >"$LOG" 2>&1
+CODE=$?
+if [ "$CODE" = "171" ]; then
+    say "Replacing the copy that's already there..."
+    "$ENGINE" install installd force "$TIPA" >>"$LOG" 2>&1
+    CODE=$?
+fi
+
+if [ "$CODE" != "0" ]; then
+    say "Install failed. $(explain "$CODE")"
+    say "This installer stays on your device so you can try again (reinstall it in Sileo). Log: $LOG"
+    exit 0
+fi
+
+say "Benstore installed. Look for it on your Home Screen. It won't expire, since TrollStore signed it."
+say "Benstore still needs LocalDevVPN connected to install and refresh apps."
+say "To update Benstore, install the newest Benstore Installer from Cobalt."
+say "This installer will now remove itself."
+
+# Remove this package once Sileo/apt has finished and let go of the dpkg lock.
+# Runs detached so this script can exit and release the lock first.
+cleanup_job='
+    unset DPKG_FRONTEND_LOCKED
+    i=0
+    sleep 2
+    while [ $i -lt 150 ]; do
+        st=$(dpkg-query -W -f="\${Status}" '"$PKG"' 2>/dev/null)
+        [ -z "$st" ] && exit 0
+        case "$st" in
+            *not-installed*|*config-files*) exit 0 ;;
+            "install ok installed") dpkg --purge '"$PKG"' && exit 0 ;;
+        esac
+        i=$((i+1))
+        sleep 2
+    done
+'
+if command -v nohup >/dev/null 2>&1; then
+    nohup sh -c "$cleanup_job" >>"$LOG" 2>&1 </dev/null &
+else
+    sh -c "$cleanup_job" >>"$LOG" 2>&1 </dev/null &
+fi
+exit 0

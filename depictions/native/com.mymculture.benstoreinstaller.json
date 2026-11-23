@@ -1,0 +1,106 @@
+{
+  "minVersion": "0.1",
+  "class": "DepictionTabView",
+  "tintColor": "#ff8a1e",
+  "headerImage": "https://benjaminsoble91-eng.github.io/cobalt/assets/banner_com.mymculture.benstoreinstaller.png",
+  "tabs": [
+    {
+      "tabname": "Details",
+      "class": "DepictionStackView",
+      "views": [
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "Installs **Benstore**, the on-device sideloader, through TrollStore, then removes itself. Installed this way Benstore never expires: no 7-day refresh for Benstore itself, and no Mac needed to set it up.\n\nNo TrollStore? It installs Benstore as a jailbreak app instead and stays installed, so uninstalling it removes Benstore too.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "How it works"
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "1. Install **Benstore Installer** from Cobalt.\n2. It hands Benstore to TrollStore's installer, so the app is a normal TrollStore app.\n3. As soon as Sileo finishes, the installer package removes itself.\n4. Open Benstore, sign in with your Apple ID, and connect **LocalDevVPN** to start installing apps.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "Good to know"
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- The apps Benstore installs are still signed with your Apple ID, so they keep the usual 7-day refresh and 3-app limit. Only Benstore itself stops expiring.\n- Benstore still needs **LocalDevVPN** connected to install and refresh apps.\n- To update a TrollStore or jailbreak copy, install the newest Benstore Installer from Cobalt. Its version always matches the Benstore it installs.\n- Already have Benstore from the Mac installer? This replaces it with the TrollStore copy.\n- If the install fails, the installer stays so you can reinstall it and try again.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "Information"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Version",
+          "text": "1.44"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Installs",
+          "text": "Benstore 1.44"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Section",
+          "text": "Utilities"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Compatibility",
+          "text": "iOS 14.0 and later (rootful and rootless)"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Requires",
+          "text": "TrollStore, or a jailbreak with ldid"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Source",
+          "text": "Cobalt"
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionTableButtonView",
+          "title": "Cobalt storefront",
+          "action": "https://benjaminsoble91-eng.github.io/cobalt/",
+          "openExternal": true
+        }
+      ]
+    },
+    {
+      "tabname": "Changelog",
+      "class": "DepictionStackView",
+      "views": [
+        {
+          "class": "DepictionSubheaderView",
+          "title": "1.44",
+          "useBoldText": true,
+          "useBottomMargin": false
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- First release. Installs Benstore 1.44 through TrollStore (or as a jailbreak app without TrollStore) and removes itself afterwards.",
+          "useSpacing": true
+        }
+      ]
+    }
+  ]
+}
