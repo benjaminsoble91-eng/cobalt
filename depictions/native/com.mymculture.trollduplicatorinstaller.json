@@ -47,7 +47,7 @@
         {
           "class": "DepictionTableTextView",
           "title": "Version",
-          "text": "1.1"
+          "text": "1.2"
         },
         {
           "class": "DepictionTableTextView",
@@ -89,6 +89,17 @@
       "tabname": "Changelog",
       "class": "DepictionStackView",
       "views": [
+        {
+          "class": "DepictionSubheaderView",
+          "title": "1.2",
+          "useBoldText": true,
+          "useBottomMargin": false
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- When making several copies, every copy now gets the exact name you type (no more numbered names).",
+          "useSpacing": true
+        },
         {
           "class": "DepictionSubheaderView",
           "title": "1.1",

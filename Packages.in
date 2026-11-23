@@ -284,15 +284,15 @@ SileoDepiction: depictions/native/com.mymculture.rootrun.json
 Tag: role::enduser
 
 Package: com.mymculture.trollduplicatorinstaller
-Version: 1.1
+Version: 1.2
 Architecture: iphoneos-arm64
 Maintainer: MYM Culture
 Depends: firmware (>= 13.0), ldid
-Filename: debs/com.mymculture.trollduplicatorinstaller_1.1_iphoneos-arm64.deb
-Size: 409862
-MD5sum: 8bee8338feccc62bf591cff13bff66a6
-SHA1: 7c013f149c8f1b9132f40ff11b48f423a08264e9
-SHA256: 44e2ce9960935beffa8e76d33c2b6f8451103b14e9b1968f4e48c95b188a6dee
+Filename: debs/com.mymculture.trollduplicatorinstaller_1.2_iphoneos-arm64.deb
+Size: 412278
+MD5sum: 27d316108b0c56d8e2a503d09b0c003b
+SHA1: 23e186cd7f37f298b07034d0870cb7c5e6404b05
+SHA256: 5d6f06dd5e55a4372d63d18fe3f9e1af52b73aee7f9c39398c2af1eb6f4dd619
 Section: Utilities
 Description: Installs TrollDuplicator through TrollStore, or as a jailbreak app when TrollStore is not installed.
 Author: MYM Culture
@@ -303,15 +303,15 @@ SileoDepiction: depictions/native/com.mymculture.trollduplicatorinstaller.json
 Tag: role::enduser
 
 Package: com.mymculture.trollduplicatorinstaller
-Version: 1.1
+Version: 1.2
 Architecture: iphoneos-arm
 Maintainer: MYM Culture
 Depends: firmware (>= 13.0), ldid
-Filename: debs/com.mymculture.trollduplicatorinstaller_1.1_iphoneos-arm.deb
-Size: 409814
-MD5sum: 71f07e5d6c4b097de0418adb961fe96e
-SHA1: 309fad31d350d570f38c3de963141dd78f5542f4
-SHA256: f513ad28b99c70158bc46f156fba3ede1d3ed117e7db922ef4da7d7edb4519a4
+Filename: debs/com.mymculture.trollduplicatorinstaller_1.2_iphoneos-arm.deb
+Size: 412164
+MD5sum: 7416d3d3621b9ac96b5864dc5fe7df5b
+SHA1: 777432c289bc7d1c5a172fae59ff72d263f45f1c
+SHA256: 6b411e9c910ac5d8f70610e4787d15573aed53ac9b1c4440884354c787d1f6e8
 Section: Utilities
 Description: Installs TrollDuplicator through TrollStore, or as a jailbreak app when TrollStore is not installed.
 Author: MYM Culture
