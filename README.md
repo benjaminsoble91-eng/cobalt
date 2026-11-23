@@ -18,7 +18,7 @@ debs/                   Sileo tweaks (installable from the source)
 tipa/                   TrollStore apps (installable via Get buttons)
 assets/                 icons + art
 seturl.sh               optional: bake an absolute URL for Zebra/Cydia
-src/                    source for the tweaks (IconSwap, PowerPlus, BarText, DoubleDose, PanicButton, RootRun) + build.sh (rootless + rootful; DoubleDose is rootless-only)
+src/                    source for the tweaks (IconSwap, PowerPlus, BarText, DoubleDose, PanicButton, RootRun, GridSize) + build.sh (rootless + rootful; DoubleDose is rootless-only)
 src/trollamine/         source for Trollamine Installer (installer app + add-on library) + build.sh
 src/trollduplicatorinstaller/  TrollDuplicator Installer (.deb that installs TrollDuplicator via TrollStore, then removes itself)
 ```

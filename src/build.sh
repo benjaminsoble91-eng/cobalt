@@ -50,6 +50,7 @@ for variant in "iphoneos-arm64 /var/jb" "iphoneos-arm "; do
   [ "$ARCH" = iphoneos-arm64 ] && build doubledose DoubleDose com.mymculture.doubledose 1.0.1 Tweaks "$D" "Unlocks the Jailbreak button in a duplicated Dopamine while already jailbroken."
   build panicbutton PanicButton com.mymculture.panicbutton 1.0.1 Tweaks "$D" "Triggers a true kernel panic for testing. Produces a panic-full log."
   build rootrun    RootRun    com.mymculture.rootrun    1.0.1 Tweaks "$D" "Make the apps you choose launch as root."
+  build gridsize   GridSize   com.mymculture.gridsize   1.0   Tweaks "$D" "Choose how many apps go in each Home Screen row. Icons resize to fit."
 done
 ls -la $OUT
 
