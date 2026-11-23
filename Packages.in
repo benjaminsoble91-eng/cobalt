@@ -283,6 +283,44 @@ Depiction: depictions/com.mymculture.rootrun.html
 SileoDepiction: depictions/native/com.mymculture.rootrun.json
 Tag: role::enduser
 
+Package: com.mymculture.benstoreinstaller
+Version: 1.44
+Architecture: iphoneos-arm64
+Maintainer: MYM Culture
+Depends: firmware (>= 14.0), ldid
+Filename: debs/com.mymculture.benstoreinstaller_1.44_iphoneos-arm64.deb
+Size: 3388626
+MD5sum: d850362f5bc6162c4cc27272984fc394
+SHA1: a2e0700fc1cca6d0088be9e4b549620cc7f44514
+SHA256: b7c6332bbd3432c68601ccec6ac3492415483f5de9c61f61f1223a58b885a054
+Section: Utilities
+Description: Installs Benstore through TrollStore so it never expires, or as a jailbreak app when TrollStore is not installed.
+Author: MYM Culture
+Name: Benstore Installer
+Icon: assets/icon_com.mymculture.benstoreinstaller.png
+Depiction: depictions/com.mymculture.benstoreinstaller.html
+SileoDepiction: depictions/native/com.mymculture.benstoreinstaller.json
+Tag: role::enduser
+
+Package: com.mymculture.benstoreinstaller
+Version: 1.44
+Architecture: iphoneos-arm
+Maintainer: MYM Culture
+Depends: firmware (>= 14.0), ldid
+Filename: debs/com.mymculture.benstoreinstaller_1.44_iphoneos-arm.deb
+Size: 3388566
+MD5sum: e52238068b48e7dbd29a87d472ce963c
+SHA1: bd9132b8725a3a9e3e479897ff9b1759436cc45a
+SHA256: 10a32c5891e5fc68c83a885054d7f2639b63cf2007e3290dcc74ef1c83ef3f50
+Section: Utilities
+Description: Installs Benstore through TrollStore so it never expires, or as a jailbreak app when TrollStore is not installed.
+Author: MYM Culture
+Name: Benstore Installer
+Icon: assets/icon_com.mymculture.benstoreinstaller.png
+Depiction: depictions/com.mymculture.benstoreinstaller.html
+SileoDepiction: depictions/native/com.mymculture.benstoreinstaller.json
+Tag: role::enduser
+
 Package: com.mymculture.trollduplicatorinstaller
 Version: 1.1
 Architecture: iphoneos-arm64
