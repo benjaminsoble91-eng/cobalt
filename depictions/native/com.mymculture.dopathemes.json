@@ -10,7 +10,7 @@
       "views": [
         {
           "class": "DepictionMarkdownView",
-          "markdown": "**DopaThemes** adds 8 new themes to Dopamine's Theme picker, right alongside the stock ones (Dopamine, ElleKit, Deep Blue Sky, Blood Sky, Desert Dusk).",
+          "markdown": "**DopaThemes** adds 7 new themes to Dopamine's Theme picker, right alongside the stock ones (Dopamine, ElleKit, Deep Blue Sky, Blood Sky, Desert Dusk). Every theme has its own matching app icon, and each one is picked to look clearly different from the stock themes and from each other.",
           "useSpacing": true
         },
         {
@@ -22,7 +22,19 @@
         },
         {
           "class": "DepictionMarkdownView",
-          "markdown": "Trollamine (blue into green), Cobalt, Aurora, Sunset, Midnight (near-black), Sakura, Golden Hour and Phantom (purple). Each one sets the background, the menu and window tint, and the boot logo, the same way a stock theme does.",
+          "markdown": "Trollamine (blue into green), Gold, Lime, Midnight (black), Frost (icy white), Mocha (coffee and cream) and Neon (magenta and cyan). Each one sets the background, the menu and window tint, the boot logo and the app icon, exactly like a stock theme.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "Built into Dopamine"
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "DopaThemes writes the themes and icons straight into the Dopamine app, the same way Dopamine's own themes are stored. Nothing runs in the background, and the themes stay when you're not jailbroken. Icons switch through iOS itself, so they change everywhere, including Settings and notifications.",
           "useSpacing": true
         },
         {
@@ -34,19 +46,7 @@
         },
         {
           "class": "DepictionMarkdownView",
-          "markdown": "1. Install DopaThemes.\n2. Close Dopamine from the app switcher and reopen it.\n3. Open Dopamine → Settings → Theme and pick one.",
-          "useSpacing": true
-        },
-        {
-          "class": "DepictionSeparatorView"
-        },
-        {
-          "class": "DepictionHeaderView",
-          "title": "Make your own"
-        },
-        {
-          "class": "DepictionMarkdownView",
-          "markdown": "Drop a .plist (same keys as Dopamine's Themes.plist: key, name, image, actionMenuColor, windowColor, blur, titleShadow) plus its background image into /var/jb/Library/DopaThemes, then reopen Dopamine.",
+          "markdown": "1. Install DopaThemes in Sileo.\n2. Close Dopamine from the app switcher and reopen it.\n3. Open Dopamine → Settings → Theme and pick one.",
           "useSpacing": true
         },
         {
@@ -58,13 +58,13 @@
         },
         {
           "class": "DepictionMarkdownView",
-          "markdown": "Works in Dopamine 2.x, Trollamine and duplicated Dopamine copies. Themes show up while you're jailbroken (that's when tweaks load). The app icon stays the default one, since iOS only allows icons built into the app. Turn it off in Settings → DopaThemes.",
+          "markdown": "Needs Dopamine 2.x installed through TrollStore. Also adds the themes to Trollamine and duplicated Dopamine copies. If you update Dopamine, reinstall DopaThemes to put the themes back. Uninstalling DopaThemes takes them back out and leaves Dopamine exactly as it was.",
           "useSpacing": true
         },
         {
           "class": "DepictionTableTextView",
           "title": "Version",
-          "text": "1.0"
+          "text": "2.0"
         },
         {
           "class": "DepictionTableTextView",
@@ -74,12 +74,12 @@
         {
           "class": "DepictionTableTextView",
           "title": "Compatibility",
-          "text": "iOS 15.0 and later (Dopamine, rootless)"
+          "text": "iOS 15.0 and later (Dopamine 2.x, rootless)"
         },
         {
           "class": "DepictionTableTextView",
           "title": "Requires",
-          "text": "mobilesubstrate, preferenceloader"
+          "text": "TrollStore"
         },
         {
           "class": "DepictionSeparatorView"
@@ -98,13 +98,24 @@
       "views": [
         {
           "class": "DepictionSubheaderView",
+          "title": "2.0",
+          "useBoldText": true,
+          "useBottomMargin": false
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- Themes are now written into the Dopamine app itself, so they stay without a jailbreak.\n- Every theme has its own app icon, switched by iOS like Dopamine's stock icons.\n- New lineup so no theme looks like another or like a stock theme: Trollamine, Gold, Lime, Midnight, Frost, Mocha, Neon.\n- Uninstalling puts Dopamine back exactly as it was.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSubheaderView",
           "title": "1.0",
           "useBoldText": true,
           "useBottomMargin": false
         },
         {
           "class": "DepictionMarkdownView",
-          "markdown": "- Initial release: 8 themes, plus support for your own.",
+          "markdown": "- Initial release.",
           "useSpacing": true
         }
       ]

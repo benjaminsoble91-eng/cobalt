@@ -1,0 +1,17 @@
+#!/bin/sh
+# DopaThemes: on uninstall, take the themes and icons back out of the Dopamine apps.
+# (Not on upgrade - the new version's postinst replaces them.)
+PREFIX="@PREFIX@"
+SHARE="$PREFIX/Library/DopaThemes"
+PATCH="$PREFIX/usr/libexec/dopathemes-patch"
+LOG=/var/tmp/dopathemes.log
+export PATH="$PREFIX/usr/bin:$PREFIX/bin:$PREFIX/usr/sbin:$PREFIX/sbin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+case "$1" in remove|purge) ;; *) exit 0 ;; esac
+
+"$PATCH" remove "$SHARE" >>"$LOG" 2>&1
+for app in TrollStore.app Trollamine.app; do
+    for h in /var/containers/Bundle/Application/*/"$app"/trollstorehelper; do
+        if [ -f "$h" ]; then "$h" refresh >>"$LOG" 2>&1; exit 0; fi
+    done
+done
+exit 0

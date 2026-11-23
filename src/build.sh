@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Builds the Cobalt tweaks as rootless (iphoneos-arm64) and rootful (iphoneos-arm) .debs.
-# Rootless installs under /var/jb; rootful installs at /. DoubleDose and DopaThemes are rootless-only (Dopamine).
+# Rootless installs under /var/jb; rootful installs at /. DoubleDose is rootless-only (Dopamine). DopaThemes has its own build.sh in dopathemes/.
 set -euo pipefail
 cd "$(dirname "$0")"
 SDK=/home/claude/build/sdks/iPhoneOS15.6.sdk
@@ -17,9 +17,6 @@ build() { # dir Name id version section depends desc
       -o $jb/Library/MobileSubstrate/DynamicLibraries/$name.dylib
   cp $dir/Filter.plist $jb/Library/MobileSubstrate/DynamicLibraries/$name.plist
   cp $dir/Prefs.plist $jb/Library/PreferenceLoader/Preferences/$name.plist
-  if [ -d $dir/res ]; then   # extra files (e.g. DopaThemes' theme backgrounds) -> JBROOT/Library/Name
-    mkdir -p $jb/Library/$name; cp $dir/res/* $jb/Library/$name/
-  fi
   if [ -f $dir/helper.c ]; then
     local helper_name=${name,,}-helper   # lowercase Name + -helper
     mkdir -p $jb/usr/libexec
@@ -53,7 +50,6 @@ for variant in "iphoneos-arm64 /var/jb" "iphoneos-arm "; do
   [ "$ARCH" = iphoneos-arm64 ] && build doubledose DoubleDose com.mymculture.doubledose 1.0.1 Tweaks "$D" "Unlocks the Jailbreak button in a duplicated Dopamine while already jailbroken."
   build panicbutton PanicButton com.mymculture.panicbutton 1.0.1 Tweaks "$D" "Triggers a true kernel panic for testing. Produces a panic-full log."
   build rootrun    RootRun    com.mymculture.rootrun    1.0.1 Tweaks "$D" "Make the apps you choose launch as root."
-  [ "$ARCH" = iphoneos-arm64 ] && build dopathemes DopaThemes com.mymculture.dopathemes 1.0 Themes "$D" "Adds new themes to Dopamine, alongside the stock ones."
   build gridsize   GridSize   com.mymculture.gridsize   1.0   Tweaks "$D" "Choose how many apps go in each Home Screen row. Icons resize to fit."
 done
 ls -la $OUT
