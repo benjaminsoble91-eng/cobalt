@@ -19,7 +19,7 @@ tipa/                   TrollStore apps (installable via Get buttons)
 assets/                 icons + art
 seturl.sh               optional: bake an absolute URL for Zebra/Cydia
 src/                    source for the tweaks (IconSwap, PowerPlus, BarText, DoubleDose, PanicButton, RootRun, GridSize) + build.sh (rootless + rootful; DoubleDose is rootless-only)
-src/dopathemes/         DopaThemes (writes extra themes + icons into the Dopamine app; Motion.m animates them) + its own build.sh; tools/gen_themes.py makes the art
+src/dopathemes/         DopaThemes (writes extra themes + icons into the Dopamine app) + its own build.sh; tools/gen_themes.py makes the art
 src/trollamine/         source for Trollamine Installer (installer app + add-on library) + build.sh
 src/trollduplicatorinstaller/  TrollDuplicator Installer (.deb that installs TrollDuplicator via TrollStore, then removes itself)
 ```

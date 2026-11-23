@@ -496,14 +496,14 @@ Package: com.mymculture.dopathemes
 Version: 2.1
 Architecture: iphoneos-arm64
 Maintainer: MYM Culture
-Depends: firmware (>= 15.0), mobilesubstrate (>= 0.9.5000)
+Depends: firmware (>= 15.0)
 Filename: debs/com.mymculture.dopathemes_2.1_iphoneos-arm64.deb
-Size: 2937098
-MD5sum: 46ff98fcebd78cb88effdc684bf0a008
-SHA1: 3262dd725519c4fe6071820a9413d150c84426d3
-SHA256: 0b3d2f35a5a2f245f16b2732fb21f5afef0e82f452f41e503f4f55e5e9980c72
+Size: 2925608
+MD5sum: d9fc666799a625f5b9a8fcdfdbca6073
+SHA1: b682f80592959779212c62e0788de7d98ff897a8
+SHA256: b90a59680f215207f9e0bcb1602e2f5ddf3bc2b300b9d7efe7b9cf682a7b9b80
 Section: Themes
-Description: Adds new themes to Dopamine, each with its own icon and an animated background. Built into the app, so they stay without a jailbreak.
+Description: Adds new themes to Dopamine, each with its own icon. Built into the app, so they stay without a jailbreak.
 Author: MYM Culture
 Name: DopaThemes
 Icon: assets/icon_com.mymculture.dopathemes.png

@@ -1,5 +1,4 @@
 # Generates the DopaThemes backgrounds, icons and Themes.plist (run: gen_themes.py <outdir> <DopamineLogo.png>).
-# The same blob data is saved as each theme's "motion" entry, which the Motion add-on animates.
 import sys, os, plistlib, numpy as np
 from PIL import Image, ImageFilter
 out = sys.argv[1]; logo_path = sys.argv[2]; os.makedirs(out, exist_ok=True)
@@ -36,7 +35,6 @@ for name,key,base,blobs,menu,win,blur,shadow,ic in T:
     a = np.asarray(im).astype(np.float32); a += rng.normal(0, 2.2, a.shape[:2])[...,None]
     fn = f"dopathemes_{key}.jpg"; Image.fromarray(np.clip(a,0,255).astype(np.uint8)).save(os.path.join(out,fn), quality=86, optimize=True, progressive=True)
     icn = f"icon_{key}.png"; make_icon(*ic).save(os.path.join(out,icn), optimize=True)
-    motion = dict(base=base, blobs=[dict(color=c, x=float(x), y=float(y), r=float(r), strength=float(st)) for c,x,y,r,st in blobs])
-    plist.append(dict(key=f"dopathemes.{key}", name=name, image=fn, appIcon=icn, actionMenuColor=menu, windowColor=win, blur=blur, titleShadow=shadow, motion=motion))
+    plist.append(dict(key=f"dopathemes.{key}", name=name, image=fn, appIcon=icn, actionMenuColor=menu, windowColor=win, blur=blur, titleShadow=shadow))
 plistlib.dump(plist, open(os.path.join(out,"Themes.plist"),"wb"))
 print("ok", len(plist))

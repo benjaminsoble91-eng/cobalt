@@ -13,38 +13,6 @@
 		<string>dopathemes_trollamine.jpg</string>
 		<key>key</key>
 		<string>dopathemes.trollamine</string>
-		<key>motion</key>
-		<dict>
-			<key>base</key>
-			<string>0A2A55</string>
-			<key>blobs</key>
-			<array>
-				<dict>
-					<key>color</key>
-					<string>1E6BFF</string>
-					<key>r</key>
-					<real>0.55</real>
-					<key>strength</key>
-					<real>1.0</real>
-					<key>x</key>
-					<real>0.45</real>
-					<key>y</key>
-					<real>0.1</real>
-				</dict>
-				<dict>
-					<key>color</key>
-					<string>1FD67A</string>
-					<key>r</key>
-					<real>0.55</real>
-					<key>strength</key>
-					<real>1.0</real>
-					<key>x</key>
-					<real>0.55</real>
-					<key>y</key>
-					<real>0.95</real>
-				</dict>
-			</array>
-		</dict>
 		<key>name</key>
 		<string>Trollamine</string>
 		<key>titleShadow</key>
@@ -63,50 +31,6 @@
 		<string>dopathemes_gold.jpg</string>
 		<key>key</key>
 		<string>dopathemes.gold</string>
-		<key>motion</key>
-		<dict>
-			<key>base</key>
-			<string>070400</string>
-			<key>blobs</key>
-			<array>
-				<dict>
-					<key>color</key>
-					<string>FFC233</string>
-					<key>r</key>
-					<real>0.55</real>
-					<key>strength</key>
-					<real>1.0</real>
-					<key>x</key>
-					<real>0.455</real>
-					<key>y</key>
-					<real>0.6</real>
-				</dict>
-				<dict>
-					<key>color</key>
-					<string>FFA000</string>
-					<key>r</key>
-					<real>0.45</real>
-					<key>strength</key>
-					<real>0.9</real>
-					<key>x</key>
-					<real>0.59</real>
-					<key>y</key>
-					<real>0.3</real>
-				</dict>
-				<dict>
-					<key>color</key>
-					<string>FFE7A0</string>
-					<key>r</key>
-					<real>0.2</real>
-					<key>strength</key>
-					<real>0.55</real>
-					<key>x</key>
-					<real>0.47</real>
-					<key>y</key>
-					<real>0.7</real>
-				</dict>
-			</array>
-		</dict>
 		<key>name</key>
 		<string>Gold</string>
 		<key>titleShadow</key>
@@ -125,50 +49,6 @@
 		<string>dopathemes_lime.jpg</string>
 		<key>key</key>
 		<string>dopathemes.lime</string>
-		<key>motion</key>
-		<dict>
-			<key>base</key>
-			<string>040700</string>
-			<key>blobs</key>
-			<array>
-				<dict>
-					<key>color</key>
-					<string>B6F000</string>
-					<key>r</key>
-					<real>0.5</real>
-					<key>strength</key>
-					<real>1.0</real>
-					<key>x</key>
-					<real>0.44</real>
-					<key>y</key>
-					<real>0.4</real>
-				</dict>
-				<dict>
-					<key>color</key>
-					<string>6FD000</string>
-					<key>r</key>
-					<real>0.5</real>
-					<key>strength</key>
-					<real>0.9</real>
-					<key>x</key>
-					<real>0.59</real>
-					<key>y</key>
-					<real>0.75</real>
-				</dict>
-				<dict>
-					<key>color</key>
-					<string>E4FF7A</string>
-					<key>r</key>
-					<real>0.18</real>
-					<key>strength</key>
-					<real>0.5</real>
-					<key>x</key>
-					<real>0.455</real>
-					<key>y</key>
-					<real>0.35</real>
-				</dict>
-			</array>
-		</dict>
 		<key>name</key>
 		<string>Lime</string>
 		<key>titleShadow</key>
@@ -187,38 +67,6 @@
 		<string>dopathemes_midnight.jpg</string>
 		<key>key</key>
 		<string>dopathemes.midnight</string>
-		<key>motion</key>
-		<dict>
-			<key>base</key>
-			<string>000000</string>
-			<key>blobs</key>
-			<array>
-				<dict>
-					<key>color</key>
-					<string>2C2C2E</string>
-					<key>r</key>
-					<real>0.55</real>
-					<key>strength</key>
-					<real>0.9</real>
-					<key>x</key>
-					<real>0.44</real>
-					<key>y</key>
-					<real>0.3</real>
-				</dict>
-				<dict>
-					<key>color</key>
-					<string>1C1C1E</string>
-					<key>r</key>
-					<real>0.5</real>
-					<key>strength</key>
-					<real>0.8</real>
-					<key>x</key>
-					<real>0.59</real>
-					<key>y</key>
-					<real>0.8</real>
-				</dict>
-			</array>
-		</dict>
 		<key>name</key>
 		<string>Midnight</string>
 		<key>titleShadow</key>
@@ -237,50 +85,6 @@
 		<string>dopathemes_frost.jpg</string>
 		<key>key</key>
 		<string>dopathemes.frost</string>
-		<key>motion</key>
-		<dict>
-			<key>base</key>
-			<string>C9DAE8</string>
-			<key>blobs</key>
-			<array>
-				<dict>
-					<key>color</key>
-					<string>FFFFFF</string>
-					<key>r</key>
-					<real>0.6</real>
-					<key>strength</key>
-					<real>1.0</real>
-					<key>x</key>
-					<real>0.44</real>
-					<key>y</key>
-					<real>0.3</real>
-				</dict>
-				<dict>
-					<key>color</key>
-					<string>A9C8E2</string>
-					<key>r</key>
-					<real>0.55</real>
-					<key>strength</key>
-					<real>0.9</real>
-					<key>x</key>
-					<real>0.605</real>
-					<key>y</key>
-					<real>0.8</real>
-				</dict>
-				<dict>
-					<key>color</key>
-					<string>EAF3FA</string>
-					<key>r</key>
-					<real>0.35</real>
-					<key>strength</key>
-					<real>0.8</real>
-					<key>x</key>
-					<real>0.56</real>
-					<key>y</key>
-					<real>0.2</real>
-				</dict>
-			</array>
-		</dict>
 		<key>name</key>
 		<string>Frost</string>
 		<key>titleShadow</key>
@@ -299,50 +103,6 @@
 		<string>dopathemes_mocha.jpg</string>
 		<key>key</key>
 		<string>dopathemes.mocha</string>
-		<key>motion</key>
-		<dict>
-			<key>base</key>
-			<string>7A5638</string>
-			<key>blobs</key>
-			<array>
-				<dict>
-					<key>color</key>
-					<string>C08A5B</string>
-					<key>r</key>
-					<real>0.6</real>
-					<key>strength</key>
-					<real>1.0</real>
-					<key>x</key>
-					<real>0.425</real>
-					<key>y</key>
-					<real>0.35</real>
-				</dict>
-				<dict>
-					<key>color</key>
-					<string>E8CFA8</string>
-					<key>r</key>
-					<real>0.4</real>
-					<key>strength</key>
-					<real>0.9</real>
-					<key>x</key>
-					<real>0.584</real>
-					<key>y</key>
-					<real>0.65</real>
-				</dict>
-				<dict>
-					<key>color</key>
-					<string>7A4E2E</string>
-					<key>r</key>
-					<real>0.45</real>
-					<key>strength</key>
-					<real>0.8</real>
-					<key>x</key>
-					<real>0.605</real>
-					<key>y</key>
-					<real>0.1</real>
-				</dict>
-			</array>
-		</dict>
 		<key>name</key>
 		<string>Mocha</string>
 		<key>titleShadow</key>
@@ -361,38 +121,6 @@
 		<string>dopathemes_neon.jpg</string>
 		<key>key</key>
 		<string>dopathemes.neon</string>
-		<key>motion</key>
-		<dict>
-			<key>base</key>
-			<string>05010A</string>
-			<key>blobs</key>
-			<array>
-				<dict>
-					<key>color</key>
-					<string>FF2BD6</string>
-					<key>r</key>
-					<real>0.45</real>
-					<key>strength</key>
-					<real>1.0</real>
-					<key>x</key>
-					<real>0.41</real>
-					<key>y</key>
-					<real>0.35</real>
-				</dict>
-				<dict>
-					<key>color</key>
-					<string>00E5FF</string>
-					<key>r</key>
-					<real>0.45</real>
-					<key>strength</key>
-					<real>1.0</real>
-					<key>x</key>
-					<real>0.596</real>
-					<key>y</key>
-					<real>0.7</real>
-				</dict>
-			</array>
-		</dict>
 		<key>name</key>
 		<string>Neon</string>
 		<key>titleShadow</key>
