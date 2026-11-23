@@ -1,0 +1,115 @@
+{
+  "minVersion": "0.1",
+  "class": "DepictionTabView",
+  "tintColor": "#3c78ff",
+  "headerImage": "https://benjaminsoble91-eng.github.io/cobalt/assets/banner_com.mymculture.gridsize.png",
+  "tabs": [
+    {
+      "tabname": "Details",
+      "class": "DepictionStackView",
+      "views": [
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "On the iPhone 6s Plus the Home Screen is stuck at 4 apps per row. **GridSize** lets you pick how many apps go in each row (3 to 8) and how many rows per page (3 to 10). Icons shrink automatically so everything fits.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "How to use"
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "1. Long-press the Home Screen to enter jiggle (edit) mode.\n2. Tap the first app you want to move.\n3. Tap the app you want it to trade places with.\n4. They swap. Repeat as needed, then press Done.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView",
+          "markdown": "1. Open Settings \u2192 GridSize.\n2. Pick your apps per row and rows per page.\n3. Flip **Respring to apply**."
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "Settings"
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- Turn IconSwap on or off without uninstalling.\n- Haptic feedback on or off.\n- Highlight on the first app you tap, on or off.\n- Hint message on or off.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "Information",
+          "markdown": "- Apps per row: 3 to 8 (stock is 4).\n- Rows per page: 3 to 10 (stock is 6 on the 6s Plus).\n- Auto-fit icons, plus an icon size slider to fine-tune (50 to 130%).\n- Hide app names (helps at 6+ per row).\n- Custom dock size: 3 to 7 apps.\n- Turn GridSize off without uninstalling."
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "Good to know"
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "Changing the grid moves apps around to fill the new layout. Uninstalling or turning it off puts the grid back to stock, and apps reflow again.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Version",
+          "text": "1.1"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Section",
+          "text": "Tweaks"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Compatibility",
+          "text": "1.0"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Requires",
+          "text": "mobilesubstrate, preferenceloader"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Source",
+          "text": "iOS 14.0 and later (rootful + rootless)"
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionTableButtonView",
+          "title": "Cobalt storefront",
+          "action": "https://benjaminsoble91-eng.github.io/cobalt/",
+          "openExternal": true
+        }
+      ]
+    },
+    {
+      "tabname": "Changelog",
+      "class": "DepictionStackView",
+      "views": [
+        {
+          "class": "DepictionSubheaderView",
+          "title": "1.0",
+          "useBoldText": true,
+          "useBottomMargin": false
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- Initial release.",
+          "useSpacing": true
+        }
+      ]
+    }
+  ]
+}
