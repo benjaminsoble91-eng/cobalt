@@ -21,7 +21,6 @@ seturl.sh               optional: bake an absolute URL for Zebra/Cydia
 src/                    source for the tweaks (IconSwap, PowerPlus, BarText, DoubleDose, PanicButton, RootRun) + build.sh (rootless + rootful; DoubleDose is rootless-only)
 src/trollamine/         source for Trollamine Installer (installer app + add-on library) + build.sh
 src/trollduplicatorinstaller/  TrollDuplicator Installer (.deb that installs TrollDuplicator via TrollStore, then removes itself)
-src/benstoreinstaller/  Benstore Installer (.deb that installs Benstore via TrollStore, then removes itself; build.sh pulls the newest Benstore.ipa)
 ```
 
 ## Host it on GitHub Pages (recommended)
