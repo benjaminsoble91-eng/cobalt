@@ -93,7 +93,7 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>footerText</key>
-			<string>Auto-fit shrinks icons when you add more apps per row or more rows. The slider fine-tunes the size on top of that (100 = no change).</string>
+			<string>Auto-fit shrinks icons when you add more apps per row or more rows. The slider fine-tunes the size on top of that (100 = no change). Widgets resize to line up with the new grid and keep their shape.</string>
 			<key>label</key>
 			<string>Icon size</string>
 		</dict>
@@ -146,6 +146,20 @@
 			<string>HideLabels</string>
 			<key>label</key>
 			<string>Hide app names</string>
+		</dict>
+		<dict>
+			<key>PostNotification</key>
+			<string>com.mymculture.gridsize/prefs</string>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.mymculture.gridsize</string>
+			<key>key</key>
+			<string>ResizeWidgets</string>
+			<key>label</key>
+			<string>Resize widgets to fit</string>
 		</dict>
 		<dict>
 			<key>cell</key>
@@ -215,7 +229,7 @@
 			<key>cell</key>
 			<string>PSGroupCell</string>
 			<key>footerText</key>
-			<string>GridSize 1.0 from Cobalt.</string>
+			<string>GridSize 1.1 from Cobalt.</string>
 		</dict>
 	</array>
 	<key>title</key>
