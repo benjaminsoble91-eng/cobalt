@@ -10,7 +10,7 @@
       "views": [
         {
           "class": "DepictionMarkdownView",
-          "markdown": "**DopaThemes** adds 7 new themes to Dopamine's Theme picker, right alongside the stock ones (Dopamine, ElleKit, Deep Blue Sky, Blood Sky, Desert Dusk). Every theme has its own matching app icon, and each one is picked to look clearly different from the stock themes and from each other.",
+          "markdown": "**DopaThemes** adds 7 new themes to Dopamine's Theme picker, right alongside the stock ones (Dopamine, ElleKit, Deep Blue Sky, Blood Sky, Desert Dusk). Every theme has its own matching app icon and an animated background, and each one is picked to look clearly different from the stock themes and from each other.",
           "useSpacing": true
         },
         {
@@ -42,6 +42,18 @@
         },
         {
           "class": "DepictionHeaderView",
+          "title": "Animated backgrounds"
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "While your jailbreak is active, each theme's background slowly comes alive: its colour glows drift and breathe, with a faint moving light sweep. When you're not jailbroken you still get the same theme as a still background. Turn on Reduce Motion in Settings to keep backgrounds still.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
           "title": "How to use"
         },
         {
@@ -64,7 +76,7 @@
         {
           "class": "DepictionTableTextView",
           "title": "Version",
-          "text": "2.0"
+          "text": "2.1"
         },
         {
           "class": "DepictionTableTextView",
@@ -79,7 +91,7 @@
         {
           "class": "DepictionTableTextView",
           "title": "Requires",
-          "text": "TrollStore"
+          "text": "TrollStore (animation needs the jailbreak active)"
         },
         {
           "class": "DepictionSeparatorView"
@@ -96,6 +108,17 @@
       "tabname": "Changelog",
       "class": "DepictionStackView",
       "views": [
+        {
+          "class": "DepictionSubheaderView",
+          "title": "2.1",
+          "useBoldText": true,
+          "useBottomMargin": false
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- Animated backgrounds: each theme's colour glows slowly drift and breathe while the jailbreak is active.\n- Backgrounds redesigned for phone screens, where Dopamine only shows the middle of the image: Trollamine is now a clear blue-into-green, and every theme stays distinct on iPhone and iPad.",
+          "useSpacing": true
+        },
         {
           "class": "DepictionSubheaderView",
           "title": "2.0",
