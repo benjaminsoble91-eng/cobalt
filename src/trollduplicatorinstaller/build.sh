@@ -6,7 +6,7 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 ID=com.mymculture.trollduplicatorinstaller
-VER=${VER:-1.1}
+VER=${VER:-1.2}
 TIPA=../../tipa/TrollDuplicator.tipa
 OUT=$PWD/out; rm -rf "$OUT" stage jbapp; mkdir -p "$OUT"
 
