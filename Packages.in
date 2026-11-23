@@ -493,15 +493,15 @@ SileoDepiction: depictions/native/com.mymculture.gridsize.json
 Tag: role::enduser
 
 Package: com.mymculture.dopathemes
-Version: 2.0
+Version: 2.1
 Architecture: iphoneos-arm64
 Maintainer: MYM Culture
 Depends: firmware (>= 15.0)
-Filename: debs/com.mymculture.dopathemes_2.0_iphoneos-arm64.deb
-Size: 2926748
-MD5sum: 576619f690b32f7ab0827d0fbfa3e4e8
-SHA1: 64cd8378936eccb2ece298beae1ff1c9a9d97bd9
-SHA256: 923c366cd0974fb9e9436532dc26491732e52ddfe2d22119977c3666f4aef852
+Filename: debs/com.mymculture.dopathemes_2.1_iphoneos-arm64.deb
+Size: 2925608
+MD5sum: d9fc666799a625f5b9a8fcdfdbca6073
+SHA1: b682f80592959779212c62e0788de7d98ff897a8
+SHA256: b90a59680f215207f9e0bcb1602e2f5ddf3bc2b300b9d7efe7b9cf682a7b9b80
 Section: Themes
 Description: Adds new themes to Dopamine, each with its own icon. Built into the app, so they stay without a jailbreak.
 Author: MYM Culture

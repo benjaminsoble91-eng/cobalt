@@ -1,10 +1,11 @@
 #!/usr/bin/env bash
-# Builds DopaThemes (rootless only - Dopamine is rootless). Not a runtime tweak: the package carries
-# the themes plus dopathemes-patch, and its postinst writes them into the installed Dopamine apps.
+# Builds DopaThemes (rootless only - Dopamine is rootless). The package carries the themes plus
+# dopathemes-patch, and its postinst writes them into the installed Dopamine apps (works without a
+# jailbreak).
 set -euo pipefail
 cd "$(dirname "$0")"
 ID=com.mymculture.dopathemes
-VER=${VER:-2.0}
+VER=${VER:-2.1}
 SDK=/home/claude/build/sdks/iPhoneOS15.6.sdk
 CC="clang -target arm64-apple-ios15.0 -isysroot $SDK -fobjc-arc -fmodules -Os -Wall -fuse-ld=lld -Wl,-adhoc_codesign"
 OUT=$PWD/out; rm -rf "$OUT" stage; mkdir -p "$OUT"
