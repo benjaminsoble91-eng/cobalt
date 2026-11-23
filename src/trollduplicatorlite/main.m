@@ -466,11 +466,11 @@ static BOOL RemoveCopy(NSString *bid, NSError **err) {
 
 - (void)askToDuplicate:(id)app {
     UIAlertController *a = [UIAlertController alertControllerWithTitle:[NSString stringWithFormat:@"Duplicate %@", [app localizedName]]
-                                                               message:@"Name for the copy, and how many copies to make.\nWith more than one, the number at the end counts up (App 2, App 3...)."
+                                                               message:@"Name for the copies, and how many to make.\nEvery copy gets this exact name."
                                                         preferredStyle:UIAlertControllerStyleAlert];
     [a addTextFieldWithConfigurationHandler:^(UITextField *f) {
         f.placeholder = @"Name";
-        f.text = [NSString stringWithFormat:@"%@ 2", [app localizedName]];
+        f.text = [app localizedName];
         f.clearButtonMode = UITextFieldViewModeWhileEditing;
     }];
     [a addTextFieldWithConfigurationHandler:^(UITextField *f) {
@@ -490,20 +490,10 @@ static BOOL RemoveCopy(NSString *bid, NSError **err) {
     [self presentViewController:a animated:YES completion:nil];
 }
 
-// "App 2" x3 -> App 2, App 3, App 4. "App" x3 -> App, App 2, App 3.
+// Every copy gets exactly the name typed: "Dopa" x3 -> Dopa, Dopa, Dopa. Bundle IDs stay unique.
 - (NSArray<NSString *> *)namesFrom:(NSString *)name count:(NSInteger)count {
-    if (count == 1) return @[name];
-    NSString *stem = name; NSInteger start = 1;
-    NSRange r = [name rangeOfString:@"\\s\\d+$" options:NSRegularExpressionSearch];
-    if (r.location != NSNotFound) {
-        stem = [name substringToIndex:r.location];
-        start = [[name substringFromIndex:r.location + 1] integerValue];
-    }
-    NSMutableArray *names = [NSMutableArray array];
-    for (NSInteger i = 0; i < count; i++) {
-        NSInteger n = start + i;
-        [names addObject:n <= 1 ? stem : [NSString stringWithFormat:@"%@ %ld", stem, (long)n]];
-    }
+    NSMutableArray *names = [NSMutableArray arrayWithCapacity:count];
+    for (NSInteger i = 0; i < count; i++) [names addObject:name];
     return names;
 }
 
