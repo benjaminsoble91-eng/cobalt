@@ -4,6 +4,12 @@
   "itemCornerRadius": 10,
   "banners": [
     {
+      "url": "https://benjaminsoble91-eng.github.io/cobalt/assets/banner_com.mymculture.meowbrek2installer.png",
+      "title": "meowbrek2 Installer",
+      "package": "com.mymculture.meowbrek2installer",
+      "hideShadow": false
+    },
+    {
       "url": "https://benjaminsoble91-eng.github.io/cobalt/assets/banner_com.mymculture.dopathemes.png",
       "title": "DopaThemes",
       "package": "com.mymculture.dopathemes",

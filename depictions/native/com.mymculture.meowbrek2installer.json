@@ -1,0 +1,106 @@
+{
+  "minVersion": "0.1",
+  "class": "DepictionTabView",
+  "tintColor": "#8c50ff",
+  "headerImage": "https://benjaminsoble91-eng.github.io/cobalt/assets/banner_com.mymculture.meowbrek2installer.png",
+  "tabs": [
+    {
+      "tabname": "Details",
+      "class": "DepictionStackView",
+      "views": [
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "Sets up **meowbrek2** by dora2ios on a device jailbroken with **rootless palera1n**. After that, you re-jailbreak from an app after every reboot instead of plugging into a computer.\n\nNo TrollStore yet? It installs TrollStore first from a copy bundled in the package, so you don't need the Safari / TrollHelperOTA method.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "How it works"
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "1. Jailbreak once with palera1n in rootless mode (`palera1n -l`).\n2. Install **meowbrek2 Installer** from Cobalt.\n3. It installs TrollStore if needed, then installs meowbrek2 through TrollStore, then removes itself.\n4. After a reboot, open meowbrek2 right away and tap **Jailbreak**.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "Good to know"
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- meowbrek2 uses the kfd exploit, not checkm8. It brings back your palera1n jailbreak (bootstrap, Sileo, tweaks). palera1n still works as a backup anytime.\n- iOS 15 only, A11 and older, rootless palera1n only. Rootful palera1n has to be removed first.\n- Downloads meowbrek2 1.1.7 from the developer's site while installing, so stay on Wi-Fi.\n- If meowbrek2 crashes or reboots the device, reboot and run it again.\n- Recommended: TrollStore > Settings > Install Persistence Helper.\n- If anything fails, the installer stays so you can reinstall it and try again. Log: /var/tmp/meowbrek2installer.log",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "Information"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Version",
+          "text": "1.0"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Installs",
+          "text": "meowbrek2 1.1.7, TrollStore 2.1.1"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Section",
+          "text": "Utilities"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Compatibility",
+          "text": "iOS 15.0 – 15.8.x, A8–A11 (rootless)"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Requires",
+          "text": "rootless palera1n"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Source",
+          "text": "Cobalt"
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionTableButtonView",
+          "title": "Cobalt storefront",
+          "action": "https://benjaminsoble91-eng.github.io/cobalt/",
+          "openExternal": true
+        }
+      ]
+    },
+    {
+      "tabname": "Changelog",
+      "class": "DepictionStackView",
+      "views": [
+        {
+          "class": "DepictionSubheaderView",
+          "title": "1.0",
+          "useBoldText": true,
+          "useBottomMargin": false
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- First release. Installs TrollStore 2.1.1 when it's missing, then meowbrek2 1.1.7 through TrollStore, and removes itself afterwards.",
+          "useSpacing": true
+        }
+      ]
+    }
+  ]
+}
