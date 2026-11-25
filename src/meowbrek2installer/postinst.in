@@ -1,0 +1,150 @@
+#!/bin/sh
+# meowbrek2 Installer (com.mymculture.meowbrek2installer) — rootless only.
+# For A11-and-older devices on iOS 15 jailbroken with rootless palera1n:
+#   1. If TrollStore (or Trollamine) isn't installed, installs TrollStore from the TrollStore.tar
+#      bundled in this package, using the trollstorehelper inside it. No Safari / TrollHelperOTA.
+#   2. Installs meowbrek2 through TrollStore. Uses the bundled meowbrek2 .tipa when this package
+#      carries one, otherwise downloads dora2ios' official build.
+#   3. Removes this package so only TrollStore and meowbrek2 are left.
+# After that, reboot and open meowbrek2 to re-jailbreak without a computer. palera1n (checkm8)
+# stays the fallback whenever meowbrek2 fails.
+
+PKG=com.mymculture.meowbrek2installer
+PREFIX="@PREFIX@"
+SHARE="$PREFIX/usr/share/meowbrek2installer"
+TSTAR="$SHARE/TrollStore.tar"
+BUNDLED_TIPA="$SHARE/meowbrek2.tipa"
+MB_URL="https://kok3shidoll.github.io/download/secret/8F38F948-BCF6-46AF-8926-C95D823107B0/meowbrek2_1.1.7_TS.tipa"
+WORK=/var/tmp/meowbrek2installer
+LOG=/var/tmp/meowbrek2installer.log
+export PATH="$PREFIX/usr/bin:$PREFIX/bin:$PREFIX/usr/sbin:$PREFIX/sbin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+
+[ "$1" = "configure" ] || exit 0
+
+say() { echo "meowbrek2 Installer: $*"; }
+: >"$LOG"
+
+# meowbrek2's exploit (kfd) only exists on iOS 15.
+VER=$(sw_vers -productVersion 2>/dev/null)
+if [ -z "$VER" ]; then
+    VER=$(plutil -key ProductVersion /System/Library/CoreServices/SystemVersion.plist 2>/dev/null)
+fi
+case "$VER" in
+    15.*|"") ;;
+    *) say "This device is on iOS $VER. meowbrek2 only works on iOS 15.0-15.8.x, so nothing was installed."
+       say "This installer stays installed; remove it in Sileo."
+       exit 0 ;;
+esac
+
+find_engine() {
+    for app in TrollStore.app Trollamine.app; do
+        for h in /var/containers/Bundle/Application/*/"$app"/trollstorehelper; do
+            if [ -f "$h" ]; then echo "$h"; return 0; fi
+        done
+    done
+    return 1
+}
+
+explain() {
+    case "$1" in
+        171) echo "Another copy of meowbrek2 that TrollStore doesn't own is in the way." ;;
+        173) echo "TrollStore needs ldid. Open TrollStore > Settings > Install ldid, then reinstall this package." ;;
+        175) echo "TrollStore couldn't sign the app." ;;
+        *)   echo "TrollStore's installer returned code $1." ;;
+    esac
+}
+
+rm -rf "$WORK"; mkdir -p "$WORK"
+
+# 1. TrollStore
+ENGINE=$(find_engine)
+if [ -z "$ENGINE" ]; then
+    say "TrollStore isn't installed. Installing TrollStore first..."
+    if [ ! -f "$TSTAR" ]; then
+        say "TrollStore.tar is missing from this package."; exit 0
+    fi
+    if ! tar -xzf "$TSTAR" -C "$WORK" >>"$LOG" 2>&1 || [ ! -f "$WORK/TrollStore.app/trollstorehelper" ]; then
+        say "Couldn't unpack TrollStore. Log: $LOG"; exit 0
+    fi
+    rm -f "$WORK"/TrollStore.app/._* 2>/dev/null
+    chmod 755 "$WORK/TrollStore.app/trollstorehelper" "$WORK/TrollStore.app/TrollStore" 2>/dev/null
+    "$WORK/TrollStore.app/trollstorehelper" install-trollstore "$TSTAR" >>"$LOG" 2>&1
+    CODE=$?
+    command -v uicache >/dev/null 2>&1 && uicache -a >>"$LOG" 2>&1
+    ENGINE=$(find_engine)
+    if [ -z "$ENGINE" ]; then
+        say "Installing TrollStore failed (code $CODE). Log: $LOG"
+        say "This installer stays on your device so you can try again (reinstall it in Sileo)."
+        exit 0
+    fi
+    say "TrollStore installed."
+    say "Tip: in TrollStore > Settings, tap Install Persistence Helper so TrollStore apps survive icon-cache resets."
+else
+    say "Found $(basename "$(dirname "$ENGINE")" .app)."
+fi
+
+# 2. meowbrek2 .tipa
+TIPA=""
+if [ -f "$BUNDLED_TIPA" ]; then
+    TIPA="$BUNDLED_TIPA"
+else
+    say "Downloading meowbrek2 1.1.7 from the developer's site..."
+    DL="$WORK/meowbrek2.tipa"
+    if command -v curl >/dev/null 2>&1; then
+        curl -fsSL --retry 2 -o "$DL" "$MB_URL" >>"$LOG" 2>&1
+    elif command -v wget >/dev/null 2>&1; then
+        wget -q -O "$DL" "$MB_URL" >>"$LOG" 2>&1
+    fi
+    # sanity check: a real .tipa is a zip ("PK") and well over 100 KB
+    if [ -f "$DL" ] && [ "$(head -c 2 "$DL")" = "PK" ] && [ "$(wc -c <"$DL")" -gt 100000 ]; then
+        TIPA="$DL"
+    else
+        say "Couldn't download meowbrek2. Check Wi-Fi, then reinstall this package. Log: $LOG"
+        say "TrollStore is installed, so you can also install the meowbrek2 .tipa from TrollStore yourself."
+        exit 0
+    fi
+fi
+
+# 3. Install through TrollStore
+say "Installing meowbrek2 through TrollStore..."
+"$ENGINE" install installd "$TIPA" >>"$LOG" 2>&1
+CODE=$?
+if [ "$CODE" = "171" ]; then
+    say "Replacing the copy that's already there..."
+    "$ENGINE" install installd force "$TIPA" >>"$LOG" 2>&1
+    CODE=$?
+fi
+if [ "$CODE" != "0" ]; then
+    say "Install failed. $(explain "$CODE")"
+    say "This installer stays on your device so you can try again (reinstall it in Sileo). Log: $LOG"
+    exit 0
+fi
+rm -rf "$WORK"
+
+say "meowbrek2 installed. Look for it on your Home Screen."
+say "After a reboot: open meowbrek2 right away and tap Jailbreak. No computer needed."
+say "If it crashes or reboots, just reboot and run it again. palera1n still works as a backup."
+say "This installer will now remove itself."
+
+# Remove this package once Sileo/apt has let go of the dpkg lock (runs detached).
+cleanup_job='
+    unset DPKG_FRONTEND_LOCKED
+    i=0
+    sleep 2
+    while [ $i -lt 150 ]; do
+        st=$(dpkg-query -W -f="\${Status}" '"$PKG"' 2>/dev/null)
+        [ -z "$st" ] && exit 0
+        case "$st" in
+            *not-installed*|*config-files*) exit 0 ;;
+            "install ok installed") dpkg --purge '"$PKG"' && exit 0 ;;
+        esac
+        i=$((i+1))
+        sleep 2
+    done
+'
+if command -v nohup >/dev/null 2>&1; then
+    nohup sh -c "$cleanup_job" >>"$LOG" 2>&1 </dev/null &
+else
+    sh -c "$cleanup_job" >>"$LOG" 2>&1 </dev/null &
+fi
+exit 0

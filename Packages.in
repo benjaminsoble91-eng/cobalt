@@ -283,6 +283,25 @@ Depiction: depictions/com.mymculture.rootrun.html
 SileoDepiction: depictions/native/com.mymculture.rootrun.json
 Tag: role::enduser
 
+Package: com.mymculture.meowbrek2installer
+Version: 1.0
+Architecture: iphoneos-arm64
+Maintainer: MYM Culture
+Depends: firmware (>= 15.0), firmware (<< 16.0), curl
+Filename: debs/com.mymculture.meowbrek2installer_1.0_iphoneos-arm64.deb
+Size: 2427602
+MD5sum: f59aeeac362729aaef26bbe82147ef8e
+SHA1: d0ee244ab43a8b967041d79ddd952a0ea081fbb9
+SHA256: fec8b6a9f594630863d29b64ef494c2bfd298d7f6f7fc8204e096d98af447e13
+Section: Utilities
+Description: Installs TrollStore (if needed) and meowbrek2, so rootless palera1n can re-jailbreak without a computer.
+Author: MYM Culture
+Name: meowbrek2 Installer
+Icon: assets/icon_com.mymculture.meowbrek2installer.png
+Depiction: depictions/com.mymculture.meowbrek2installer.html
+SileoDepiction: depictions/native/com.mymculture.meowbrek2installer.json
+Tag: role::enduser
+
 Package: com.mymculture.trollduplicatorinstaller
 Version: 1.2
 Architecture: iphoneos-arm64
