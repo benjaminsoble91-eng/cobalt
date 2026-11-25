@@ -3,7 +3,7 @@
 # Rootless installs under /var/jb; rootful installs at /. DoubleDose is rootless-only (Dopamine). DopaThemes has its own build.sh in dopathemes/.
 set -euo pipefail
 cd "$(dirname "$0")"
-SDK=/home/claude/build/sdks/iPhoneOS15.6.sdk
+SDK=${SDK:-/home/claude/build/sdks/iPhoneOS15.6.sdk}
 OUT=$PWD/out; rm -rf "$OUT" stage; mkdir -p "$OUT"
 CC="clang -target arm64-apple-ios14.0 -isysroot $SDK -fobjc-arc -fmodules -Os -Wall -Wno-unused-function -fuse-ld=lld -Wl,-adhoc_codesign"
 FW="-framework UIKit -framework Foundation -framework CoreGraphics -framework CoreFoundation -framework QuartzCore"
@@ -13,7 +13,8 @@ build() { # dir Name id version section depends desc
   local dir=$1 name=$2 id=$3 ver=$4 section=$5 dep=$6 desc=$7
   local root=stage/$ARCH/$id; local jb=$root$JB
   mkdir -p $jb/Library/MobileSubstrate/DynamicLibraries $jb/Library/PreferenceLoader/Preferences $root/DEBIAN
-  $CC -DJBROOT=\"$JB\" -dynamiclib -install_name $JB/Library/MobileSubstrate/DynamicLibraries/$name.dylib $FW $dir/Tweak.m \
+  local xfw=""; [ -f $dir/frameworks ] && xfw=$(cat $dir/frameworks)   # extra link flags, one line
+  $CC -DJBROOT=\"$JB\" -dynamiclib -install_name $JB/Library/MobileSubstrate/DynamicLibraries/$name.dylib $FW $xfw $dir/Tweak.m \
       -o $jb/Library/MobileSubstrate/DynamicLibraries/$name.dylib
   cp $dir/Filter.plist $jb/Library/MobileSubstrate/DynamicLibraries/$name.plist
   cp $dir/Prefs.plist $jb/Library/PreferenceLoader/Preferences/$name.plist
@@ -51,6 +52,7 @@ for variant in "iphoneos-arm64 /var/jb" "iphoneos-arm "; do
   build panicbutton PanicButton com.mymculture.panicbutton 1.0.1 Tweaks "$D" "Triggers a true kernel panic for testing. Produces a panic-full log."
   build rootrun    RootRun    com.mymculture.rootrun    1.0.1 Tweaks "$D" "Make the apps you choose launch as root."
   build gridsize   GridSize   com.mymculture.gridsize   1.0   Tweaks "$D" "Choose how many apps go in each Home Screen row. Icons resize to fit."
+  build freefall   Freefall   com.mymculture.freefall   2.0   Tweaks "$D" "Gravity for your Home Screen: icons fall, tilt, bounce and fling. A recreation of the classic GraviBoard."
 done
 ls -la $OUT
 
