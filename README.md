@@ -16,6 +16,7 @@ depictions/native/      native Sileo depictions (JSON: Details + Changelog tabs)
 sileo-featured.json     featured banners at the top of the source in Sileo
 debs/                   Sileo tweaks (installable from the source)
 tipa/                   TrollStore apps (installable via Get buttons)
+ipa/                    sideload-only apps (TrollInstallerX, MIT, alfiecg24) for the no-palera1n meowbrek2 guide (depictions/meowbrek2.html)
 assets/                 icons + art
 seturl.sh               optional: bake an absolute URL for Zebra/Cydia
 src/                    source for the tweaks (IconSwap, PowerPlus, BarText, DoubleDose, PanicButton, RootRun, GridSize) + build.sh (rootless + rootful; DoubleDose is rootless-only)

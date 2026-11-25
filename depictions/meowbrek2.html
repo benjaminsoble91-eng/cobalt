@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>meowbrek2 without palera1n</title>
+<style>
+  :root{--bg:#070c20;--panel:#0e1a44;--line:#1b2d66;--cobalt2:#6ea2ff;--ink:#eaf1ff;--mut:#9fb3e6}
+  *{box-sizing:border-box}
+  body{margin:0;font:16px/1.6 -apple-system,BlinkMacSystemFont,"SF Pro Text",Segoe UI,Roboto,sans-serif;
+    color:var(--ink);background:linear-gradient(180deg,#0a1230,#070c20);padding:18px}
+  .head{display:flex;gap:14px;align-items:center;margin-bottom:18px}
+  .head img{width:64px;height:64px;border-radius:15px;box-shadow:0 6px 18px rgba(0,0,0,.4)}
+  .head h1{margin:0;font-size:22px}
+  .head .sub{color:var(--mut);font-size:13px;font-family:ui-monospace,Menlo,monospace}
+  .sec{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin-bottom:14px}
+  .sec h2{margin:0 0 8px;font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--cobalt2)}
+  p{margin:0 0 10px;color:#d4deff}
+  ol{margin:6px 0 0;padding-left:20px;color:#d4deff}
+  li{margin:4px 0}
+  ul{margin:6px 0 0;padding-left:20px;color:#d4deff}
+  b{color:#fff}
+  .kv{display:flex;justify-content:space-between;border-top:1px solid var(--line);padding:9px 0;font-size:14px}
+  .kv:first-of-type{border-top:0}
+  .kv span:last-child{color:var(--mut);font-family:ui-monospace,Menlo,monospace}
+  .btn{display:block;text-align:center;text-decoration:none;font-weight:700;border-radius:12px;padding:12px;margin:10px 0 0;
+    background:linear-gradient(180deg,#9b6bff,#7a45ff);color:#fff}
+  .btn.alt{background:transparent;border:1px solid var(--line);color:var(--cobalt2);font-weight:600}
+  .step{display:inline-block;width:24px;height:24px;border-radius:12px;background:#7a45ff;color:#fff;text-align:center;
+    font-size:13px;line-height:24px;margin-right:8px;font-weight:700}
+  .warn{border-color:#7a5a20;background:#2a2210}
+  .warn h2{color:#ffc85a}
+</style>
+</head>
+<body>
+  <div class="head">
+    <img src="../assets/icon_com.mymculture.meowbrek2installer.png" alt="">
+    <div>
+      <h1>meowbrek2 — no palera1n</h1>
+      <div class="sub">no computer · no Safari method</div>
+    </div>
+  </div>
+
+  <div class="sec">
+    <h2>About</h2>
+    <p>Jailbreak an iOS 15 device straight from the device. <b>TrollInstallerX</b> installs TrollStore, TrollStore installs <b>meowbrek2</b>, and meowbrek2 sets up the jailbreak (bootstrap + Sileo) by itself. After every reboot, open meowbrek2 and tap Jailbreak again.</p>
+  </div>
+
+  <div class="sec warn">
+    <h2>Check first</h2>
+    <p>Settings &gt; General &gt; About must say <b>iOS 15.0 – 15.8.x</b> (A9–A11; A8 only on 15.0–15.1). On iOS 16 this doesn't work: meowbrek2 is iOS 15 only.</p>
+    <p>Rootful palera1n or an old rootless palera1n install has to be removed first.</p>
+  </div>
+
+  <div class="sec">
+    <h2><span class="step">1</span>Install TrollStore</h2>
+    <p>Sideload TrollInstallerX with your Apple ID (Benstore, Sideloadly, AltStore…). Open it and tap <b>Install TrollStore</b>. If it gets stuck at "Exploiting kernel", reboot and try again. Pick a removable app (like Tips) when it asks for the persistence helper.</p>
+    <a class="btn" href="../ipa/TrollInstallerX.ipa" download>Download TrollInstallerX .ipa</a>
+    <a class="btn alt" href="https://github.com/alfiecg24/TrollInstallerX">Source code (alfiecg24, MIT)</a>
+  </div>
+
+  <div class="sec">
+    <h2><span class="step">2</span>Install meowbrek2</h2>
+    <p>In TrollStore, open Settings and turn on <b>URL Scheme Enabled</b>. Then tap the button below. It opens TrollStore and installs meowbrek2 1.1.7 from the developer's official link.</p>
+    <a class="btn" href="apple-magnifier://install?url=https%3A%2F%2Fkok3shidoll.github.io%2Fdownload%2Fsecret%2F8F38F948-BCF6-46AF-8926-C95D823107B0%2Fmeowbrek2_1.1.7_TS.tipa">Get meowbrek2 in TrollStore</a>
+    <a class="btn alt" href="https://kok3shidoll.github.io/download/secret/8F38F948-BCF6-46AF-8926-C95D823107B0/meowbrek2_1.1.7_TS.tipa">Or download the .tipa (open it in TrollStore with +)</a>
+  </div>
+
+  <div class="sec">
+    <h2><span class="step">3</span>Jailbreak</h2>
+    <ol>
+      <li>Reboot (recommended).</li>
+      <li>Open meowbrek2 right away and tap <b>Jailbreak</b>.</li>
+      <li>First run installs the bootstrap; Sileo shows up on the Home Screen.</li>
+      <li>If it crashes or reboots, reboot and run it again. kfd doesn't win every time.</li>
+    </ol>
+  </div>
+
+  <div class="sec">
+    <h2>Good to know</h2>
+    <ul>
+      <li>meowbrek2 is by dora2ios and is closed source. TrollInstallerX and TrollStore are open source.</li>
+      <li>Rootless jailbreak: tweaks for rootless (iphoneos-arm64) work.</li>
+      <li>Have a computer handy? Rootless palera1n (checkm8) can still act as a backup anytime.</li>
+    </ul>
+  </div>
+</body>
+</html>
