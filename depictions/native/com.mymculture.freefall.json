@@ -1,0 +1,112 @@
+{
+  "minVersion": "0.1",
+  "class": "DepictionTabView",
+  "tintColor": "#3c78ff",
+  "headerImage": "https://benjaminsoble91-eng.github.io/cobalt/assets/banner_com.mymculture.freefall.png",
+  "tabs": [
+    {
+      "tabname": "Details",
+      "class": "DepictionStackView",
+      "views": [
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "**Freefall** brings gravity to your Home Screen, a recreation of the classic GraviBoard for modern jailbreaks. Turn it on and every icon drops: they fall, follow the tilt of your device, bounce off the edges and each other, and can be grabbed and flung. Gravity stays on, even after you open an app or swipe pages, until you turn it off.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "How to use"
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "1. Go to your Home Screen and shake your device (or use the double-tap or Activator event you picked).\n2. Tilt to steer the icons. Drag and fling them, or switch Finger Mode to a gravity well.\n3. Tap an icon to open its app. The icons fall again when you come back.\n4. Do the activation again, or press Home, to send every icon back to its spot.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "Settings"
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- Activation method: shake, two/three-finger double-tap, both, or Activator (shows up as an Activator action when Activator is installed).\n- Turn on automatically.\n- Allow launching apps, allow page swiping, dock icons fall.\n- Finger mode: drag, gravity well, anti-gravity well or off, with a finger impact slider.\n- Gravity: Earth, Moon or Zero. Bounciness and friction sliders.\n- Follow device tilt, spinning icons, app names, haptics.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "Information"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Version",
+          "text": "2.0"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Section",
+          "text": "Tweaks"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Compatibility",
+          "text": "iOS 14.0 and later (rootless + rootful)"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Requires",
+          "text": "mobilesubstrate, preferenceloader"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Source",
+          "text": "Cobalt"
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionTableButtonView",
+          "title": "Cobalt storefront",
+          "action": "https://benjaminsoble91-eng.github.io/cobalt/",
+          "openExternal": true
+        }
+      ]
+    },
+    {
+      "tabname": "Changelog",
+      "class": "DepictionStackView",
+      "views": [
+        {
+          "class": "DepictionSubheaderView",
+          "title": "2.0",
+          "useBoldText": true,
+          "useBottomMargin": false
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- Rebuilt to match the original GraviBoard: gravity now stays on until you turn it off.\n- New: turn on automatically, allow launching apps, allow page swiping.\n- New: finger modes (drag, gravity well, anti-gravity well) and finger impact.\n- New: Earth, Moon and Zero gravity.\n- New: Activator support.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSubheaderView",
+          "title": "1.0",
+          "useBoldText": true,
+          "useBottomMargin": false
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- Initial release.",
+          "useSpacing": true
+        }
+      ]
+    }
+  ]
+}
