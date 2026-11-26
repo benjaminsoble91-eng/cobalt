@@ -1,0 +1,100 @@
+{
+  "minVersion": "0.1",
+  "class": "DepictionTabView",
+  "tintColor": "#6ea2ff",
+  "tabs": [
+    {
+      "tabname": "Details",
+      "class": "DepictionStackView",
+      "views": [
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "Save this device's **onboard blob** in one tap. Every restore or update leaves a signed ticket (IM4M) on the device. BlobKeeper finds it, checks it, reads the generator and saves a ready-to-use **.shsh2**.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "How it works"
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "1. Open **BlobKeeper** and tap **Save My Blob**.\n2. A root helper finds the ticket in Preboot and copies it out.\n3. BlobKeeper checks it's a real IM4M for this device, reads its ApNonce, and reads the boot-nonce generator from NVRAM.\n4. It saves a .shsh2 (plus the raw .der). Tap **Share** to AirDrop it to your Mac, or **Save to Files**.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "Good to know"
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- The blob is for the iOS version you're on **right now** (the one you last restored or updated to).\n- Files are named like tsschecker's: ECID_model_board_version-build_apnonce.shsh2.\n- On A12 and newer, the generator can't be checked against the ApNonce on the device itself, so BlobKeeper shows it as read from NVRAM. If none is set, the blob is still saved.\n- Saved blobs stay in /var/mobile/Documents/BlobKeeper, even if you uninstall.\n- Works on rootless (Dopamine) and rootful jailbreaks, iOS 14 and later.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "Information"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Version",
+          "text": "1.0"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Section",
+          "text": "Utilities"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Compatibility",
+          "text": "iOS 14.0 and later"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Requires",
+          "text": "Jailbreak, ldid"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Source",
+          "text": "Cobalt"
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionTableButtonView",
+          "title": "Cobalt storefront",
+          "action": "https://benjaminsoble91-eng.github.io/cobalt/",
+          "openExternal": true
+        }
+      ]
+    },
+    {
+      "tabname": "Changelog",
+      "class": "DepictionStackView",
+      "views": [
+        {
+          "class": "DepictionSubheaderView",
+          "title": "1.0",
+          "useBoldText": true,
+          "useBottomMargin": false
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- First release. One-tap onboard blob saving with a step-by-step checklist, Share and Save to Files, and a list of saved blobs.",
+          "useSpacing": true
+        }
+      ]
+    }
+  ]
+}

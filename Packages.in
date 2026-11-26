@@ -568,3 +568,40 @@ Depiction: depictions/com.mymculture.freefall.html
 SileoDepiction: depictions/native/com.mymculture.freefall.json
 Tag: role::enduser
 
+Package: com.mymculture.blobkeeper
+Version: 1.0
+Architecture: iphoneos-arm64
+Maintainer: MYM Culture
+Depends: firmware (>= 14.0), ldid
+Filename: debs/com.mymculture.blobkeeper_1.0_iphoneos-arm64.deb
+Size: 118256
+MD5sum: 73ac9a18909c77cce9ccdf22610b58e9
+SHA1: e002e2db47480eb007e0c8078ae67c56bcb2510c
+SHA256: 7f01c0ebf96e49c9274888fe85f437a3dbbbd68108d1865d747160c33cf78958
+Section: Utilities
+Description: Save your device's onboard blob in one tap. Finds the ticket from your last restore or update, reads the generator, and saves a .shsh2 you can share or keep in Files.
+Author: MYM Culture
+Name: BlobKeeper
+Icon: assets/icon_com.mymculture.blobkeeper.png
+Depiction: depictions/com.mymculture.blobkeeper.html
+SileoDepiction: depictions/native/com.mymculture.blobkeeper.json
+Tag: role::enduser
+
+Package: com.mymculture.blobkeeper
+Version: 1.0
+Architecture: iphoneos-arm
+Maintainer: MYM Culture
+Depends: firmware (>= 14.0), ldid
+Filename: debs/com.mymculture.blobkeeper_1.0_iphoneos-arm.deb
+Size: 118170
+MD5sum: 15b4d5c33f9cdb31ca2c754dfab444f9
+SHA1: a153e1962ddec9f56f1986b85fa5a3d3b5a8e9aa
+SHA256: 90130e984b6259cd23a01f2757aa2a56e68663937a9b78d5bbd95ded3e2657d3
+Section: Utilities
+Description: Save your device's onboard blob in one tap. Finds the ticket from your last restore or update, reads the generator, and saves a .shsh2 you can share or keep in Files.
+Author: MYM Culture
+Name: BlobKeeper
+Icon: assets/icon_com.mymculture.blobkeeper.png
+Depiction: depictions/com.mymculture.blobkeeper.html
+SileoDepiction: depictions/native/com.mymculture.blobkeeper.json
+Tag: role::enduser

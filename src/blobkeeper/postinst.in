@@ -1,0 +1,21 @@
+#!/bin/sh
+# BlobKeeper: sign the app and its root helper with their entitlements, then add it to the Home Screen.
+PREFIX="@PREFIX@"
+APP="$PREFIX/Applications/BlobKeeper.app"
+HELPER="$PREFIX/usr/libexec/blobkeeper-helper"
+SHARE="$PREFIX/usr/share/blobkeeper"
+export PATH="$PREFIX/usr/bin:$PREFIX/bin:$PREFIX/usr/sbin:$PREFIX/sbin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+
+[ "$1" = "configure" ] || exit 0
+
+if ! ldid -S"$SHARE/ents.plist" "$APP/BlobKeeper" || ! ldid -S"$SHARE/helper-ents.plist" "$HELPER"; then
+    echo "BlobKeeper: signing with ldid failed. Reinstall ldid, then reinstall this package."
+    exit 1
+fi
+chown 0:0 "$HELPER"
+chmod 4755 "$HELPER"     # re-applied after signing; root fallback when the persona API isn't allowed
+mkdir -p /var/mobile/Documents/BlobKeeper
+chown 501:501 /var/mobile/Documents/BlobKeeper
+uicache -p "$APP" >/dev/null 2>&1 || uicache -a >/dev/null 2>&1
+echo "BlobKeeper is on your Home Screen. Open it and tap Save My Blob."
+exit 0
