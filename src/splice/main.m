@@ -563,7 +563,7 @@ typedef NS_ENUM(NSInteger, SPAdminSection) { SPSecAdd, SPSecApps, SPSecTweaks, S
 }
 
 - (void)pick {
-    UIDocumentPickerViewController *p = [[UIDocumentPickerViewController alloc] initWithDocumentTypes:@[@"public.data", @"public.item"] inMode:UIDocumentPickerModeImport];
+    UIDocumentPickerViewController *p = [[UIDocumentPickerViewController alloc] initWithDocumentTypes:@[@"public.data", @"public.item"] inMode:UIDocumentPickerModeOpen];
     p.delegate = self;
     [self presentViewController:p animated:YES completion:nil];
 }
@@ -1047,9 +1047,9 @@ typedef NS_ENUM(NSInteger, SPPick) { SPPickApp, SPPickTweak };
 }
 
 - (void)presentPicker:(BOOL)multiple {
-    UIDocumentPickerViewController *p = [[UIDocumentPickerViewController alloc] initWithDocumentTypes:@[@"public.data", @"public.item"] inMode:UIDocumentPickerModeImport];
+    UIDocumentPickerViewController *p = [[UIDocumentPickerViewController alloc] initWithDocumentTypes:@[@"public.data", @"public.item"] inMode:UIDocumentPickerModeOpen];
     p.delegate = self;
-    p.allowsMultipleSelection = multiple;
+    p.allowsMultipleSelection = NO;   // one tap = add it (multi-select needed an extra Open tap)
     [self presentViewController:p animated:YES completion:nil];
 }
 - (void)pickApp { self.pick = SPPickApp; [self presentPicker:NO]; }
@@ -1110,8 +1110,13 @@ static NSString *Stash(NSURL *url) {
     NSString *dir = [SPWorkRoot() stringByAppendingPathComponent:[@"in-" stringByAppendingString:NSUUID.UUID.UUIDString]];
     [NSFileManager.defaultManager createDirectoryAtPath:dir withIntermediateDirectories:YES attributes:nil error:nil];
     NSString *dst = [dir stringByAppendingPathComponent:url.lastPathComponent ?: @"file"];
-    NSError *e = nil;
-    BOOL ok = [NSFileManager.defaultManager copyItemAtURL:url toURL:[NSURL fileURLWithPath:dst] error:&e];
+    // Coordinated read so files from iCloud Drive / other providers are downloaded first.
+    __block BOOL ok = NO;
+    NSError *ce = nil;
+    [[[NSFileCoordinator alloc] initWithFilePresenter:nil] coordinateReadingItemAtURL:url options:NSFileCoordinatorReadingWithoutChanges error:&ce byAccessor:^(NSURL *u) {
+        ok = [NSFileManager.defaultManager copyItemAtURL:u toURL:[NSURL fileURLWithPath:dst] error:nil];
+    }];
+    if (!ok) ok = [NSFileManager.defaultManager copyItemAtURL:url toURL:[NSURL fileURLWithPath:dst] error:nil];
     if (scoped) [url stopAccessingSecurityScopedResource];
     return ok ? dst : nil;
 }
