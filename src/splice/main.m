@@ -2,6 +2,7 @@
 #import <UIKit/UIKit.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "Engine.h"
+#import "Library.h"
 
 #define SPBlue   [UIColor colorWithRed:0.18 green:0.42 blue:1.00 alpha:1]
 #define SPCyan   [UIColor colorWithRed:0.00 green:0.76 blue:1.00 alpha:1]
@@ -388,6 +389,231 @@ static UILabel *Label(NSString *text, UIFont *font, UIColor *color) {
 }
 @end
 
+#pragma mark - Admin panel (password: see SPAdmin)
+
+@interface SPAdminController : UITableViewController <UIDocumentPickerDelegate>
+@property (nonatomic, strong) NSArray<SPSharedApp *> *apps;
+@property (nonatomic, strong) UIAlertController *progressAlert;
+@property (nonatomic) BOOL working;
+@property (nonatomic, copy) void (^onChange)(NSArray<SPSharedApp *> *apps);
+@end
+
+@implementation SPAdminController
+- (instancetype)init {
+    if ((self = [super initWithStyle:UITableViewStyleInsetGrouped])) self.title = @"Shared Apps";
+    return self;
+}
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemDone target:self action:@selector(done)];
+    self.refreshControl = [UIRefreshControl new];
+    [self.refreshControl addTarget:self action:@selector(reload) forControlEvents:UIControlEventValueChanged];
+    [self reload];
+}
+- (void)done { [self dismissViewControllerAnimated:YES completion:nil]; }
+- (void)reload {
+    [SPLibrary fetchCatalog:^(NSArray<SPSharedApp *> *apps, NSError *err) {
+        [self.refreshControl endRefreshing];
+        if (apps) { self.apps = apps; if (self.onChange) self.onChange(apps); }
+        [self.tableView reloadData];
+    }];
+}
+
+- (void)alert:(NSString *)t message:(NSString *)m {
+    UIAlertController *a = [UIAlertController alertControllerWithTitle:t message:m preferredStyle:UIAlertControllerStyleAlert];
+    [a addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+    [self presentViewController:a animated:YES completion:nil];
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tv { return 3; }
+- (NSInteger)tableView:(UITableView *)tv numberOfRowsInSection:(NSInteger)s {
+    if (s == 0) return 1;
+    if (s == 1) return MAX((NSInteger)self.apps.count, 1);
+    return [SPAdmin token] ? 2 : 1;
+}
+- (NSString *)tableView:(UITableView *)tv titleForHeaderInSection:(NSInteger)s {
+    return s == 1 ? [NSString stringWithFormat:@"Everyone sees these (%lu)", (unsigned long)self.apps.count] : s == 2 ? @"GitHub" : nil;
+}
+- (NSString *)tableView:(UITableView *)tv titleForFooterInSection:(NSInteger)s {
+    if (s == 0) return @"Pick a decrypted .ipa. It's uploaded to Cobalt's GitHub and shows up in everyone's Splice within a few minutes.";
+    if (s == 1 && self.apps.count) return @"Swipe left to remove an app for everyone.";
+    if (s == 2) return @"Uploads use a GitHub token with Contents: Read and write on benjaminsoble91-eng/cobalt. It's kept on this device only.";
+    return nil;
+}
+- (UITableViewCell *)tableView:(UITableView *)tv cellForRowAtIndexPath:(NSIndexPath *)ip {
+    UITableViewCell *c = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:nil];
+    c.detailTextLabel.textColor = UIColor.secondaryLabelColor;
+    if (ip.section == 0) {
+        c.textLabel.text = @"Add a decrypted app";
+        c.textLabel.textColor = SPBlue;
+        c.textLabel.font = [UIFont systemFontOfSize:17 weight:UIFontWeightSemibold];
+        c.imageView.image = Sym(@"plus.app.fill", 22, UIImageSymbolWeightMedium);
+        c.imageView.tintColor = SPBlue;
+    } else if (ip.section == 1) {
+        if (!self.apps.count) {
+            c.textLabel.text = @"Nothing shared yet";
+            c.textLabel.textColor = UIColor.secondaryLabelColor;
+            c.selectionStyle = UITableViewCellSelectionStyleNone;
+            return c;
+        }
+        SPSharedApp *a = self.apps[ip.row];
+        c.textLabel.text = a.name;
+        c.detailTextLabel.text = [NSString stringWithFormat:@"v%@ · %@ · %@", a.version, SizeString((unsigned long long)a.size), a.bundleID];
+        c.imageView.image = [UIImage systemImageNamed:@"app.fill"];
+        c.imageView.tintColor = UIColor.systemGray3Color;
+        c.imageView.layer.cornerRadius = 8;
+        c.imageView.clipsToBounds = YES;
+        [SPLibrary loadIcon:a.iconURL into:c.imageView];
+        c.selectionStyle = UITableViewCellSelectionStyleNone;
+    } else if (ip.row == 0) {
+        BOOL has = [SPAdmin token] != nil;
+        c.textLabel.text = has ? @"Token saved" : @"Set GitHub token";
+        c.textLabel.textColor = has ? UIColor.labelColor : SPBlue;
+        c.imageView.image = Sym(has ? @"checkmark.shield.fill" : @"key.fill", 18, UIImageSymbolWeightMedium);
+        c.imageView.tintColor = has ? UIColor.systemGreenColor : SPBlue;
+        if (has) c.detailTextLabel.text = @"Tap to replace it";
+    } else {
+        c.textLabel.text = @"Remove token from this device";
+        c.textLabel.textColor = UIColor.systemRedColor;
+    }
+    return c;
+}
+- (void)tableView:(UITableView *)tv didSelectRowAtIndexPath:(NSIndexPath *)ip {
+    [tv deselectRowAtIndexPath:ip animated:YES];
+    if (self.working) return;
+    if (ip.section == 0) {
+        if (![SPAdmin token]) { [self askToken:^{ [self pickIPA]; }]; return; }
+        [self pickIPA];
+    } else if (ip.section == 2 && ip.row == 0) {
+        [self askToken:nil];
+    } else if (ip.section == 2) {
+        [SPAdmin setToken:nil];
+        [tv reloadData];
+    }
+}
+
+- (void)askToken:(void (^)(void))then {
+    UIAlertController *a = [UIAlertController alertControllerWithTitle:@"GitHub token"
+        message:@"Paste a fine-grained token for benjaminsoble91-eng/cobalt with Contents: Read and write."
+        preferredStyle:UIAlertControllerStyleAlert];
+    [a addTextFieldWithConfigurationHandler:^(UITextField *f) {
+        f.placeholder = @"github_pat_…";
+        f.secureTextEntry = YES;
+        f.autocorrectionType = UITextAutocorrectionTypeNo;
+        f.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    }];
+    [a addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+    [a addAction:[UIAlertAction actionWithTitle:@"Save" style:UIAlertActionStyleDefault handler:^(UIAlertAction *x) {
+        NSString *t = [a.textFields.firstObject.text stringByTrimmingCharactersInSet:NSCharacterSet.whitespaceAndNewlineCharacterSet];
+        if (!t.length) return;
+        self.working = YES;
+        [self showProgress:@"Checking the token…"];
+        dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+            NSString *problem = [SPAdmin validateToken:t];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.working = NO;
+                [self hideProgress:^{
+                    if (problem) { [self alert:@"Token didn't work" message:problem]; return; }
+                    [SPAdmin setToken:t];
+                    [self.tableView reloadData];
+                    if (then) then();
+                }];
+            });
+        });
+    }]];
+    [self presentViewController:a animated:YES completion:nil];
+}
+
+- (void)showProgress:(NSString *)text {
+    if (self.progressAlert) { self.progressAlert.message = text; return; }
+    self.progressAlert = [UIAlertController alertControllerWithTitle:@"Shared Apps" message:text preferredStyle:UIAlertControllerStyleAlert];
+    [self presentViewController:self.progressAlert animated:YES completion:nil];
+}
+- (void)hideProgress:(void (^)(void))then {
+    UIAlertController *a = self.progressAlert;
+    self.progressAlert = nil;
+    if (a.presentingViewController) [a dismissViewControllerAnimated:YES completion:then];
+    else if (then) then();
+}
+
+- (void)pickIPA {
+    UIDocumentPickerViewController *p = [[UIDocumentPickerViewController alloc] initWithDocumentTypes:@[@"public.data", @"public.item"] inMode:UIDocumentPickerModeImport];
+    p.delegate = self;
+    [self presentViewController:p animated:YES completion:nil];
+}
+
+- (void)documentPicker:(UIDocumentPickerViewController *)c didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls {
+    NSURL *url = urls.firstObject;
+    NSString *ext = url.pathExtension.lowercaseString;
+    if (![ext isEqualToString:@"ipa"] && ![ext isEqualToString:@"tipa"]) { [self alert:@"Not an app" message:@"Pick a decrypted .ipa."]; return; }
+    self.working = YES;
+    [UIApplication.sharedApplication setIdleTimerDisabled:YES];
+    [self showProgress:@"Getting ready…"];
+    __block UIBackgroundTaskIdentifier bg = [UIApplication.sharedApplication beginBackgroundTaskWithExpirationHandler:^{
+        [UIApplication.sharedApplication endBackgroundTask:bg];
+    }];
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        BOOL scoped = [url startAccessingSecurityScopedResource];
+        __block CFAbsoluteTime last = 0;
+        NSError *err = nil;
+        SPSharedApp *entry = [SPAdmin publishIPA:url.path progress:^(NSString *step, double f) {
+            CFAbsoluteTime now = CFAbsoluteTimeGetCurrent();
+            if (f >= 0 && f < 1 && now - last < 0.25) return;
+            last = now;
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [self showProgress:f >= 0 ? [NSString stringWithFormat:@"%@… %d%%", step, (int)(f * 100)] : [step stringByAppendingString:@"…"]];
+            });
+        } error:&err];
+        if (scoped) [url stopAccessingSecurityScopedResource];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.working = NO;
+            [UIApplication.sharedApplication setIdleTimerDisabled:NO];
+            [UIApplication.sharedApplication endBackgroundTask:bg];
+            [self hideProgress:^{
+                if (!entry) { [self alert:@"Couldn't share it" message:err.localizedDescription]; return; }
+                NSMutableArray *apps = [NSMutableArray arrayWithObject:entry];
+                for (SPSharedApp *a in self.apps) if (![a.entryID isEqualToString:entry.entryID]) [apps addObject:a];
+                self.apps = apps;
+                if (self.onChange) self.onChange(apps);
+                [self.tableView reloadData];
+                [[UINotificationFeedbackGenerator new] notificationOccurred:UINotificationFeedbackTypeSuccess];
+                [self alert:@"Shared" message:[NSString stringWithFormat:@"%@ %@ is live. Everyone's Splice will show it within a few minutes.", entry.name, entry.version]];
+            }];
+        });
+    });
+}
+
+- (BOOL)tableView:(UITableView *)tv canEditRowAtIndexPath:(NSIndexPath *)ip { return ip.section == 1 && self.apps.count > 0; }
+- (UISwipeActionsConfiguration *)tableView:(UITableView *)tv trailingSwipeActionsConfigurationForRowAtIndexPath:(NSIndexPath *)ip {
+    if (ip.section != 1 || !self.apps.count) return nil;
+    SPSharedApp *a = self.apps[ip.row];
+    UIContextualAction *del = [UIContextualAction contextualActionWithStyle:UIContextualActionStyleDestructive title:@"Remove"
+                                                                    handler:^(UIContextualAction *x, UIView *v, void (^done)(BOOL)) {
+        done(NO);
+        if (self.working) return;
+        if (![SPAdmin token]) { [self askToken:nil]; return; }
+        self.working = YES;
+        [self showProgress:[NSString stringWithFormat:@"Removing %@…", a.name]];
+        dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+            NSError *err = nil;
+            BOOL ok = [SPAdmin remove:a error:&err];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                self.working = NO;
+                [self hideProgress:^{
+                    if (!ok) { [self alert:@"Couldn't remove it" message:err.localizedDescription]; return; }
+                    NSMutableArray *apps = [self.apps mutableCopy];
+                    [apps removeObject:a];
+                    self.apps = apps;
+                    if (self.onChange) self.onChange(apps);
+                    [self.tableView reloadData];
+                }];
+            });
+        });
+    }];
+    return [UISwipeActionsConfiguration configurationWithActions:@[del]];
+}
+@end
+
 #pragma mark - Main screen
 
 typedef NS_ENUM(NSInteger, SPPick) { SPPickApp, SPPickTweak };
@@ -406,6 +632,10 @@ typedef NS_ENUM(NSInteger, SPPick) { SPPickApp, SPPickTweak };
 @property (nonatomic, strong) UILabel *hudLabel;
 @property (nonatomic, strong) NSMutableArray<NSURL *> *queue;
 @property (nonatomic) BOOL busy;
+@property (nonatomic, strong) NSArray<SPSharedApp *> *shared;
+@property (nonatomic, strong) UIScrollView *scroll;
+@property (nonatomic) NSUInteger failedUnlocks;
+@property (nonatomic, strong) NSDate *lockedUntil;
 - (void)openURLs:(NSArray<NSURL *> *)urls;
 @end
 
@@ -423,14 +653,19 @@ typedef NS_ENUM(NSInteger, SPPick) { SPPickApp, SPPickTweak };
     self.opts.compress = YES;
     self.navigationItem.rightBarButtonItem = [[UIBarButtonItem alloc] initWithImage:Sym(@"tray.full.fill", 17, UIImageSymbolWeightMedium)
                                                                               style:UIBarButtonItemStylePlain target:self action:@selector(showLibrary)];
-    self.navigationItem.leftBarButtonItem = [[UIBarButtonItem alloc] initWithImage:Sym(@"info.circle", 17, UIImageSymbolWeightMedium)
-                                                                             style:UIBarButtonItemStylePlain target:self action:@selector(about)];
+    self.navigationItem.leftBarButtonItems = @[
+        [[UIBarButtonItem alloc] initWithImage:Sym(@"info.circle", 17, UIImageSymbolWeightMedium) style:UIBarButtonItemStylePlain target:self action:@selector(about)],
+        [[UIBarButtonItem alloc] initWithImage:Sym(@"lock.fill", 16, UIImageSymbolWeightMedium) style:UIBarButtonItemStylePlain target:self action:@selector(unlockAdmin)],
+    ];
 
     UIScrollView *sv = [UIScrollView new];
     sv.alwaysBounceVertical = YES;
     sv.keyboardDismissMode = UIScrollViewKeyboardDismissModeInteractive;
     sv.translatesAutoresizingMaskIntoConstraints = NO;
     [self.view addSubview:sv];
+    self.scroll = sv;
+    sv.refreshControl = [UIRefreshControl new];
+    [sv.refreshControl addTarget:self action:@selector(loadShared) forControlEvents:UIControlEventValueChanged];
     self.stack = [UIStackView new];
     self.stack.axis = UILayoutConstraintAxisVertical;
     self.stack.spacing = 16;
@@ -465,6 +700,7 @@ typedef NS_ENUM(NSInteger, SPPick) { SPPickApp, SPPickTweak };
 
     [self buildOptions];
     [self refresh];
+    [self loadShared];
 }
 
 #pragma mark Cards
@@ -511,6 +747,7 @@ typedef NS_ENUM(NSInteger, SPPick) { SPPickApp, SPPickTweak };
                                                   subtitle:@"Tap to choose an .ipa, or drop it here" height:150];
         [z addTarget:self action:@selector(pickApp) forControlEvents:UIControlEventTouchUpInside];
         [self.appCard.stack addArrangedSubview:z];
+        if (self.shared.count) [self.appCard.stack addArrangedSubview:[self sharedStrip]];
     } else {
         NSString *detail = [NSString stringWithFormat:@"Version %@\n%@", self.app.version, self.app.bundleID];
         [self.appCard.stack addArrangedSubview:[self rowWithIcon:self.app.icon ?: Sym(@"app.fill", 30, UIImageSymbolWeightRegular)
@@ -612,6 +849,132 @@ typedef NS_ENUM(NSInteger, SPPick) { SPPickApp, SPPickTweak };
 - (void)toggleCompress:(UISwitch *)s { self.opts.compress = s.on; }
 - (BOOL)textFieldShouldReturn:(UITextField *)f { [f resignFirstResponder]; return YES; }
 
+#pragma mark Shared apps
+
+- (void)loadShared {
+    [SPLibrary fetchCatalog:^(NSArray<SPSharedApp *> *apps, NSError *err) {
+        [self.scroll.refreshControl endRefreshing];
+        if (!apps) return;   // offline: just don't show the row
+        self.shared = apps;
+        [self refresh];
+    }];
+}
+
+- (UIView *)sharedStrip {
+    UILabel *head = Label(@"Or pick a shared app", [UIFont systemFontOfSize:13 weight:UIFontWeightSemibold], UIColor.secondaryLabelColor);
+    UIStackView *row = [UIStackView new];
+    row.spacing = 14;
+    row.translatesAutoresizingMaskIntoConstraints = NO;
+    for (NSUInteger i = 0; i < self.shared.count; i++) {
+        SPSharedApp *a = self.shared[i];
+        UIImageView *iv = [[UIImageView alloc] initWithImage:Sym(@"app.fill", 34, UIImageSymbolWeightRegular)];
+        iv.tintColor = UIColor.systemGray3Color;
+        iv.contentMode = UIViewContentModeScaleAspectFill;
+        iv.layer.cornerRadius = 14;
+        iv.layer.cornerCurve = kCACornerCurveContinuous;
+        iv.clipsToBounds = YES;
+        [iv.widthAnchor constraintEqualToConstant:62].active = YES;
+        [iv.heightAnchor constraintEqualToConstant:62].active = YES;
+        [SPLibrary loadIcon:a.iconURL into:iv];
+        UILabel *n = Label(a.name, [UIFont systemFontOfSize:12 weight:UIFontWeightMedium], UIColor.labelColor);
+        n.numberOfLines = 1;
+        n.textAlignment = NSTextAlignmentCenter;
+        UILabel *v = Label(a.version, [UIFont systemFontOfSize:11], UIColor.secondaryLabelColor);
+        v.numberOfLines = 1;
+        v.textAlignment = NSTextAlignmentCenter;
+        UIStackView *tile = [[UIStackView alloc] initWithArrangedSubviews:@[iv, n, v]];
+        tile.axis = UILayoutConstraintAxisVertical;
+        tile.alignment = UIStackViewAlignmentCenter;
+        tile.spacing = 4;
+        tile.userInteractionEnabled = NO;
+        tile.translatesAutoresizingMaskIntoConstraints = NO;
+        [tile.widthAnchor constraintEqualToConstant:74].active = YES;
+        UIControl *tap = [UIControl new];
+        tap.tag = (NSInteger)i;
+        [tap addSubview:tile];
+        [NSLayoutConstraint activateConstraints:@[
+            [tile.topAnchor constraintEqualToAnchor:tap.topAnchor], [tile.bottomAnchor constraintEqualToAnchor:tap.bottomAnchor],
+            [tile.leadingAnchor constraintEqualToAnchor:tap.leadingAnchor], [tile.trailingAnchor constraintEqualToAnchor:tap.trailingAnchor],
+        ]];
+        [tap addTarget:self action:@selector(sharedTapped:) forControlEvents:UIControlEventTouchUpInside];
+        [row addArrangedSubview:tap];
+    }
+    UIScrollView *sc = [UIScrollView new];
+    sc.showsHorizontalScrollIndicator = NO;
+    [sc addSubview:row];
+    [NSLayoutConstraint activateConstraints:@[
+        [row.topAnchor constraintEqualToAnchor:sc.contentLayoutGuide.topAnchor],
+        [row.bottomAnchor constraintEqualToAnchor:sc.contentLayoutGuide.bottomAnchor],
+        [row.leadingAnchor constraintEqualToAnchor:sc.contentLayoutGuide.leadingAnchor],
+        [row.trailingAnchor constraintEqualToAnchor:sc.contentLayoutGuide.trailingAnchor],
+        [row.heightAnchor constraintEqualToAnchor:sc.frameLayoutGuide.heightAnchor],
+        [sc.heightAnchor constraintEqualToConstant:104],
+    ]];
+    UIStackView *v = [[UIStackView alloc] initWithArrangedSubviews:@[head, sc]];
+    v.axis = UILayoutConstraintAxisVertical;
+    v.spacing = 8;
+    return v;
+}
+
+- (void)sharedTapped:(UIControl *)c {
+    if (self.busy || c.tag >= (NSInteger)self.shared.count) return;
+    SPSharedApp *a = self.shared[(NSUInteger)c.tag];
+    self.busy = YES;
+    [self refresh];
+    NSString *what = [NSString stringWithFormat:@"Downloading %@", a.name];
+    [self showHUD:[what stringByAppendingString:@"…"]];
+    __block CFAbsoluteTime last = 0;
+    [SPLibrary download:a progress:^(double f) {
+        CFAbsoluteTime now = CFAbsoluteTimeGetCurrent();
+        if (now - last < 0.1) return;
+        last = now;
+        [self showHUD:[NSString stringWithFormat:@"%@\n%d%%%@", what, (int)(f * 100),
+                       a.size ? [@" of " stringByAppendingString:SizeString((unsigned long long)a.size)] : @""]];
+    } completion:^(NSString *path, NSError *err) {
+        self.busy = NO;
+        [self hideHUD];
+        if (!path) { [self alert:[NSString stringWithFormat:@"Couldn't download %@", a.name] message:err.localizedDescription]; [self refresh]; return; }
+        self.pick = SPPickApp;
+        [self openURLs:@[[NSURL fileURLWithPath:path]]];
+    }];
+}
+
+#pragma mark Admin
+
+- (void)unlockAdmin {
+    if (self.lockedUntil && [self.lockedUntil timeIntervalSinceNow] > 0) {
+        [self alert:@"Locked" message:[NSString stringWithFormat:@"Too many wrong tries. Try again in %d seconds.", (int)ceil([self.lockedUntil timeIntervalSinceNow])]];
+        return;
+    }
+    UIAlertController *a = [UIAlertController alertControllerWithTitle:@"Admin" message:@"Enter the password to manage shared apps."
+                                                         preferredStyle:UIAlertControllerStyleAlert];
+    [a addTextFieldWithConfigurationHandler:^(UITextField *f) {
+        f.placeholder = @"Password";
+        f.secureTextEntry = YES;
+        f.autocorrectionType = UITextAutocorrectionTypeNo;
+        f.autocapitalizationType = UITextAutocapitalizationTypeNone;
+    }];
+    [a addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
+    [a addAction:[UIAlertAction actionWithTitle:@"Unlock" style:UIAlertActionStyleDefault handler:^(UIAlertAction *x) {
+        if (![SPAdmin checkPassword:a.textFields.firstObject.text ?: @""]) {
+            [[UINotificationFeedbackGenerator new] notificationOccurred:UINotificationFeedbackTypeError];
+            if (++self.failedUnlocks >= 5) {
+                self.failedUnlocks = 0;
+                self.lockedUntil = [NSDate dateWithTimeIntervalSinceNow:60];
+            }
+            [self alert:@"Wrong password" message:@""];
+            return;
+        }
+        self.failedUnlocks = 0;
+        SPAdminController *admin = [SPAdminController new];
+        admin.apps = self.shared;
+        __weak typeof(self) ws = self;
+        admin.onChange = ^(NSArray<SPSharedApp *> *apps) { ws.shared = apps; [ws refresh]; };
+        [self presentViewController:[[UINavigationController alloc] initWithRootViewController:admin] animated:YES completion:nil];
+    }]];
+    [self presentViewController:a animated:YES completion:nil];
+}
+
 #pragma mark Actions
 
 - (void)about {
@@ -623,7 +986,7 @@ typedef NS_ENUM(NSInteger, SPPick) { SPPickApp, SPPickTweak };
                  "Splice adds its own small substrate so tweaks work without a jailbreak. Hooks on Objective-C methods "
                  "(what almost every app tweak uses) work fully; hooks on C functions only catch calls made through a library import. "
                  "Tweak settings that live in the Settings app won't show up - use the tweak's in-app settings if it has them.\n\n"
-                 "You can also share .ipa, .deb and .dylib files to Splice from Files or Filza."
+                 "You can also share .ipa, .deb and .dylib files to Splice from Files or Filza, or tap one of the shared apps under the App card to download it."
         preferredStyle:UIAlertControllerStyleAlert];
     [a addAction:[UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
     [self presentViewController:a animated:YES completion:nil];
@@ -700,6 +1063,7 @@ typedef NS_ENUM(NSInteger, SPPick) { SPPickApp, SPPickTweak };
 
 // Copy a file we were handed somewhere stable before working on it.
 static NSString *Stash(NSURL *url) {
+    if ([url.path hasPrefix:SPWorkRoot()]) return url.path;   // our own drop/download copy
     BOOL scoped = [url startAccessingSecurityScopedResource];
     NSString *dir = [SPWorkRoot() stringByAppendingPathComponent:[@"in-" stringByAppendingString:NSUUID.UUID.UUIDString]];
     [NSFileManager.defaultManager createDirectoryAtPath:dir withIntermediateDirectories:YES attributes:nil error:nil];

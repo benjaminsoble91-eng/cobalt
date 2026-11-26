@@ -12,7 +12,7 @@ VER=${VER:-1.0}
 SDK=${SDK:-/home/claude/build/sdks/iPhoneOS14.5.sdk}
 OUT=$PWD/out; rm -rf "$OUT" stage; mkdir -p "$OUT"
 CC="clang -isysroot $SDK -fobjc-arc -Os -Wall -Wno-unused-function -fuse-ld=lld -Wl,-adhoc_codesign"
-FW="-framework UIKit -framework Foundation -framework CoreGraphics -framework QuartzCore -framework MobileCoreServices -larchive"
+FW="-framework UIKit -framework Foundation -framework CoreGraphics -framework QuartzCore -framework MobileCoreServices -framework Security -larchive"
 
 # The substrate shim that goes into every modded app (iOS 12+ so it fits old apps too).
 mkdir -p stage/shim/CydiaSubstrate.framework
@@ -33,7 +33,7 @@ PY
 make_app() { # dir jbroot
   local app=$1 jb=$2
   mkdir -p "$app/Shim"
-  $CC -target arm64-apple-ios13.0 -DJBROOT=\"$jb\" $FW main.m Engine.m machopatch.c -o "$app/Splice"
+  $CC -target arm64-apple-ios13.0 -DJBROOT=\"$jb\" $FW main.m Engine.m Library.m machopatch.c -o "$app/Splice"
   cp -R stage/shim/CydiaSubstrate.framework "$app/Shim/"
   cp icons/AppIcon*.png "$app/"
   python3 - "$app/Info.plist" "$ID" "$VER" <<'PY'
