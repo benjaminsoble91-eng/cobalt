@@ -71,16 +71,93 @@ static NSString *SPBaseDir(void) {
     return docs;
 }
 
+// Some installs (e.g. the jailbreak .deb, depending on the jailbreak) can't write to every folder iOS
+// hands them, so try a few and keep the first one where a real file write works.
+static BOOL CanWrite(NSString *dir) {
+    if (!dir.length) return NO;
+    [NSFileManager.defaultManager createDirectoryAtPath:dir withIntermediateDirectories:YES attributes:nil error:nil];
+    NSString *probe = [dir stringByAppendingPathComponent:[@".probe-" stringByAppendingString:NSUUID.UUID.UUIDString]];
+    FILE *f = fopen(probe.fileSystemRepresentation, "wb");
+    if (!f) return NO;
+    BOOL ok = fwrite("splice", 1, 6, f) == 6;
+    fclose(f);
+    unlink(probe.fileSystemRepresentation);
+    return ok;
+}
+
+static NSString *FirstWritable(NSArray<NSString *> *candidates) {
+    for (NSString *c in candidates) if (CanWrite(c)) return c;
+    return candidates.firstObject;
+}
+
+static NSString *CachesDir(void) {
+    return NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject ?: @"";
+}
+
 NSString *SPWorkRoot(void) {
-    NSString *p = [NSTemporaryDirectory() stringByAppendingPathComponent:@"SpliceWork"];
-    [NSFileManager.defaultManager createDirectoryAtPath:p withIntermediateDirectories:YES attributes:nil error:nil];
-    return p;
+    static NSString *root;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        root = FirstWritable(@[
+            [NSTemporaryDirectory() stringByAppendingPathComponent:@"SpliceWork"],
+            [CachesDir() stringByAppendingPathComponent:@"SpliceWork"],
+            [SPBaseDir() stringByAppendingPathComponent:@".SpliceWork"],
+            @"/var/mobile/Library/Caches/com.mymculture.splice/Work",
+            @"/var/mobile/Documents/Splice/.work",
+            @JBROOT "/var/mobile/Splice/work",
+        ]);
+        NSLog(@"[Splice] work folder: %@", root);
+    });
+    [NSFileManager.defaultManager createDirectoryAtPath:root withIntermediateDirectories:YES attributes:nil error:nil];
+    return root;
 }
 
 NSString *SPBuildsDir(void) {
-    NSString *p = [SPBaseDir() stringByAppendingPathComponent:@"Modded Apps"];
-    [NSFileManager.defaultManager createDirectoryAtPath:p withIntermediateDirectories:YES attributes:nil error:nil];
-    return p;
+    static NSString *dir;
+    static dispatch_once_t once;
+    dispatch_once(&once, ^{
+        dir = FirstWritable(@[
+            [SPBaseDir() stringByAppendingPathComponent:@"Modded Apps"],
+            @"/var/mobile/Documents/Splice/Modded Apps",
+            [CachesDir() stringByAppendingPathComponent:@"Modded Apps"],
+            @"/var/mobile/Library/Splice/Modded Apps",
+        ]);
+    });
+    [NSFileManager.defaultManager createDirectoryAtPath:dir withIntermediateDirectories:YES attributes:nil error:nil];
+    return dir;
+}
+
+// Plain byte copy: unlike copyItemAtURL it doesn't try to carry over the source's owner, ACLs or
+// file-protection class, which other apps' files can refuse.
+static BOOL StreamCopy(NSURL *src, NSString *dst, NSError **err) {
+    NSInputStream *in = [NSInputStream inputStreamWithURL:src];
+    [in open];
+    if (in.streamStatus == NSStreamStatusError || !in) {
+        if (err) *err = SPErr([NSString stringWithFormat:@"can't read the file (%@)", in.streamError.localizedDescription ?: @"no access"]);
+        return NO;
+    }
+    FILE *f = fopen(dst.fileSystemRepresentation, "wb");
+    if (!f) {
+        [in close];
+        if (err) *err = SPErr([NSString stringWithFormat:@"can't write to %@ (%s)", dst.stringByDeletingLastPathComponent, strerror(errno)]);
+        return NO;
+    }
+    uint8_t *buf = malloc(1 << 20);
+    BOOL ok = YES;
+    NSInteger n;
+    while ((n = [in read:buf maxLength:1 << 20]) > 0) {
+        if (fwrite(buf, 1, (size_t)n, f) != (size_t)n) {
+            ok = NO;
+            if (err) *err = SPErr([NSString stringWithFormat:@"can't write to %@ (%s)", dst.stringByDeletingLastPathComponent, strerror(errno)]);
+            break;
+        }
+    }
+    if (ok && n < 0) { ok = NO; if (err) *err = SPErr([NSString stringWithFormat:@"reading stopped (%@)", in.streamError.localizedDescription ?: @"?"]); }
+    free(buf);
+    fclose(f);
+    [in close];
+    if (!ok) unlink(dst.fileSystemRepresentation);
+    return ok;
 }
 
 NSString *SPStashURL(NSURL *url, NSError **err) {
@@ -96,18 +173,21 @@ NSString *SPStashURL(NSURL *url, NSError **err) {
     [[[NSFileCoordinator alloc] initWithFilePresenter:nil] coordinateReadingItemAtURL:url options:NSFileCoordinatorReadingWithoutChanges
                                                                                error:&coordErr byAccessor:^(NSURL *u) {
         NSError *e = nil;
-        ok = [NSFileManager.defaultManager copyItemAtURL:u toURL:[NSURL fileURLWithPath:dst] error:&e];
-        if (!ok) copyErr = e;
+        ok = StreamCopy(u, dst, &e);
+        if (!ok) {
+            copyErr = e;
+            ok = [NSFileManager.defaultManager copyItemAtURL:u toURL:[NSURL fileURLWithPath:dst] error:nil];
+        }
     }];
     if (!ok) {
         NSError *e = nil;
-        ok = [NSFileManager.defaultManager copyItemAtURL:url toURL:[NSURL fileURLWithPath:dst] error:&e];
+        ok = StreamCopy(url, dst, &e);
         if (!ok && !copyErr) copyErr = e ?: coordErr;
     }
     if (scoped) [url stopAccessingSecurityScopedResource];
     if (!ok) {
         [NSFileManager.defaultManager removeItemAtPath:dir error:nil];
-        if (err) *err = SPErr([NSString stringWithFormat:@"iOS didn't let Splice read %@ (%@). In the Files app, move it out of the other app's folder (for example into On My iPad or iCloud Drive), then pick it again.",
+        if (err) *err = SPErr([NSString stringWithFormat:@"Couldn't copy %@: %@.",
                                url.lastPathComponent, copyErr.localizedDescription ?: @"no access"]);
         return nil;
     }
