@@ -1,0 +1,100 @@
+{
+  "minVersion": "0.1",
+  "class": "DepictionTabView",
+  "tintColor": "#2f6bff",
+  "tabs": [
+    {
+      "tabname": "Details",
+      "class": "DepictionStackView",
+      "views": [
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "Turn any app into a modded app. Add a **decrypted .ipa** and one or more **tweaks** (.deb or .dylib), and Splice gives you back the full modded .ipa, ready to install with TrollStore or sign with any sideloader. The modded app runs **without a jailbreak**.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "How it works"
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "1. Add a decrypted .ipa: tap the App card, drop it in, or share it to Splice from Files or Filza.\n2. Add the tweak's .deb (or just its .dylib). Add as many as you like.\n3. Optionally change the app's name or bundle ID, remove extensions or the Watch app.\n4. Tap **Build Modded App**. Splice injects the tweaks, bundles its own substrate, and packs a new .ipa.\n5. Share it to TrollStore to install, or to your sideloader to sign it. Every build is kept in **Modded Apps**.",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "Good to know"
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- App Store apps must be **decrypted** first (for example with TrollDecrypt). Splice tells you if an app is still encrypted.\n- Tweaks are pointed at Splice's own small substrate, so they work without a jailbreak. Objective-C hooks (what almost every app tweak uses) work fully; C function hooks only catch calls made through a library import.\n- Tweak filters are respected: parts of a package made for SpringBoard or other apps are skipped.\n- If a tweak needs another package (a color picker library, Cephei...), add that package's .deb too. Splice warns you when something's missing.\n- Settings-app panes (PreferenceLoader) can't show up inside a sideloaded app; use the tweak's in-app settings if it has them.\n- Works as a TrollStore app (Splice.tipa), a sideloaded app, or a jailbreak app from this source (rootful and rootless).",
+          "useSpacing": true
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionHeaderView",
+          "title": "Information"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Version",
+          "text": "1.0"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Section",
+          "text": "Utilities"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Compatibility",
+          "text": "iOS 13.0 and later"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Requires",
+          "text": "ldid (jailbreak version only)"
+        },
+        {
+          "class": "DepictionTableTextView",
+          "title": "Source",
+          "text": "Cobalt"
+        },
+        {
+          "class": "DepictionSeparatorView"
+        },
+        {
+          "class": "DepictionTableButtonView",
+          "title": "Cobalt storefront",
+          "action": "https://benjaminsoble91-eng.github.io/cobalt/",
+          "openExternal": true
+        }
+      ]
+    },
+    {
+      "tabname": "Changelog",
+      "class": "DepictionStackView",
+      "views": [
+        {
+          "class": "DepictionSubheaderView",
+          "title": "1.0",
+          "useBoldText": true,
+          "useBottomMargin": false
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- First release. Injects .deb and .dylib tweaks into decrypted apps and builds a modded .ipa, with a built-in substrate so the app runs without a jailbreak.",
+          "useSpacing": true
+        }
+      ]
+    }
+  ]
+}

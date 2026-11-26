@@ -1,0 +1,9 @@
+#!/bin/sh
+# Splice: take the app off the Home Screen before its files go away.
+PREFIX="@PREFIX@"
+APP="$PREFIX/Applications/Splice.app"
+export PATH="$PREFIX/usr/bin:$PREFIX/bin:$PREFIX/usr/sbin:$PREFIX/sbin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+case "$1" in
+    remove|purge) uicache -u "$APP" >/dev/null 2>&1 || true ;;
+esac
+exit 0
