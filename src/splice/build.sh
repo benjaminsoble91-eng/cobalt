@@ -8,7 +8,7 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 ID=com.mymculture.splice
-VER=${VER:-1.1.1}
+VER=${VER:-1.1.2}
 SDK=${SDK:-/home/claude/build/sdks/iPhoneOS14.5.sdk}
 OUT=$PWD/out; rm -rf "$OUT" stage; mkdir -p "$OUT"
 CC="clang -isysroot $SDK -fobjc-arc -Os -Wall -Wno-unused-function -fuse-ld=lld -Wl,-adhoc_codesign"

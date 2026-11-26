@@ -5,6 +5,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 NSString *SPWorkRoot(void);      // scratch space (cleared on launch)
 NSString *SPBuildsDir(void);     // finished modded apps
+// Copy a file the user picked (any app's Files storage, iCloud...) into our scratch space. Blocking.
+NSString *_Nullable SPStashURL(NSURL *url, NSError *_Nullable *_Nullable err);
 
 @interface SPApp : NSObject
 @property (nonatomic, copy) NSString *dir;          // folder that holds Payload/

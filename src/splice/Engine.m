@@ -83,6 +83,37 @@ NSString *SPBuildsDir(void) {
     return p;
 }
 
+NSString *SPStashURL(NSURL *url, NSError **err) {
+    if ([url.path hasPrefix:SPWorkRoot()]) return url.path;   // already our own copy (drop/download)
+    BOOL scoped = [url startAccessingSecurityScopedResource];
+    NSString *dir = [SPWorkRoot() stringByAppendingPathComponent:[@"in-" stringByAppendingString:NSUUID.UUID.UUIDString]];
+    [NSFileManager.defaultManager createDirectoryAtPath:dir withIntermediateDirectories:YES attributes:nil error:nil];
+    NSString *dst = [dir stringByAppendingPathComponent:url.lastPathComponent ?: @"file"];
+    // A coordinated read gets access to files in other apps' storage and downloads iCloud files first.
+    __block BOOL ok = NO;
+    __block NSError *copyErr = nil;
+    NSError *coordErr = nil;
+    [[[NSFileCoordinator alloc] initWithFilePresenter:nil] coordinateReadingItemAtURL:url options:NSFileCoordinatorReadingWithoutChanges
+                                                                               error:&coordErr byAccessor:^(NSURL *u) {
+        NSError *e = nil;
+        ok = [NSFileManager.defaultManager copyItemAtURL:u toURL:[NSURL fileURLWithPath:dst] error:&e];
+        if (!ok) copyErr = e;
+    }];
+    if (!ok) {
+        NSError *e = nil;
+        ok = [NSFileManager.defaultManager copyItemAtURL:url toURL:[NSURL fileURLWithPath:dst] error:&e];
+        if (!ok && !copyErr) copyErr = e ?: coordErr;
+    }
+    if (scoped) [url stopAccessingSecurityScopedResource];
+    if (!ok) {
+        [NSFileManager.defaultManager removeItemAtPath:dir error:nil];
+        if (err) *err = SPErr([NSString stringWithFormat:@"iOS didn't let Splice read %@ (%@). In the Files app, move it out of the other app's folder (for example into On My iPad or iCloud Drive), then pick it again.",
+                               url.lastPathComponent, copyErr.localizedDescription ?: @"no access"]);
+        return nil;
+    }
+    return dst;
+}
+
 static NSString *NewWorkDir(NSString *tag) {
     NSString *p = [SPWorkRoot() stringByAppendingPathComponent:[NSString stringWithFormat:@"%@-%@", tag, NSUUID.UUID.UUIDString]];
     [NSFileManager.defaultManager createDirectoryAtPath:p withIntermediateDirectories:YES attributes:nil error:nil];

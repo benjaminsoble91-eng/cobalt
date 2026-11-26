@@ -216,17 +216,49 @@ static const uint8_t kSalt[16] = {0xf6,0xa2,0xc9,0x13,0xcb,0xcf,0x90,0x96,0x4a,0
 static const uint8_t kHash[32] = {0xab,0x49,0x31,0x2d,0x98,0x73,0xfc,0x2b,0x19,0xb7,0xb4,0xf8,0x54,0x8c,0x09,0x6f,
                                   0x5f,0xae,0x8c,0xfa,0x55,0x23,0x7d,0x37,0xf9,0x3d,0xc5,0x83,0x1e,0x9a,0xdb,0x05};
 
-static NSString *TokenFile(void) {
+// Small secret store: keychain, with a 0600 file fallback for installs without keychain access
+// (some jailbreak/TrollStore setups).
+static NSString *StoreFile(NSString *account) {
     NSString *dir = NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES).firstObject;
     dir = [dir stringByAppendingPathComponent:@"Splice"];
     [NSFileManager.defaultManager createDirectoryAtPath:dir withIntermediateDirectories:YES attributes:nil error:nil];
-    return [dir stringByAppendingPathComponent:@".github-token"];
+    return [dir stringByAppendingPathComponent:[account isEqualToString:@"admin"] ? @".github-token" : [@"." stringByAppendingString:account]];
 }
 
-static NSDictionary *KeychainQuery(void) {
+static NSDictionary *KeychainQuery(NSString *account) {
     return @{(__bridge id)kSecClass: (__bridge id)kSecClassGenericPassword,
-             (__bridge id)kSecAttrService: kTokenService, (__bridge id)kSecAttrAccount: @"admin"};
+             (__bridge id)kSecAttrService: kTokenService, (__bridge id)kSecAttrAccount: account};
 }
+
+static NSString *StoreGet(NSString *account) {
+    NSMutableDictionary *q = [KeychainQuery(account) mutableCopy];
+    q[(__bridge id)kSecReturnData] = @YES;
+    q[(__bridge id)kSecMatchLimit] = (__bridge id)kSecMatchLimitOne;
+    CFTypeRef res = NULL;
+    if (SecItemCopyMatching((__bridge CFDictionaryRef)q, &res) == errSecSuccess && res) {
+        NSString *t = [[NSString alloc] initWithData:(__bridge_transfer NSData *)res encoding:NSUTF8StringEncoding];
+        if (t.length) return t;
+    }
+    NSString *f = [NSString stringWithContentsOfFile:StoreFile(account) encoding:NSUTF8StringEncoding error:nil];
+    return f.length ? f : nil;
+}
+
+static void StoreSet(NSString *account, NSString *value) {
+    SecItemDelete((__bridge CFDictionaryRef)KeychainQuery(account));
+    [NSFileManager.defaultManager removeItemAtPath:StoreFile(account) error:nil];
+    if (!value.length) return;
+    NSMutableDictionary *q = [KeychainQuery(account) mutableCopy];
+    q[(__bridge id)kSecValueData] = [value dataUsingEncoding:NSUTF8StringEncoding];
+    q[(__bridge id)kSecAttrAccessible] = (__bridge id)kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly;
+    if (SecItemAdd((__bridge CFDictionaryRef)q, NULL) != errSecSuccess) {
+        [value writeToFile:StoreFile(account) atomically:YES encoding:NSUTF8StringEncoding error:nil];
+        [NSFileManager.defaultManager setAttributes:@{NSFilePosixPermissions: @0600} ofItemAtPath:StoreFile(account) error:nil];
+    }
+}
+
+// "unlocked" holds the decrypted built-in token once the admin has entered the password on this
+// device ("-" if there's no built-in token), so the panel stays unlocked across launches until "Lock admin".
+static NSString *const kUnlockedAccount = @"unlocked";
 
 static NSString *gBuiltIn;   // decrypted for this session after the admin unlocks
 
@@ -253,12 +285,25 @@ static NSString *DecryptBuiltIn(NSString *pw) {
 + (BOOL)unlock:(NSString *)pw {
     if (![self checkPassword:pw]) return NO;
     if (!gBuiltIn) gBuiltIn = DecryptBuiltIn(pw);
+    StoreSet(kUnlockedAccount, gBuiltIn.length ? gBuiltIn : @"-");   // remember this device is unlocked
     return YES;
 }
 
-+ (NSString *)builtInToken { return gBuiltIn; }
++ (BOOL)isUnlocked {
+    NSString *saved = StoreGet(kUnlockedAccount);
+    if (saved.length && ![saved isEqualToString:@"-"] && !gBuiltIn) gBuiltIn = saved;
+    return saved.length > 0;
+}
+
++ (void)lock {
+    StoreSet(kUnlockedAccount, nil);
+    gBuiltIn = nil;
+}
+
++ (NSString *)builtInToken { [self isUnlocked]; return gBuiltIn; }
 
 + (BOOL)usingBuiltInToken {
+    [self isUnlocked];
     NSString *t = [self token];
     return t && gBuiltIn && [t isEqualToString:gBuiltIn];
 }
@@ -273,30 +318,12 @@ static NSString *DecryptBuiltIn(NSString *pw) {
 }
 
 + (NSString *)token {
-    NSMutableDictionary *q = [KeychainQuery() mutableCopy];
-    q[(__bridge id)kSecReturnData] = @YES;
-    q[(__bridge id)kSecMatchLimit] = (__bridge id)kSecMatchLimitOne;
-    CFTypeRef res = NULL;
-    if (SecItemCopyMatching((__bridge CFDictionaryRef)q, &res) == errSecSuccess && res) {
-        NSString *t = [[NSString alloc] initWithData:(__bridge_transfer NSData *)res encoding:NSUTF8StringEncoding];
-        if (t.length) return t;
-    }
-    // Fallback for installs without keychain access (some jailbreak/TrollStore setups).
-    NSString *f = [NSString stringWithContentsOfFile:TokenFile() encoding:NSUTF8StringEncoding error:nil];
-    return f.length ? f : gBuiltIn;   // a token you saved wins over the built-in one
+    [self isUnlocked];
+    return StoreGet(@"admin") ?: gBuiltIn;   // a token you saved wins over the built-in one
 }
 
 + (void)setToken:(NSString *)token {
-    SecItemDelete((__bridge CFDictionaryRef)KeychainQuery());
-    [NSFileManager.defaultManager removeItemAtPath:TokenFile() error:nil];
-    if (!token.length) return;
-    NSMutableDictionary *q = [KeychainQuery() mutableCopy];
-    q[(__bridge id)kSecValueData] = [token dataUsingEncoding:NSUTF8StringEncoding];
-    q[(__bridge id)kSecAttrAccessible] = (__bridge id)kSecAttrAccessibleAfterFirstUnlockThisDeviceOnly;
-    if (SecItemAdd((__bridge CFDictionaryRef)q, NULL) != errSecSuccess) {
-        [token writeToFile:TokenFile() atomically:YES encoding:NSUTF8StringEncoding error:nil];
-        [NSFileManager.defaultManager setAttributes:@{NSFilePosixPermissions: @0600} ofItemAtPath:TokenFile() error:nil];
-    }
+    StoreSet(@"admin", token);
 }
 
 #pragma mark GitHub API (blocking)

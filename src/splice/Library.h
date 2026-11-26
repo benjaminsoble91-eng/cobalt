@@ -35,6 +35,8 @@ typedef void (^SPProgressBlock)(double fraction);
 + (BOOL)unlock:(NSString *)pw;
 + (nullable NSString *)builtInToken;   // only after unlock
 + (BOOL)usingBuiltInToken;
++ (BOOL)isUnlocked;   // stays unlocked across launches until +lock
++ (void)lock;
 + (nullable NSString *)token;
 + (void)setToken:(nullable NSString *)token;
 // Blocking - call off the main thread.
