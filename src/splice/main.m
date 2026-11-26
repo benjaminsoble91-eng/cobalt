@@ -399,6 +399,7 @@ typedef NS_ENUM(NSInteger, SPAdminSection) { SPSecAdd, SPSecApps, SPSecTweaks, S
 @property (nonatomic, strong) UIAlertController *progressAlert;
 @property (nonatomic) BOOL working, pickingTweak;
 @property (nonatomic, copy) void (^onChange)(NSArray<SPSharedApp *> *apps, NSArray<SPSharedApp *> *tweaks);
+@property (nonatomic, copy) void (^onLock)(void);
 @end
 
 @implementation SPAdminController
@@ -436,7 +437,7 @@ typedef NS_ENUM(NSInteger, SPAdminSection) { SPSecAdd, SPSecApps, SPSecTweaks, S
 - (NSInteger)tableView:(UITableView *)tv numberOfRowsInSection:(NSInteger)s {
     if (s == SPSecAdd) return 2;
     if (s == SPSecApps || s == SPSecTweaks) return MAX((NSInteger)[self listFor:s].count, 1);
-    return 2;
+    return 3;   // token, change token, lock
 }
 - (NSString *)tableView:(UITableView *)tv titleForHeaderInSection:(NSInteger)s {
     if (s == SPSecApps) return [NSString stringWithFormat:@"Shared apps (%lu)", (unsigned long)self.apps.count];
@@ -447,7 +448,7 @@ typedef NS_ENUM(NSInteger, SPAdminSection) { SPSecAdd, SPSecApps, SPSecTweaks, S
 - (NSString *)tableView:(UITableView *)tv titleForFooterInSection:(NSInteger)s {
     if (s == SPSecAdd) return @"Apps show under the App card and tweaks under the Tweaks card in everyone's Splice, within a few minutes.";
     if ((s == SPSecApps || s == SPSecTweaks) && [self listFor:s].count) return @"Swipe left to remove one for everyone.";
-    if (s == SPSecGitHub) return @"The built-in token is locked with the admin password and only unlocks after you enter it.";
+    if (s == SPSecGitHub) return @"The built-in token is locked with the admin password. Once you unlock on this device it stays unlocked, even after closing Splice, until you tap Lock admin.";
     return nil;
 }
 - (UITableViewCell *)tableView:(UITableView *)tv cellForRowAtIndexPath:(NSIndexPath *)ip {
@@ -491,6 +492,12 @@ typedef NS_ENUM(NSInteger, SPAdminSection) { SPSecAdd, SPSecApps, SPSecTweaks, S
         c.imageView.image = Sym(has ? @"checkmark.shield.fill" : @"key.fill", 18, UIImageSymbolWeightMedium);
         c.imageView.tintColor = has ? UIColor.systemGreenColor : SPBlue;
         c.accessoryView = has ? [[UIImageView alloc] initWithImage:Sym(@"doc.on.doc", 15, UIImageSymbolWeightMedium)] : nil;
+    } else if (ip.row == 2) {
+        c.textLabel.text = @"Lock admin";
+        c.detailTextLabel.text = @"Ask for the password again next time";
+        c.textLabel.textColor = UIColor.systemRedColor;
+        c.imageView.image = Sym(@"lock.fill", 18, UIImageSymbolWeightMedium);
+        c.imageView.tintColor = UIColor.systemRedColor;
     } else {
         BOOL builtIn = [SPAdmin usingBuiltInToken];
         c.textLabel.text = builtIn ? @"Use a different token" : @"Go back to the built-in token";
@@ -512,6 +519,10 @@ typedef NS_ENUM(NSInteger, SPAdminSection) { SPSecAdd, SPSecApps, SPSecTweaks, S
         UIPasteboard.generalPasteboard.string = t;
         [[UINotificationFeedbackGenerator new] notificationOccurred:UINotificationFeedbackTypeSuccess];
         [self alert:@"Copied" message:@"The token is on your clipboard."];
+    } else if (ip.section == SPSecGitHub && ip.row == 2) {
+        [SPAdmin lock];
+        if (self.onLock) self.onLock();
+        [self done];
     } else if (ip.section == SPSecGitHub) {
         if ([SPAdmin usingBuiltInToken]) [self askToken:nil];
         else { [SPAdmin setToken:nil]; [tv reloadData]; }   // falls back to the built-in token
@@ -581,7 +592,6 @@ typedef NS_ENUM(NSInteger, SPAdminSection) { SPSecAdd, SPSecApps, SPSecTweaks, S
         [UIApplication.sharedApplication endBackgroundTask:bg];
     }];
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
-        BOOL scoped = [url startAccessingSecurityScopedResource];
         __block CFAbsoluteTime last = 0;
         void (^prog)(NSString *, double) = ^(NSString *step, double f) {
             CFAbsoluteTime now = CFAbsoluteTimeGetCurrent();
@@ -592,9 +602,11 @@ typedef NS_ENUM(NSInteger, SPAdminSection) { SPSecAdd, SPSecApps, SPSecTweaks, S
             });
         };
         NSError *err = nil;
-        SPSharedApp *entry = tweak ? [SPAdmin publishTweak:url.path progress:prog error:&err]
-                                   : [SPAdmin publishIPA:url.path progress:prog error:&err];
-        if (scoped) [url stopAccessingSecurityScopedResource];
+        prog(@"Reading the file", -1);
+        NSString *local = SPStashURL(url, &err);   // copy it out of the other app's storage first
+        SPSharedApp *entry = !local ? nil : tweak ? [SPAdmin publishTweak:local progress:prog error:&err]
+                                                  : [SPAdmin publishIPA:local progress:prog error:&err];
+        if (local) [NSFileManager.defaultManager removeItemAtPath:local.stringByDeletingLastPathComponent error:nil];
         dispatch_async(dispatch_get_main_queue(), ^{
             self.working = NO;
             [UIApplication.sharedApplication setIdleTimerDisabled:NO];
@@ -731,6 +743,7 @@ typedef NS_ENUM(NSInteger, SPPick) { SPPickApp, SPPickTweak };
     [self buildOptions];
     [self refresh];
     [self loadShared];
+    [self updateLockIcon];
 }
 
 #pragma mark Cards
@@ -982,7 +995,24 @@ typedef NS_ENUM(NSInteger, SPPick) { SPPickApp, SPPickTweak };
 
 #pragma mark Admin
 
+- (void)presentAdmin {
+    SPAdminController *admin = [SPAdminController new];
+    admin.apps = self.shared;
+    admin.tweaks = self.sharedTweaks;
+    __weak typeof(self) ws = self;
+    admin.onChange = ^(NSArray<SPSharedApp *> *apps, NSArray<SPSharedApp *> *tweaks) { ws.shared = apps; ws.sharedTweaks = tweaks; [ws refresh]; };
+    admin.onLock = ^{ [ws updateLockIcon]; };
+    [self presentViewController:[[UINavigationController alloc] initWithRootViewController:admin] animated:YES completion:nil];
+    [self updateLockIcon];
+}
+
+- (void)updateLockIcon {
+    UIBarButtonItem *lock = self.navigationItem.leftBarButtonItems.lastObject;
+    lock.image = Sym([SPAdmin isUnlocked] ? @"lock.open.fill" : @"lock.fill", 16, UIImageSymbolWeightMedium);
+}
+
 - (void)unlockAdmin {
+    if ([SPAdmin isUnlocked]) { [self presentAdmin]; return; }   // stays unlocked until "Lock admin"
     if (self.lockedUntil && [self.lockedUntil timeIntervalSinceNow] > 0) {
         [self alert:@"Locked" message:[NSString stringWithFormat:@"Too many wrong tries. Try again in %d seconds.", (int)ceil([self.lockedUntil timeIntervalSinceNow])]];
         return;
@@ -1007,12 +1037,7 @@ typedef NS_ENUM(NSInteger, SPPick) { SPPickApp, SPPickTweak };
             return;
         }
         self.failedUnlocks = 0;
-        SPAdminController *admin = [SPAdminController new];
-        admin.apps = self.shared;
-        admin.tweaks = self.sharedTweaks;
-        __weak typeof(self) ws = self;
-        admin.onChange = ^(NSArray<SPSharedApp *> *apps, NSArray<SPSharedApp *> *tweaks) { ws.shared = apps; ws.sharedTweaks = tweaks; [ws refresh]; };
-        [self presentViewController:[[UINavigationController alloc] initWithRootViewController:admin] animated:YES completion:nil];
+        [self presentAdmin];
     }]];
     [self presentViewController:a animated:YES completion:nil];
 }
@@ -1104,23 +1129,6 @@ typedef NS_ENUM(NSInteger, SPPick) { SPPickApp, SPPickTweak };
 - (void)hideHUD { [self.hud removeFromSuperview]; self.hud = nil; }
 
 // Copy a file we were handed somewhere stable before working on it.
-static NSString *Stash(NSURL *url) {
-    if ([url.path hasPrefix:SPWorkRoot()]) return url.path;   // our own drop/download copy
-    BOOL scoped = [url startAccessingSecurityScopedResource];
-    NSString *dir = [SPWorkRoot() stringByAppendingPathComponent:[@"in-" stringByAppendingString:NSUUID.UUID.UUIDString]];
-    [NSFileManager.defaultManager createDirectoryAtPath:dir withIntermediateDirectories:YES attributes:nil error:nil];
-    NSString *dst = [dir stringByAppendingPathComponent:url.lastPathComponent ?: @"file"];
-    // Coordinated read so files from iCloud Drive / other providers are downloaded first.
-    __block BOOL ok = NO;
-    NSError *ce = nil;
-    [[[NSFileCoordinator alloc] initWithFilePresenter:nil] coordinateReadingItemAtURL:url options:NSFileCoordinatorReadingWithoutChanges error:&ce byAccessor:^(NSURL *u) {
-        ok = [NSFileManager.defaultManager copyItemAtURL:u toURL:[NSURL fileURLWithPath:dst] error:nil];
-    }];
-    if (!ok) ok = [NSFileManager.defaultManager copyItemAtURL:url toURL:[NSURL fileURLWithPath:dst] error:nil];
-    if (scoped) [url stopAccessingSecurityScopedResource];
-    return ok ? dst : nil;
-}
-
 - (void)openURLs:(NSArray<NSURL *> *)urls {
     [self.queue addObjectsFromArray:urls];
     [self drainQueue];
@@ -1143,10 +1151,10 @@ static NSString *Stash(NSURL *url) {
     [self showHUD:isApp ? [NSString stringWithFormat:@"Unpacking %@…", url.lastPathComponent.stringByDeletingPathExtension]
                         : [NSString stringWithFormat:@"Reading %@…", url.lastPathComponent]];
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
-        NSString *local = url.isFileURL ? Stash(url) : nil;
         NSError *err = nil;
+        NSString *local = url.isFileURL ? SPStashURL(url, &err) : nil;
         id obj = nil;
-        if (!local) err = [NSError errorWithDomain:@"Splice" code:1 userInfo:@{NSLocalizedDescriptionKey: @"Couldn't read that file."}];
+        if (!local && !err) err = [NSError errorWithDomain:@"Splice" code:1 userInfo:@{NSLocalizedDescriptionKey: @"Couldn't read that file."}];
         else obj = isApp ? [SPApp importIPA:local error:&err] : [SPTweak importFile:local error:&err];
         if (local) [NSFileManager.defaultManager removeItemAtPath:local.stringByDeletingLastPathComponent error:nil];
         dispatch_async(dispatch_get_main_queue(), ^{

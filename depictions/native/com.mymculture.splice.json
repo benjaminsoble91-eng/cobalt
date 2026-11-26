@@ -46,7 +46,7 @@
         {
           "class": "DepictionTableTextView",
           "title": "Version",
-          "text": "1.1.1"
+          "text": "1.1.2"
         },
         {
           "class": "DepictionTableTextView",
@@ -83,6 +83,17 @@
       "tabname": "Changelog",
       "class": "DepictionStackView",
       "views": [
+        {
+          "class": "DepictionSubheaderView",
+          "title": "1.1.2",
+          "useBoldText": true,
+          "useBottomMargin": false
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- Fixed \"Couldn't open\" when picking files stored in another app's folder (like TrollDecrypt).\n- Clearer message if iOS still blocks a file.",
+          "useSpacing": true
+        },
         {
           "class": "DepictionSubheaderView",
           "title": "1.1.1",
