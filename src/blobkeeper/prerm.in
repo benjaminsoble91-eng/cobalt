@@ -1,0 +1,9 @@
+#!/bin/sh
+# BlobKeeper: take the app off the Home Screen before its files go away.
+# Saved blobs in /var/mobile/Documents/BlobKeeper are kept.
+PREFIX="@PREFIX@"
+export PATH="$PREFIX/usr/bin:$PREFIX/bin:$PREFIX/usr/sbin:$PREFIX/sbin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH"
+case "$1" in
+    remove|purge) uicache -u "$PREFIX/Applications/BlobKeeper.app" >/dev/null 2>&1 ;;
+esac
+exit 0

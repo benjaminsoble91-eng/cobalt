@@ -23,6 +23,7 @@ src/dopathemes/         DopaThemes (writes extra themes + icons into the Dopamin
 src/trollamine/         source for Trollamine Installer (installer app + add-on library) + build.sh
 src/meowbrek2installer/      meowbrek2 Installer (.deb: installs TrollStore if missing, then meowbrek2 via TrollStore, then removes itself; rootless palera1n, iOS 15)
 src/trollduplicatorinstaller/  TrollDuplicator Installer (.deb that installs TrollDuplicator via TrollStore, then removes itself)
+src/blobkeeper/          BlobKeeper (app + root helper that saves the onboard blob as .shsh2; rootless + rootful) + its own build.sh
 ```
 
 ## Host it on GitHub Pages (recommended)
