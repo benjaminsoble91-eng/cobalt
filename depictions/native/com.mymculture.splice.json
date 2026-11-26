@@ -46,7 +46,7 @@
         {
           "class": "DepictionTableTextView",
           "title": "Version",
-          "text": "1.1"
+          "text": "1.1.1"
         },
         {
           "class": "DepictionTableTextView",
@@ -83,6 +83,17 @@
       "tabname": "Changelog",
       "class": "DepictionStackView",
       "views": [
+        {
+          "class": "DepictionSubheaderView",
+          "title": "1.1.1",
+          "useBoldText": true,
+          "useBottomMargin": false
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- Fixed picking files doing nothing (Sileo install): files now open directly and add with one tap.",
+          "useSpacing": true
+        },
         {
           "class": "DepictionSubheaderView",
           "title": "1.1",
