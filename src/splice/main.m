@@ -3,6 +3,7 @@
 #import <MobileCoreServices/MobileCoreServices.h>
 #import "Engine.h"
 #import "Library.h"
+#import <objc/runtime.h>
 
 #define SPBlue   [UIColor colorWithRed:0.18 green:0.42 blue:1.00 alpha:1]
 #define SPCyan   [UIColor colorWithRed:0.00 green:0.76 blue:1.00 alpha:1]
@@ -391,16 +392,18 @@ static UILabel *Label(NSString *text, UIFont *font, UIColor *color) {
 
 #pragma mark - Admin panel (password: see SPAdmin)
 
+typedef NS_ENUM(NSInteger, SPAdminSection) { SPSecAdd, SPSecApps, SPSecTweaks, SPSecGitHub, SPSecCount };
+
 @interface SPAdminController : UITableViewController <UIDocumentPickerDelegate>
-@property (nonatomic, strong) NSArray<SPSharedApp *> *apps;
+@property (nonatomic, strong) NSArray<SPSharedApp *> *apps, *tweaks;
 @property (nonatomic, strong) UIAlertController *progressAlert;
-@property (nonatomic) BOOL working;
-@property (nonatomic, copy) void (^onChange)(NSArray<SPSharedApp *> *apps);
+@property (nonatomic) BOOL working, pickingTweak;
+@property (nonatomic, copy) void (^onChange)(NSArray<SPSharedApp *> *apps, NSArray<SPSharedApp *> *tweaks);
 @end
 
 @implementation SPAdminController
 - (instancetype)init {
-    if ((self = [super initWithStyle:UITableViewStyleInsetGrouped])) self.title = @"Shared Apps";
+    if ((self = [super initWithStyle:UITableViewStyleInsetGrouped])) self.title = @"Admin";
     return self;
 }
 - (void)viewDidLoad {
@@ -411,11 +414,14 @@ static UILabel *Label(NSString *text, UIFont *font, UIColor *color) {
     [self reload];
 }
 - (void)done { [self dismissViewControllerAnimated:YES completion:nil]; }
+- (void)changed {
+    if (self.onChange) self.onChange(self.apps ?: @[], self.tweaks ?: @[]);
+    [self.tableView reloadData];
+}
 - (void)reload {
-    [SPLibrary fetchCatalog:^(NSArray<SPSharedApp *> *apps, NSError *err) {
+    [SPLibrary fetchCatalog:^(NSArray<SPSharedApp *> *apps, NSArray<SPSharedApp *> *tweaks, NSError *err) {
         [self.refreshControl endRefreshing];
-        if (apps) { self.apps = apps; if (self.onChange) self.onChange(apps); }
-        [self.tableView reloadData];
+        if (apps) { self.apps = apps; self.tweaks = tweaks; [self changed]; }
     }];
 }
 
@@ -425,70 +431,90 @@ static UILabel *Label(NSString *text, UIFont *font, UIColor *color) {
     [self presentViewController:a animated:YES completion:nil];
 }
 
-- (NSInteger)numberOfSectionsInTableView:(UITableView *)tv { return 3; }
+- (NSArray<SPSharedApp *> *)listFor:(NSInteger)s { return s == SPSecApps ? self.apps : self.tweaks; }
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tv { return SPSecCount; }
 - (NSInteger)tableView:(UITableView *)tv numberOfRowsInSection:(NSInteger)s {
-    if (s == 0) return 1;
-    if (s == 1) return MAX((NSInteger)self.apps.count, 1);
-    return [SPAdmin token] ? 2 : 1;
+    if (s == SPSecAdd) return 2;
+    if (s == SPSecApps || s == SPSecTweaks) return MAX((NSInteger)[self listFor:s].count, 1);
+    return 2;
 }
 - (NSString *)tableView:(UITableView *)tv titleForHeaderInSection:(NSInteger)s {
-    return s == 1 ? [NSString stringWithFormat:@"Everyone sees these (%lu)", (unsigned long)self.apps.count] : s == 2 ? @"GitHub" : nil;
+    if (s == SPSecApps) return [NSString stringWithFormat:@"Shared apps (%lu)", (unsigned long)self.apps.count];
+    if (s == SPSecTweaks) return [NSString stringWithFormat:@"Shared tweaks (%lu)", (unsigned long)self.tweaks.count];
+    if (s == SPSecGitHub) return @"GitHub";
+    return @"Share with everyone";
 }
 - (NSString *)tableView:(UITableView *)tv titleForFooterInSection:(NSInteger)s {
-    if (s == 0) return @"Pick a decrypted .ipa. It's uploaded to Cobalt's GitHub and shows up in everyone's Splice within a few minutes.";
-    if (s == 1 && self.apps.count) return @"Swipe left to remove an app for everyone.";
-    if (s == 2) return @"Uploads use a GitHub token with Contents: Read and write on benjaminsoble91-eng/cobalt. It's kept on this device only.";
+    if (s == SPSecAdd) return @"Apps show under the App card and tweaks under the Tweaks card in everyone's Splice, within a few minutes.";
+    if ((s == SPSecApps || s == SPSecTweaks) && [self listFor:s].count) return @"Swipe left to remove one for everyone.";
+    if (s == SPSecGitHub) return @"The built-in token is locked with the admin password and only unlocks after you enter it.";
     return nil;
 }
 - (UITableViewCell *)tableView:(UITableView *)tv cellForRowAtIndexPath:(NSIndexPath *)ip {
     UITableViewCell *c = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:nil];
     c.detailTextLabel.textColor = UIColor.secondaryLabelColor;
-    if (ip.section == 0) {
-        c.textLabel.text = @"Add a decrypted app";
+    if (ip.section == SPSecAdd) {
+        BOOL tweak = ip.row == 1;
+        c.textLabel.text = tweak ? @"Add a tweak" : @"Add a decrypted app";
+        c.detailTextLabel.text = tweak ? @".deb or .dylib" : @".ipa";
         c.textLabel.textColor = SPBlue;
         c.textLabel.font = [UIFont systemFontOfSize:17 weight:UIFontWeightSemibold];
-        c.imageView.image = Sym(@"plus.app.fill", 22, UIImageSymbolWeightMedium);
-        c.imageView.tintColor = SPBlue;
-    } else if (ip.section == 1) {
-        if (!self.apps.count) {
-            c.textLabel.text = @"Nothing shared yet";
+        c.imageView.image = Sym(tweak ? @"puzzlepiece.extension.fill" : @"plus.app.fill", 22, UIImageSymbolWeightMedium);
+        c.imageView.tintColor = tweak ? UIColor.systemPurpleColor : SPBlue;
+    } else if (ip.section == SPSecApps || ip.section == SPSecTweaks) {
+        NSArray *list = [self listFor:ip.section];
+        c.selectionStyle = UITableViewCellSelectionStyleNone;
+        if (!list.count) {
+            c.textLabel.text = ip.section == SPSecApps ? @"No apps shared yet" : @"No tweaks shared yet";
             c.textLabel.textColor = UIColor.secondaryLabelColor;
-            c.selectionStyle = UITableViewCellSelectionStyleNone;
             return c;
         }
-        SPSharedApp *a = self.apps[ip.row];
+        SPSharedApp *a = list[ip.row];
         c.textLabel.text = a.name;
-        c.detailTextLabel.text = [NSString stringWithFormat:@"v%@ · %@ · %@", a.version, SizeString((unsigned long long)a.size), a.bundleID];
-        c.imageView.image = [UIImage systemImageNamed:@"app.fill"];
-        c.imageView.tintColor = UIColor.systemGray3Color;
-        c.imageView.layer.cornerRadius = 8;
-        c.imageView.clipsToBounds = YES;
-        [SPLibrary loadIcon:a.iconURL into:c.imageView];
-        c.selectionStyle = UITableViewCellSelectionStyleNone;
+        c.detailTextLabel.text = a.isTweak
+            ? [NSString stringWithFormat:@"v%@ · %@ · %@", a.version, SizeString((unsigned long long)a.size), a.fileName ?: @""]
+            : [NSString stringWithFormat:@"v%@ · %@ · %@", a.version, SizeString((unsigned long long)a.size), a.bundleID];
+        if (a.isTweak) {
+            c.imageView.image = Sym(@"puzzlepiece.extension.fill", 20, UIImageSymbolWeightMedium);
+            c.imageView.tintColor = UIColor.systemPurpleColor;
+        } else {
+            c.imageView.image = [UIImage systemImageNamed:@"app.fill"];
+            c.imageView.tintColor = UIColor.systemGray3Color;
+            c.imageView.layer.cornerRadius = 8;
+            c.imageView.clipsToBounds = YES;
+            [SPLibrary loadIcon:a.iconURL into:c.imageView];
+        }
     } else if (ip.row == 0) {
-        BOOL has = [SPAdmin token] != nil;
-        c.textLabel.text = has ? @"Token saved" : @"Set GitHub token";
-        c.textLabel.textColor = has ? UIColor.labelColor : SPBlue;
+        BOOL builtIn = [SPAdmin usingBuiltInToken], has = [SPAdmin token] != nil;
+        c.textLabel.text = builtIn ? @"Built-in token" : has ? @"Your saved token" : @"No token";
+        c.detailTextLabel.text = has ? @"Tap to copy it" : @"Tap to set one";
         c.imageView.image = Sym(has ? @"checkmark.shield.fill" : @"key.fill", 18, UIImageSymbolWeightMedium);
         c.imageView.tintColor = has ? UIColor.systemGreenColor : SPBlue;
-        if (has) c.detailTextLabel.text = @"Tap to replace it";
+        c.accessoryView = has ? [[UIImageView alloc] initWithImage:Sym(@"doc.on.doc", 15, UIImageSymbolWeightMedium)] : nil;
     } else {
-        c.textLabel.text = @"Remove token from this device";
-        c.textLabel.textColor = UIColor.systemRedColor;
+        BOOL builtIn = [SPAdmin usingBuiltInToken];
+        c.textLabel.text = builtIn ? @"Use a different token" : @"Go back to the built-in token";
+        c.textLabel.textColor = SPBlue;
+        if (!builtIn && ![SPAdmin builtInToken]) { c.textLabel.text = @"Remove saved token"; c.textLabel.textColor = UIColor.systemRedColor; }
     }
     return c;
 }
 - (void)tableView:(UITableView *)tv didSelectRowAtIndexPath:(NSIndexPath *)ip {
     [tv deselectRowAtIndexPath:ip animated:YES];
     if (self.working) return;
-    if (ip.section == 0) {
-        if (![SPAdmin token]) { [self askToken:^{ [self pickIPA]; }]; return; }
-        [self pickIPA];
-    } else if (ip.section == 2 && ip.row == 0) {
-        [self askToken:nil];
-    } else if (ip.section == 2) {
-        [SPAdmin setToken:nil];
-        [tv reloadData];
+    if (ip.section == SPSecAdd) {
+        self.pickingTweak = ip.row == 1;
+        if (![SPAdmin token]) { [self askToken:^{ [self pick]; }]; return; }
+        [self pick];
+    } else if (ip.section == SPSecGitHub && ip.row == 0) {
+        NSString *t = [SPAdmin token];
+        if (!t) { [self askToken:nil]; return; }
+        UIPasteboard.generalPasteboard.string = t;
+        [[UINotificationFeedbackGenerator new] notificationOccurred:UINotificationFeedbackTypeSuccess];
+        [self alert:@"Copied" message:@"The token is on your clipboard."];
+    } else if (ip.section == SPSecGitHub) {
+        if ([SPAdmin usingBuiltInToken]) [self askToken:nil];
+        else { [SPAdmin setToken:nil]; [tv reloadData]; }   // falls back to the built-in token
     }
 }
 
@@ -526,7 +552,7 @@ static UILabel *Label(NSString *text, UIFont *font, UIColor *color) {
 
 - (void)showProgress:(NSString *)text {
     if (self.progressAlert) { self.progressAlert.message = text; return; }
-    self.progressAlert = [UIAlertController alertControllerWithTitle:@"Shared Apps" message:text preferredStyle:UIAlertControllerStyleAlert];
+    self.progressAlert = [UIAlertController alertControllerWithTitle:@"Sharing" message:text preferredStyle:UIAlertControllerStyleAlert];
     [self presentViewController:self.progressAlert animated:YES completion:nil];
 }
 - (void)hideProgress:(void (^)(void))then {
@@ -536,7 +562,7 @@ static UILabel *Label(NSString *text, UIFont *font, UIColor *color) {
     else if (then) then();
 }
 
-- (void)pickIPA {
+- (void)pick {
     UIDocumentPickerViewController *p = [[UIDocumentPickerViewController alloc] initWithDocumentTypes:@[@"public.data", @"public.item"] inMode:UIDocumentPickerModeImport];
     p.delegate = self;
     [self presentViewController:p animated:YES completion:nil];
@@ -545,7 +571,9 @@ static UILabel *Label(NSString *text, UIFont *font, UIColor *color) {
 - (void)documentPicker:(UIDocumentPickerViewController *)c didPickDocumentsAtURLs:(NSArray<NSURL *> *)urls {
     NSURL *url = urls.firstObject;
     NSString *ext = url.pathExtension.lowercaseString;
-    if (![ext isEqualToString:@"ipa"] && ![ext isEqualToString:@"tipa"]) { [self alert:@"Not an app" message:@"Pick a decrypted .ipa."]; return; }
+    BOOL tweak = [ext isEqualToString:@"deb"] || [ext isEqualToString:@"dylib"];
+    BOOL app = [ext isEqualToString:@"ipa"] || [ext isEqualToString:@"tipa"];
+    if (!tweak && !app) { [self alert:@"Can't share that" message:@"Pick a decrypted .ipa, or a tweak (.deb or .dylib)."]; return; }
     self.working = YES;
     [UIApplication.sharedApplication setIdleTimerDisabled:YES];
     [self showProgress:@"Getting ready…"];
@@ -555,15 +583,17 @@ static UILabel *Label(NSString *text, UIFont *font, UIColor *color) {
     dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
         BOOL scoped = [url startAccessingSecurityScopedResource];
         __block CFAbsoluteTime last = 0;
-        NSError *err = nil;
-        SPSharedApp *entry = [SPAdmin publishIPA:url.path progress:^(NSString *step, double f) {
+        void (^prog)(NSString *, double) = ^(NSString *step, double f) {
             CFAbsoluteTime now = CFAbsoluteTimeGetCurrent();
             if (f >= 0 && f < 1 && now - last < 0.25) return;
             last = now;
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self showProgress:f >= 0 ? [NSString stringWithFormat:@"%@… %d%%", step, (int)(f * 100)] : [step stringByAppendingString:@"…"]];
             });
-        } error:&err];
+        };
+        NSError *err = nil;
+        SPSharedApp *entry = tweak ? [SPAdmin publishTweak:url.path progress:prog error:&err]
+                                   : [SPAdmin publishIPA:url.path progress:prog error:&err];
         if (scoped) [url stopAccessingSecurityScopedResource];
         dispatch_async(dispatch_get_main_queue(), ^{
             self.working = NO;
@@ -571,11 +601,10 @@ static UILabel *Label(NSString *text, UIFont *font, UIColor *color) {
             [UIApplication.sharedApplication endBackgroundTask:bg];
             [self hideProgress:^{
                 if (!entry) { [self alert:@"Couldn't share it" message:err.localizedDescription]; return; }
-                NSMutableArray *apps = [NSMutableArray arrayWithObject:entry];
-                for (SPSharedApp *a in self.apps) if (![a.entryID isEqualToString:entry.entryID]) [apps addObject:a];
-                self.apps = apps;
-                if (self.onChange) self.onChange(apps);
-                [self.tableView reloadData];
+                NSMutableArray *list = [NSMutableArray arrayWithObject:entry];
+                for (SPSharedApp *a in (tweak ? self.tweaks : self.apps)) if (![a.entryID isEqualToString:entry.entryID]) [list addObject:a];
+                if (tweak) self.tweaks = list; else self.apps = list;
+                [self changed];
                 [[UINotificationFeedbackGenerator new] notificationOccurred:UINotificationFeedbackTypeSuccess];
                 [self alert:@"Shared" message:[NSString stringWithFormat:@"%@ %@ is live. Everyone's Splice will show it within a few minutes.", entry.name, entry.version]];
             }];
@@ -583,10 +612,12 @@ static UILabel *Label(NSString *text, UIFont *font, UIColor *color) {
     });
 }
 
-- (BOOL)tableView:(UITableView *)tv canEditRowAtIndexPath:(NSIndexPath *)ip { return ip.section == 1 && self.apps.count > 0; }
+- (BOOL)tableView:(UITableView *)tv canEditRowAtIndexPath:(NSIndexPath *)ip {
+    return (ip.section == SPSecApps || ip.section == SPSecTweaks) && [self listFor:ip.section].count > 0;
+}
 - (UISwipeActionsConfiguration *)tableView:(UITableView *)tv trailingSwipeActionsConfigurationForRowAtIndexPath:(NSIndexPath *)ip {
-    if (ip.section != 1 || !self.apps.count) return nil;
-    SPSharedApp *a = self.apps[ip.row];
+    if (![self tableView:tv canEditRowAtIndexPath:ip]) return nil;
+    SPSharedApp *a = [self listFor:ip.section][ip.row];
     UIContextualAction *del = [UIContextualAction contextualActionWithStyle:UIContextualActionStyleDestructive title:@"Remove"
                                                                     handler:^(UIContextualAction *x, UIView *v, void (^done)(BOOL)) {
         done(NO);
@@ -601,11 +632,10 @@ static UILabel *Label(NSString *text, UIFont *font, UIColor *color) {
                 self.working = NO;
                 [self hideProgress:^{
                     if (!ok) { [self alert:@"Couldn't remove it" message:err.localizedDescription]; return; }
-                    NSMutableArray *apps = [self.apps mutableCopy];
-                    [apps removeObject:a];
-                    self.apps = apps;
-                    if (self.onChange) self.onChange(apps);
-                    [self.tableView reloadData];
+                    NSMutableArray *list = [(a.isTweak ? self.tweaks : self.apps) mutableCopy];
+                    [list removeObject:a];
+                    if (a.isTweak) self.tweaks = list; else self.apps = list;
+                    [self changed];
                 }];
             });
         });
@@ -632,7 +662,7 @@ typedef NS_ENUM(NSInteger, SPPick) { SPPickApp, SPPickTweak };
 @property (nonatomic, strong) UILabel *hudLabel;
 @property (nonatomic, strong) NSMutableArray<NSURL *> *queue;
 @property (nonatomic) BOOL busy;
-@property (nonatomic, strong) NSArray<SPSharedApp *> *shared;
+@property (nonatomic, strong) NSArray<SPSharedApp *> *shared, *sharedTweaks;
 @property (nonatomic, strong) UIScrollView *scroll;
 @property (nonatomic) NSUInteger failedUnlocks;
 @property (nonatomic, strong) NSDate *lockedUntil;
@@ -747,7 +777,7 @@ typedef NS_ENUM(NSInteger, SPPick) { SPPickApp, SPPickTweak };
                                                   subtitle:@"Tap to choose an .ipa, or drop it here" height:150];
         [z addTarget:self action:@selector(pickApp) forControlEvents:UIControlEventTouchUpInside];
         [self.appCard.stack addArrangedSubview:z];
-        if (self.shared.count) [self.appCard.stack addArrangedSubview:[self sharedStrip]];
+        if (self.shared.count) [self.appCard.stack addArrangedSubview:[self sharedStripFor:self.shared tweaks:NO]];
     } else {
         NSString *detail = [NSString stringWithFormat:@"Version %@\n%@", self.app.version, self.app.bundleID];
         [self.appCard.stack addArrangedSubview:[self rowWithIcon:self.app.icon ?: Sym(@"app.fill", 30, UIImageSymbolWeightRegular)
@@ -782,6 +812,14 @@ typedef NS_ENUM(NSInteger, SPPick) { SPPickApp, SPPickTweak };
                                                subtitle:@".deb or .dylib, tap or drop" height:self.tweaks.count ? 84 : 120];
     [tz addTarget:self action:@selector(pickTweak) forControlEvents:UIControlEventTouchUpInside];
     [self.tweakCard.stack addArrangedSubview:tz];
+    NSMutableArray *offer = [NSMutableArray array];   // shared tweaks not added yet
+    for (SPSharedApp *st in self.sharedTweaks) {
+        BOOL have = NO;
+        for (SPTweak *t in self.tweaks)
+            if ((st.packageID.length && [t.packageID isEqualToString:st.packageID]) || [t.fileName isEqualToString:st.fileName]) have = YES;
+        if (!have) [offer addObject:st];
+    }
+    if (offer.count) [self.tweakCard.stack addArrangedSubview:[self sharedStripFor:offer tweaks:YES]];
 
     // Options placeholders follow the app
     self.nameField.placeholder = self.app ? self.app.name : @"Same as the app";
@@ -852,30 +890,32 @@ typedef NS_ENUM(NSInteger, SPPick) { SPPickApp, SPPickTweak };
 #pragma mark Shared apps
 
 - (void)loadShared {
-    [SPLibrary fetchCatalog:^(NSArray<SPSharedApp *> *apps, NSError *err) {
+    [SPLibrary fetchCatalog:^(NSArray<SPSharedApp *> *apps, NSArray<SPSharedApp *> *tweaks, NSError *err) {
         [self.scroll.refreshControl endRefreshing];
-        if (!apps) return;   // offline: just don't show the row
+        if (!apps) return;   // offline: just don't show the rows
         self.shared = apps;
+        self.sharedTweaks = tweaks;
         [self refresh];
     }];
 }
 
-- (UIView *)sharedStrip {
-    UILabel *head = Label(@"Or pick a shared app", [UIFont systemFontOfSize:13 weight:UIFontWeightSemibold], UIColor.secondaryLabelColor);
+- (UIView *)sharedStripFor:(NSArray<SPSharedApp *> *)items tweaks:(BOOL)tweaks {
+    UILabel *head = Label(tweaks ? @"Or add a shared tweak" : @"Or pick a shared app", [UIFont systemFontOfSize:13 weight:UIFontWeightSemibold], UIColor.secondaryLabelColor);
     UIStackView *row = [UIStackView new];
     row.spacing = 14;
     row.translatesAutoresizingMaskIntoConstraints = NO;
-    for (NSUInteger i = 0; i < self.shared.count; i++) {
-        SPSharedApp *a = self.shared[i];
-        UIImageView *iv = [[UIImageView alloc] initWithImage:Sym(@"app.fill", 34, UIImageSymbolWeightRegular)];
-        iv.tintColor = UIColor.systemGray3Color;
-        iv.contentMode = UIViewContentModeScaleAspectFill;
+    for (NSUInteger i = 0; i < items.count; i++) {
+        SPSharedApp *a = items[i];
+        UIImageView *iv = [[UIImageView alloc] initWithImage:Sym(tweaks ? @"puzzlepiece.extension.fill" : @"app.fill", tweaks ? 26 : 34, UIImageSymbolWeightRegular)];
+        iv.tintColor = tweaks ? UIColor.systemPurpleColor : UIColor.systemGray3Color;
+        iv.backgroundColor = tweaks ? [UIColor.systemPurpleColor colorWithAlphaComponent:0.12] : UIColor.clearColor;
+        iv.contentMode = tweaks ? UIViewContentModeCenter : UIViewContentModeScaleAspectFill;
         iv.layer.cornerRadius = 14;
         iv.layer.cornerCurve = kCACornerCurveContinuous;
         iv.clipsToBounds = YES;
         [iv.widthAnchor constraintEqualToConstant:62].active = YES;
         [iv.heightAnchor constraintEqualToConstant:62].active = YES;
-        [SPLibrary loadIcon:a.iconURL into:iv];
+        if (!tweaks) [SPLibrary loadIcon:a.iconURL into:iv];
         UILabel *n = Label(a.name, [UIFont systemFontOfSize:12 weight:UIFontWeightMedium], UIColor.labelColor);
         n.numberOfLines = 1;
         n.textAlignment = NSTextAlignmentCenter;
@@ -891,6 +931,7 @@ typedef NS_ENUM(NSInteger, SPPick) { SPPickApp, SPPickTweak };
         [tile.widthAnchor constraintEqualToConstant:74].active = YES;
         UIControl *tap = [UIControl new];
         tap.tag = (NSInteger)i;
+        objc_setAssociatedObject(tap, "item", a, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
         [tap addSubview:tile];
         [NSLayoutConstraint activateConstraints:@[
             [tile.topAnchor constraintEqualToAnchor:tap.topAnchor], [tile.bottomAnchor constraintEqualToAnchor:tap.bottomAnchor],
@@ -917,8 +958,8 @@ typedef NS_ENUM(NSInteger, SPPick) { SPPickApp, SPPickTweak };
 }
 
 - (void)sharedTapped:(UIControl *)c {
-    if (self.busy || c.tag >= (NSInteger)self.shared.count) return;
-    SPSharedApp *a = self.shared[(NSUInteger)c.tag];
+    SPSharedApp *a = objc_getAssociatedObject(c, "item");
+    if (self.busy || !a) return;
     self.busy = YES;
     [self refresh];
     NSString *what = [NSString stringWithFormat:@"Downloading %@", a.name];
@@ -934,7 +975,7 @@ typedef NS_ENUM(NSInteger, SPPick) { SPPickApp, SPPickTweak };
         self.busy = NO;
         [self hideHUD];
         if (!path) { [self alert:[NSString stringWithFormat:@"Couldn't download %@", a.name] message:err.localizedDescription]; [self refresh]; return; }
-        self.pick = SPPickApp;
+        self.pick = a.isTweak ? SPPickTweak : SPPickApp;
         [self openURLs:@[[NSURL fileURLWithPath:path]]];
     }];
 }
@@ -956,7 +997,7 @@ typedef NS_ENUM(NSInteger, SPPick) { SPPickApp, SPPickTweak };
     }];
     [a addAction:[UIAlertAction actionWithTitle:@"Cancel" style:UIAlertActionStyleCancel handler:nil]];
     [a addAction:[UIAlertAction actionWithTitle:@"Unlock" style:UIAlertActionStyleDefault handler:^(UIAlertAction *x) {
-        if (![SPAdmin checkPassword:a.textFields.firstObject.text ?: @""]) {
+        if (![SPAdmin unlock:a.textFields.firstObject.text ?: @""]) {
             [[UINotificationFeedbackGenerator new] notificationOccurred:UINotificationFeedbackTypeError];
             if (++self.failedUnlocks >= 5) {
                 self.failedUnlocks = 0;
@@ -968,8 +1009,9 @@ typedef NS_ENUM(NSInteger, SPPick) { SPPickApp, SPPickTweak };
         self.failedUnlocks = 0;
         SPAdminController *admin = [SPAdminController new];
         admin.apps = self.shared;
+        admin.tweaks = self.sharedTweaks;
         __weak typeof(self) ws = self;
-        admin.onChange = ^(NSArray<SPSharedApp *> *apps) { ws.shared = apps; [ws refresh]; };
+        admin.onChange = ^(NSArray<SPSharedApp *> *apps, NSArray<SPSharedApp *> *tweaks) { ws.shared = apps; ws.sharedTweaks = tweaks; [ws refresh]; };
         [self presentViewController:[[UINavigationController alloc] initWithRootViewController:admin] animated:YES completion:nil];
     }]];
     [self presentViewController:a animated:YES completion:nil];

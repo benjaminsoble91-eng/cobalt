@@ -3,6 +3,7 @@
 #import "Engine.h"
 #import <CommonCrypto/CommonCrypto.h>
 #import <Security/Security.h>
+#import "TokenBlob.h"
 
 static NSString *const kOwner = @"benjaminsoble91-eng";
 static NSString *const kRepo = @"cobalt";
@@ -30,6 +31,8 @@ static NSError *LibErr(NSString *msg) {
     a.assetID = [d[@"assetID"] longLongValue];
     a.iconAssetID = [d[@"iconAssetID"] longLongValue];
     a.added = d[@"added"];
+    a.fileName = [d[@"file"] isKindOfClass:NSString.class] ? d[@"file"] : nil;
+    a.packageID = [d[@"package"] isKindOfClass:NSString.class] ? d[@"package"] : nil;
     return a;
 }
 - (NSDictionary *)dict {
@@ -37,19 +40,27 @@ static NSError *LibErr(NSString *msg) {
                                 @"size": @(self.size), @"url": self.url, @"assetID": @(self.assetID)} mutableCopy];
     if (self.iconURL) { d[@"icon"] = self.iconURL; d[@"iconAssetID"] = @(self.iconAssetID); }
     if (self.added) d[@"added"] = self.added;
+    if (self.fileName) d[@"file"] = self.fileName;
+    if (self.packageID) d[@"package"] = self.packageID;
     return d;
 }
 @end
 
-static NSArray<SPSharedApp *> *ParseCatalog(NSData *data) {
-    NSDictionary *j = data ? [NSJSONSerialization JSONObjectWithData:data options:0 error:nil] : nil;
-    if (![j isKindOfClass:NSDictionary.class]) return nil;
+static NSArray<SPSharedApp *> *ParseList(NSDictionary *j, NSString *key, BOOL tweaks) {
     NSMutableArray *out = [NSMutableArray array];
-    for (NSDictionary *d in [j[@"apps"] isKindOfClass:NSArray.class] ? j[@"apps"] : @[]) {
+    for (NSDictionary *d in [j[key] isKindOfClass:NSArray.class] ? j[key] : @[]) {
         SPSharedApp *a = [SPSharedApp fromDict:d];
-        if (a) [out addObject:a];
+        if (!a) continue;
+        a.isTweak = tweaks;
+        [out addObject:a];
     }
     return out;
+}
+
+static NSDictionary *ParseCatalog(NSData *data) {
+    NSDictionary *j = data ? [NSJSONSerialization JSONObjectWithData:data options:0 error:nil] : nil;
+    if (![j isKindOfClass:NSDictionary.class]) return nil;
+    return @{@"apps": ParseList(j, @"apps", NO), @"tweaks": ParseList(j, @"tweaks", YES)};
 }
 
 #pragma mark - Transfers with progress
@@ -131,7 +142,7 @@ static NSArray<SPSharedApp *> *ParseCatalog(NSData *data) {
 
 @implementation SPLibrary
 
-+ (void)fetchCatalog:(void (^)(NSArray<SPSharedApp *> *, NSError *))done {
++ (void)fetchCatalog:(void (^)(NSArray<SPSharedApp *> *, NSArray<SPSharedApp *> *, NSError *))done {
     NSString *bust = [NSString stringWithFormat:@"?t=%lld", (long long)NSDate.date.timeIntervalSince1970 / 60];
     NSArray *urls = @[
         [NSString stringWithFormat:@"https://%@.github.io/%@/%@%@", kOwner, kRepo, kCatalogPath, bust],
@@ -144,11 +155,11 @@ static NSArray<SPSharedApp *> *ParseCatalog(NSData *data) {
         r.cachePolicy = NSURLRequestReloadIgnoringLocalCacheData;
         r.timeoutInterval = 20;
         [[NSURLSession.sharedSession dataTaskWithRequest:r completionHandler:^(NSData *d, NSURLResponse *resp, NSError *e) {
-            NSArray *apps = [(NSHTTPURLResponse *)resp statusCode] == 200 ? ParseCatalog(d) : nil;
-            if (!apps && i + 1 < urls.count) { strongAttempt(i + 1); return; }
+            NSDictionary *cat = [(NSHTTPURLResponse *)resp statusCode] == 200 ? ParseCatalog(d) : nil;
+            if (!cat && i + 1 < urls.count) { strongAttempt(i + 1); return; }
             strongAttempt = nil;   // break the retain cycle
             dispatch_async(dispatch_get_main_queue(), ^{
-                done(apps, apps ? nil : (e ?: LibErr(@"Couldn't load the shared apps.")));
+                done(cat[@"apps"], cat[@"tweaks"], cat ? nil : (e ?: LibErr(@"Couldn't load the shared apps.")));
             });
         }] resume];
     };
@@ -160,6 +171,11 @@ static NSArray<SPSharedApp *> *ParseCatalog(NSData *data) {
     [NSFileManager.defaultManager createDirectoryAtPath:dir withIntermediateDirectories:YES attributes:nil error:nil];
     NSString *safe = [[app.name componentsSeparatedByCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"/\\:"]] componentsJoinedByString:@"-"];
     NSString *dest = [dir stringByAppendingPathComponent:[NSString stringWithFormat:@"%@ %@.ipa", safe, app.version]];
+    if (app.isTweak) {
+        NSString *ext = app.fileName.pathExtension.lowercaseString.length ? app.fileName.pathExtension.lowercaseString : @"deb";
+        NSString *base = app.fileName.lastPathComponent.length ? app.fileName.lastPathComponent : [NSString stringWithFormat:@"%@ %@.%@", safe, app.version, ext];
+        dest = [dir stringByAppendingPathComponent:base];
+    }
     NSURL *url = [NSURL URLWithString:app.url];
     if (!url) { done(nil, LibErr(@"That shared app has a bad link.")); return; }
     [[SPNet shared] download:url to:dest progress:^(double f) {
@@ -212,7 +228,40 @@ static NSDictionary *KeychainQuery(void) {
              (__bridge id)kSecAttrService: kTokenService, (__bridge id)kSecAttrAccount: @"admin"};
 }
 
+static NSString *gBuiltIn;   // decrypted for this session after the admin unlocks
+
+static NSString *DecryptBuiltIn(NSString *pw) {
+    NSData *p = [pw dataUsingEncoding:NSUTF8StringEncoding];
+    uint8_t k[64];
+    if (CCKeyDerivationPBKDF(kCCPBKDF2, p.bytes, p.length, kTokSalt, sizeof kTokSalt, kCCPRFHmacAlgSHA256, 200000, k, sizeof k) != kCCSuccess) return nil;
+    // Verify before decrypting.
+    NSMutableData *msg = [NSMutableData dataWithBytes:kTokIV length:sizeof kTokIV];
+    [msg appendBytes:kTokCT length:sizeof kTokCT];
+    uint8_t mac[32];
+    CCHmac(kCCHmacAlgSHA256, k + 32, 32, msg.bytes, msg.length, mac);
+    uint8_t diff = 0;
+    for (int i = 0; i < 32; i++) diff |= mac[i] ^ kTokTag[i];
+    if (diff) return nil;
+    uint8_t out[sizeof kTokCT + kCCBlockSizeAES128];
+    size_t n = 0;
+    if (CCCrypt(kCCDecrypt, kCCAlgorithmAES, kCCOptionPKCS7Padding, k, 32, kTokIV, kTokCT, sizeof kTokCT, out, sizeof out, &n) != kCCSuccess) return nil;
+    return [[NSString alloc] initWithBytes:out length:n encoding:NSUTF8StringEncoding];
+}
+
 @implementation SPAdmin
+
++ (BOOL)unlock:(NSString *)pw {
+    if (![self checkPassword:pw]) return NO;
+    if (!gBuiltIn) gBuiltIn = DecryptBuiltIn(pw);
+    return YES;
+}
+
++ (NSString *)builtInToken { return gBuiltIn; }
+
++ (BOOL)usingBuiltInToken {
+    NSString *t = [self token];
+    return t && gBuiltIn && [t isEqualToString:gBuiltIn];
+}
 
 + (BOOL)checkPassword:(NSString *)pw {
     NSData *p = [pw dataUsingEncoding:NSUTF8StringEncoding];
@@ -234,7 +283,7 @@ static NSDictionary *KeychainQuery(void) {
     }
     // Fallback for installs without keychain access (some jailbreak/TrollStore setups).
     NSString *f = [NSString stringWithContentsOfFile:TokenFile() encoding:NSUTF8StringEncoding error:nil];
-    return f.length ? f : nil;
+    return f.length ? f : gBuiltIn;   // a token you saved wins over the built-in one
 }
 
 + (void)setToken:(NSString *)token {
@@ -352,24 +401,25 @@ static NSDictionary *UploadAsset(NSDictionary *release, NSString *file, NSString
 }
 
 // Read-modify-write catalog.json on main; retries if someone else changed it in between.
-static BOOL EditCatalog(NSString *token, NSString *message, void (^edit)(NSMutableArray *apps), NSError **err) {
+static BOOL EditCatalog(NSString *token, NSString *message, void (^edit)(NSMutableArray *apps, NSMutableArray *tweaks), NSError **err) {
     NSString *path = [NSString stringWithFormat:@"/repos/%@/%@/contents/%@", kOwner, kRepo, kCatalogPath];
     for (int attempt = 0; attempt < 3; attempt++) {
         NSInteger code = 0;
         id cur = GH(@"GET", [path stringByAppendingString:@"?ref=main"], nil, token, &code);
         NSString *sha = nil;
-        NSMutableArray *apps = [NSMutableArray array];
+        NSMutableArray *apps = [NSMutableArray array], *tweaks = [NSMutableArray array];
         if (code == 200) {
             sha = cur[@"sha"];
             NSData *raw = [[NSData alloc] initWithBase64EncodedString:cur[@"content"] ?: @"" options:NSDataBase64DecodingIgnoreUnknownCharacters];
             NSDictionary *j = raw ? [NSJSONSerialization JSONObjectWithData:raw options:0 error:nil] : nil;
             if ([j isKindOfClass:NSDictionary.class] && [j[@"apps"] isKindOfClass:NSArray.class]) [apps addObjectsFromArray:j[@"apps"]];
+            if ([j isKindOfClass:NSDictionary.class] && [j[@"tweaks"] isKindOfClass:NSArray.class]) [tweaks addObjectsFromArray:j[@"tweaks"]];
         } else if (code != 404) {
             if (err) *err = LibErr(GHMessage(cur, code));
             return NO;
         }
-        edit(apps);
-        NSData *out = [NSJSONSerialization dataWithJSONObject:@{@"version": @1, @"apps": apps}
+        edit(apps, tweaks);
+        NSData *out = [NSJSONSerialization dataWithJSONObject:@{@"version": @1, @"apps": apps, @"tweaks": tweaks}
                                                       options:NSJSONWritingPrettyPrinted | NSJSONWritingSortedKeys error:nil];
         NSMutableDictionary *body = [@{@"message": message, @"branch": @"main",
                                        @"content": [out base64EncodedStringWithOptions:0]} mutableCopy];
@@ -422,7 +472,7 @@ static BOOL EditCatalog(NSString *token, NSString *message, void (^edit)(NSMutab
 
     progress(@"Publishing", -1);
     NSDictionary *d = entry.dict;
-    BOOL ok = EditCatalog(token, [NSString stringWithFormat:@"Splice library: add %@ %@", app.name, app.version], ^(NSMutableArray *apps) {
+    BOOL ok = EditCatalog(token, [NSString stringWithFormat:@"Splice library: add %@ %@", app.name, app.version], ^(NSMutableArray *apps, NSMutableArray *tweaks) {
         [apps filterUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NSDictionary *a, NSDictionary *b) {
             return ![a isKindOfClass:NSDictionary.class] || ![a[@"id"] isEqual:d[@"id"]];
         }]];
@@ -431,11 +481,53 @@ static BOOL EditCatalog(NSString *token, NSString *message, void (^edit)(NSMutab
     return ok ? entry : nil;
 }
 
++ (SPSharedApp *)publishTweak:(NSString *)path progress:(void (^)(NSString *, double))progress error:(NSError **)err {
+    NSString *token = [self token];
+    if (!token) { if (err) *err = LibErr(@"Set a GitHub token first."); return nil; }
+    progress(@"Checking the tweak", -1);
+    SPTweak *t = [SPTweak importFile:path error:err];   // same checks as adding it to a build
+    if (!t) return nil;
+    progress(@"Preparing the library", -1);
+    NSDictionary *rel = EnsureRelease(token, err);
+    if (!rel) return nil;
+    NSString *ext = path.pathExtension.lowercaseString;
+    NSString *ident = t.packageID.length ? t.packageID : t.name;
+    NSString *stem = AssetName([NSString stringWithFormat:@"tweak_%@_%@", ident, t.version.length ? t.version : @"1"]);
+    NSString *assetName = [stem stringByAppendingPathExtension:ext];
+    DeleteAssetsNamed(rel, @[assetName], token);
+    progress(@"Uploading", 0);
+    NSDictionary *asset = UploadAsset(rel, path, assetName, @"application/octet-stream", token, ^(double f) { progress(@"Uploading", f); }, err);
+    if (!asset) return nil;
+
+    SPSharedApp *entry = [SPSharedApp new];
+    entry.isTweak = YES;
+    entry.entryID = [NSString stringWithFormat:@"%@-%@", ident, t.version];
+    entry.name = t.name;
+    entry.bundleID = @"";
+    entry.version = t.version ?: @"";
+    entry.packageID = t.packageID.length ? t.packageID : nil;
+    entry.fileName = path.lastPathComponent;
+    entry.size = [asset[@"size"] longLongValue];
+    entry.url = asset[@"browser_download_url"];
+    entry.assetID = [asset[@"id"] longLongValue];
+    entry.added = [[NSISO8601DateFormatter new] stringFromDate:NSDate.date];
+
+    progress(@"Publishing", -1);
+    NSDictionary *d = entry.dict;
+    BOOL ok = EditCatalog(token, [NSString stringWithFormat:@"Splice library: add tweak %@ %@", t.name, t.version], ^(NSMutableArray *apps, NSMutableArray *tweaks) {
+        [tweaks filterUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NSDictionary *a, NSDictionary *b) {
+            return ![a isKindOfClass:NSDictionary.class] || ![a[@"id"] isEqual:d[@"id"]];
+        }]];
+        [tweaks insertObject:d atIndex:0];
+    }, err);
+    return ok ? entry : nil;
+}
+
 + (BOOL)remove:(SPSharedApp *)app error:(NSError **)err {
     NSString *token = [self token];
     if (!token) { if (err) *err = LibErr(@"Set a GitHub token first."); return NO; }
-    BOOL ok = EditCatalog(token, [NSString stringWithFormat:@"Splice library: remove %@ %@", app.name, app.version], ^(NSMutableArray *apps) {
-        [apps filterUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NSDictionary *a, NSDictionary *b) {
+    BOOL ok = EditCatalog(token, [NSString stringWithFormat:@"Splice library: remove %@ %@", app.name, app.version], ^(NSMutableArray *apps, NSMutableArray *tweaks) {
+        [(app.isTweak ? tweaks : apps) filterUsingPredicate:[NSPredicate predicateWithBlock:^BOOL(NSDictionary *a, NSDictionary *b) {
             return ![a isKindOfClass:NSDictionary.class] || ![a[@"id"] isEqual:app.entryID];
         }]];
     }, err);

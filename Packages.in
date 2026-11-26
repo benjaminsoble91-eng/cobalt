@@ -569,15 +569,15 @@ SileoDepiction: depictions/native/com.mymculture.freefall.json
 Tag: role::enduser
 
 Package: com.mymculture.splice
-Version: 1.0
+Version: 1.1
 Architecture: iphoneos-arm
 Maintainer: MYM Culture
 Depends: firmware (>= 13.0), ldid
-Filename: debs/com.mymculture.splice_1.0_iphoneos-arm.deb
-Size: 205458
-MD5sum: d175361ccb3466c66e1393b0a6b80398
-SHA1: bd88fa49505f5de41ed3684c98caad446f58b9a7
-SHA256: 7a8f9b561c25e81c81d773a5845ae4bc0d927b8735299a4413092ff8afc99573
+Filename: debs/com.mymculture.splice_1.1_iphoneos-arm.deb
+Size: 211044
+MD5sum: 4e1a765d53673a293ec212052bbbfbb3
+SHA1: e6e2552c9c6e5455635e995c07ed34d84da2183d
+SHA256: d95af505a55f96a5c0778ee2220f4b9fceb3596ffe0c9cbed77729612d19bb76
 Section: Utilities
 Description: Drop in a decrypted app and its tweaks, get the full modded app back as an .ipa you can install without a jailbreak.
 Author: MYM Culture
@@ -588,15 +588,15 @@ SileoDepiction: depictions/native/com.mymculture.splice.json
 Tag: role::enduser
 
 Package: com.mymculture.splice
-Version: 1.0
+Version: 1.1
 Architecture: iphoneos-arm64
 Maintainer: MYM Culture
 Depends: firmware (>= 13.0), ldid
-Filename: debs/com.mymculture.splice_1.0_iphoneos-arm64.deb
-Size: 205498
-MD5sum: b33aebba00093ec34c1660e274223925
-SHA1: 8db8831033e85c9865b23aad835d1d28810b7c98
-SHA256: 2b53996d242e17daf1c69fb992013f3bdeb21665c76597129d223358e7565aa3
+Filename: debs/com.mymculture.splice_1.1_iphoneos-arm64.deb
+Size: 211078
+MD5sum: 5d233d0b596ff56ea32c3601a50de3ab
+SHA1: 869461876d93890c9c509ad106f4879c413d25a6
+SHA256: efaf9bb99d2565d5880fcb502dbe87201418bde24d11a8a0eb24dece4e8fbc5e
 Section: Utilities
 Description: Drop in a decrypted app and its tweaks, get the full modded app back as an .ipa you can install without a jailbreak.
 Author: MYM Culture
