@@ -33,7 +33,7 @@
         },
         {
           "class": "DepictionMarkdownView",
-          "markdown": "- **Shared apps:** decrypted apps shared on Cobalt show up under the App card. Tap one to download it and start modding.\n- App Store apps must be **decrypted** first (for example with TrollDecrypt). Splice tells you if an app is still encrypted.\n- Tweaks are pointed at Splice's own small substrate, so they work without a jailbreak. Objective-C hooks (what almost every app tweak uses) work fully; C function hooks only catch calls made through a library import.\n- Tweak filters are respected: parts of a package made for SpringBoard or other apps are skipped.\n- If a tweak needs another package (a color picker library, Cephei...), add that package's .deb too. Splice warns you when something's missing.\n- Settings-app panes (PreferenceLoader) can't show up inside a sideloaded app; use the tweak's in-app settings if it has them.\n- Works as a TrollStore app (Splice.tipa), a sideloaded app, or a jailbreak app from this source (rootful and rootless).",
+          "markdown": "- **Shared apps and tweaks:** apps and tweaks shared on Cobalt show up under the App and Tweaks cards. Tap one to add it.\n- App Store apps must be **decrypted** first (for example with TrollDecrypt). Splice tells you if an app is still encrypted.\n- Tweaks are pointed at Splice's own small substrate, so they work without a jailbreak. Objective-C hooks (what almost every app tweak uses) work fully; C function hooks only catch calls made through a library import.\n- Tweak filters are respected: parts of a package made for SpringBoard or other apps are skipped.\n- If a tweak needs another package (a color picker library, Cephei...), add that package's .deb too. Splice warns you when something's missing.\n- Settings-app panes (PreferenceLoader) can't show up inside a sideloaded app; use the tweak's in-app settings if it has them.\n- Works as a TrollStore app (Splice.tipa), a sideloaded app, or a jailbreak app from this source (rootful and rootless).",
           "useSpacing": true
         },
         {
@@ -46,7 +46,7 @@
         {
           "class": "DepictionTableTextView",
           "title": "Version",
-          "text": "1.0"
+          "text": "1.1"
         },
         {
           "class": "DepictionTableTextView",
@@ -83,6 +83,17 @@
       "tabname": "Changelog",
       "class": "DepictionStackView",
       "views": [
+        {
+          "class": "DepictionSubheaderView",
+          "title": "1.1",
+          "useBoldText": true,
+          "useBottomMargin": false
+        },
+        {
+          "class": "DepictionMarkdownView",
+          "markdown": "- Shared tweaks: tweaks shared on Cobalt now show under the Tweaks card. Tap one to add it.\n- Admin panel can share tweaks (.deb or .dylib) as well as apps.",
+          "useSpacing": true
+        },
         {
           "class": "DepictionSubheaderView",
           "title": "1.0",
