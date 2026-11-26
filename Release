@@ -3,15 +3,15 @@ Label: Cobalt
 Suite: stable
 Version: 1.0
 Codename: cobalt
-Date: Thu, 26 Nov 2026 16:19:40 UTC
+Date: Thu, 26 Nov 2026 16:20:41 UTC
 Architectures: iphoneos-arm64 iphoneos-arm
 Components: main
 Description: Cobalt - a hand-built source for jailbreak tweaks and TrollStore apps.
 MD5Sum:
- 4fdb70a1403c9525fc42af6be9cf521d 28383 Packages
- e3ea01b2de299dba6d142e66e37785ba 5126 Packages.gz
- 2a7def34258adf37bfb8a79088dd75c9 4953 Packages.bz2
+ b96c3185febf0287a20eec6f81eeb19e 28383 Packages
+ 4fea456029746a01517e1bdcfc89799e 5124 Packages.gz
+ 4fa6dd5efd91dfa25cf2139a503f6c29 4954 Packages.bz2
 SHA256:
- 173da6b12d2c832db3799295243f21b7c583699f34d0acdd7809100e3e9cb6bc 28383 Packages
- f062cf7105cfabb0cea3367e565d4c2f202894293ac80e00b7f4846b63e8e8d3 5126 Packages.gz
- 56558286462cc7d90b6da7efb75da5f00a75d97996cec36444d6f1561212ce6a 4953 Packages.bz2
+ 1dc8b02f67e745edff0b2936c9352b53c6ec0295cccbb480d86ce5898f80fef9 28383 Packages
+ faa1851bbc43dc672958b01994e225bd9675cfdab3403da47322aee4d9b3dd27 5124 Packages.gz
+ 166c8ec2a52ba89827957ec95621e51d92419715bddc40dc0862891fcd2fc67d 4954 Packages.bz2
