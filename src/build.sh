@@ -53,6 +53,7 @@ for variant in "iphoneos-arm64 /var/jb" "iphoneos-arm "; do
   build rootrun    RootRun    com.mymculture.rootrun    1.0.1 Tweaks "$D" "Make the apps you choose launch as root."
   build gridsize   GridSize   com.mymculture.gridsize   1.0   Tweaks "$D" "Choose how many apps go in each Home Screen row. Icons resize to fit."
   build freefall   Freefall   com.mymculture.freefall   2.0   Tweaks "$D" "Gravity for your Home Screen: icons fall, tilt, bounce and fling. A recreation of the classic GraviBoard."
+  build blacktroll BlackTroll com.mymculture.blacktroll 1.0   Tweaks "$D" "Gives TrollStore a black Home Screen icon. The face stays white."
 done
 ls -la $OUT
 

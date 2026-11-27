@@ -606,3 +606,41 @@ Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymcultur
 SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/com.mymculture.splice.json
 Tag: role::enduser
 
+Package: com.mymculture.blacktroll
+Version: 1.0
+Architecture: iphoneos-arm
+Maintainer: MYM Culture
+Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
+Filename: debs/com.mymculture.blacktroll_1.0_iphoneos-arm.deb
+Size: 8038
+MD5sum: 4626859ef1ff111a2a8fef87bb7c07fa
+SHA1: f84b351f39ae7923fd005b695e929a44bcd9b772
+SHA256: 49f12f694fb259bdcc52378cd8a9479adce4ce0f5af027a5a08d5c75668975f1
+Section: Tweaks
+Description: Gives TrollStore a black Home Screen icon. The face stays white.
+Author: MYM Culture
+Name: BlackTroll
+Icon: https://benjaminsoble91-eng.github.io/cobalt/assets/icon_com.mymculture.blacktroll.png
+Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymculture.blacktroll.html
+SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/com.mymculture.blacktroll.json
+Tag: role::enduser
+
+Package: com.mymculture.blacktroll
+Version: 1.0
+Architecture: iphoneos-arm64
+Maintainer: MYM Culture
+Depends: mobilesubstrate (>= 0.9.5000), preferenceloader, firmware (>= 14.0)
+Filename: debs/com.mymculture.blacktroll_1.0_iphoneos-arm64.deb
+Size: 8120
+MD5sum: 62a5d09b3080facf8b8d486ba62258e5
+SHA1: bca72f6da0c61455a52ee6b56336ae6a66f875d6
+SHA256: e590d0bd2ddef3267bdf293f61e15e8eaa3911ff6ebe0246eb8eb37ca58e5041
+Section: Tweaks
+Description: Gives TrollStore a black Home Screen icon. The face stays white.
+Author: MYM Culture
+Name: BlackTroll
+Icon: https://benjaminsoble91-eng.github.io/cobalt/assets/icon_com.mymculture.blacktroll.png
+Depiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/com.mymculture.blacktroll.html
+SileoDepiction: https://benjaminsoble91-eng.github.io/cobalt/depictions/native/com.mymculture.blacktroll.json
+Tag: role::enduser
+
