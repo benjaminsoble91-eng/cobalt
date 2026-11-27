@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>entry</key>
+	<dict>
+		<key>cell</key>
+		<string>PSLinkCell</string>
+		<key>label</key>
+		<string>BlackTroll</string>
+	</dict>
+	<key>items</key>
+	<array>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>Turns TrollStore's blue Home Screen icon black. The face stays white. Nothing inside TrollStore is changed.</string>
+		</dict>
+		<dict>
+			<key>PostNotification</key>
+			<string>com.mymculture.blacktroll/prefs</string>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<true/>
+			<key>defaults</key>
+			<string>com.mymculture.blacktroll</string>
+			<key>key</key>
+			<string>Enabled</string>
+			<key>label</key>
+			<string>Enabled</string>
+		</dict>
+		<dict>
+			<key>PostNotification</key>
+			<string>com.mymculture.blacktroll/prefs</string>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.mymculture.blacktroll</string>
+			<key>key</key>
+			<string>Lite</string>
+			<key>label</key>
+			<string>Also TrollStore Lite</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>Changes apply after a respring. Flip this to respring now.</string>
+			<key>label</key>
+			<string>Apply</string>
+		</dict>
+		<dict>
+			<key>PostNotification</key>
+			<string>com.mymculture.blacktroll/respring</string>
+			<key>cell</key>
+			<string>PSSwitchCell</string>
+			<key>default</key>
+			<false/>
+			<key>defaults</key>
+			<string>com.mymculture.blacktroll</string>
+			<key>key</key>
+			<string>Respring</string>
+			<key>label</key>
+			<string>Respring to apply</string>
+		</dict>
+		<dict>
+			<key>cell</key>
+			<string>PSGroupCell</string>
+			<key>footerText</key>
+			<string>BlackTroll 1.0 from Cobalt.</string>
+		</dict>
+	</array>
+	<key>title</key>
+	<string>BlackTroll</string>
+</dict>
+</plist>

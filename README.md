@@ -18,7 +18,7 @@ debs/                   Sileo tweaks (installable from the source)
 tipa/                   TrollStore apps (installable via Get buttons)
 assets/                 icons + art
 seturl.sh               optional: bake an absolute URL for Zebra/Cydia
-src/                    source for the tweaks (IconSwap, PowerPlus, BarText, DoubleDose, PanicButton, RootRun, GridSize, Freefall) + build.sh (rootless + rootful; DoubleDose is rootless-only)
+src/                    source for the tweaks (IconSwap, PowerPlus, BarText, DoubleDose, PanicButton, RootRun, GridSize, Freefall, BlackTroll) + build.sh (rootless + rootful; DoubleDose is rootless-only)
 src/dopathemes/         DopaThemes (writes extra themes + icons into the Dopamine app) + its own build.sh; tools/gen_themes.py makes the art
 src/trollamine/         source for Trollamine Installer (installer app + add-on library) + build.sh
 src/meowbrek2installer/      meowbrek2 Installer (.deb: installs TrollStore if missing, then meowbrek2 via TrollStore, then removes itself; rootless palera1n, iOS 15)
